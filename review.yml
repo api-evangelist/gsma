@@ -1,0 +1,540 @@
+aid: gsma
+name: GSMA
+review:
+  question: What is the GSMA's real, publicly reachable API surface, and how much of the
+    telecom network-API standard it convenes is open versus member-gated?
+  answer: true
+  date: '2026-07-25'
+  reviewer: API Evangelist
+  tier: standards-body
+  homeMarket: United Kingdom
+  sector: Telecommunications
+findings:
+  summary: |
+    The GSMA is the mobile industry's trade association, headquartered in London, and in the
+    telecom API value chain it is the standards-and-commitment layer rather than an operator or
+    an aggregator. It runs no production network API endpoints of its own. What it does run is
+    unusually open for a standards body: the GSMA Open Gateway developer portal at
+    open-gateway.gsma.com serves 17 CAMARA OpenAPI 3.0.3 documents in full, anonymously, with no
+    login, plus a live public JSON feed of every launched Open Gateway API instance worldwide.
+    A second, entirely separate and equally open portal at developer.mobilemoneyapi.io publishes
+    the GSMA Mobile Money API specification as a downloadable OpenAPI 3.0.0 document with SDKs
+    and use-case guides.
+
+    The gating is real but narrow and specific. The API sandbox is behind a GitHub sign-in. The
+    Scam Signal anti-fraud API — named on the GSMA's own API descriptions page and deployed by UK
+    and Indian operators — is deliberately held in a private GSMA repository and is not in public
+    CAMARA. The commercial GSMA Services catalogue (Device Check, IMEI Database, Device Registry,
+    PathFinder, Disposable Number Check, Network Settings Exchange) is contract- and
+    membership-gated with no public API documentation at all. The GSMA's own public GitHub
+    organisation (github.com/GSMA) contains two repositories, both front-end web utilities, and a
+    code search across the org for "openapi" returns zero results — the specifications live on the
+    GSMA's own portals and in the Linux Foundation CAMARA org, not in GSMA's GitHub.
+  developerPortal:
+    primary:
+      url: https://open-gateway.gsma.com/
+      httpStatus: 200
+      confirmed: true
+      selfServe: true
+      loginWall: false
+      note: Real developer portal, not a marketing landing page. Serves /docs (17 API doc pages,
+        each with a Swagger API Reference tab that renders a complete embedded OpenAPI document),
+        /map (live API deployment map), and /sandbox.
+    docs:
+      url: https://open-gateway.gsma.com/docs
+      httpStatus: 200
+      note: Seven categories — Authentication and Fraud Prevention (6), Location Services (3),
+        Device Information (3), Communication Quality (2), Payments and Charging (2), Computing
+        Services (1), Communication Services (0).
+    sandbox:
+      url: https://open-gateway.gsma.com/sandbox
+      httpStatus: 200
+      gated: true
+      gate: Sign in with GitHub
+      note: Self-serve but account-gated. Portal copy states it supports Client Credentials, CIBA
+        (Client Initiated Backchannel Authentication), Authorization Code, and JWT Bearer flows,
+        and that it is a pre-production playground before moving to an operator or aggregator.
+    secondPortal:
+      url: https://developer.mobilemoneyapi.io/
+      httpStatus: 200
+      confirmed: true
+      selfServe: true
+      note: Fully separate GSMA Mobile Money API developer portal. Anonymous access to the full
+        OpenAPI, API Service Definition, security guidelines, and 5 SDK guides (Java, JavaScript,
+        Node.js, PHP, Android). Sign up / Log in exist for the simulator and Postman assets.
+    marketingLayer:
+      url: https://www.gsma.com/solutions-and-impact/gsma-open-gateway/
+      httpStatus: 200
+      note: The gsma.com corporate site is the marketing and commitment layer. Its API Descriptions
+        page (/gsma-open-gateway-api-descriptions/, HTTP 200) lists the full Open Gateway catalogue
+        but points every API description at camaraproject.org rather than hosting a spec.
+    probesNegative:
+      - url: https://developer.gsma.com
+        result: connection timed out (no service)
+      - url: https://developers.gsma.com
+        result: connection timed out (no service)
+      - url: https://api.gsma.com
+        result: connection timed out (no service)
+      - url: https://opengateway.gsma.com
+        result: connection timed out (no service; the live host is open-gateway.gsma.com with a hyphen)
+      - url: https://developers.opengateway.gsma.com
+        result: connection timed out (no service)
+      - url: https://www.gsma.com/developer
+        httpStatus: 403
+      - url: https://www.gsma.com/developers
+        httpStatus: 403
+      - url: https://www.gsma.com/api
+        httpStatus: 403
+      - url: https://open-gateway.gsma.com/openapi.json
+        httpStatus: 404
+      - url: https://open-gateway.gsma.com/.well-known/openid-configuration
+        httpStatus: 404
+      - url: https://open-gateway.gsma.com/.well-known/oauth-authorization-server
+        httpStatus: 404
+      - url: https://sandbox.mobilemoneyapi.io/
+        result: DNS did not resolve — the simulator host declared in the Mobile Money OpenAPI
+          servers block is not reachable
+    note: www.gsma.com returns HTTP 403 to default curl and to WebFetch; it serves 200 to a
+      standard desktop browser User-Agent over HTTP/1.1. All gsma.com statuses recorded here were
+      taken with a browser User-Agent.
+  specsHarvested:
+    count: 18
+    provenance:
+      - file: openapi/gsma-mobile-money-api-openapi.yml
+        sourceURL: https://developer.mobilemoneyapi.io/swagger-files/mobile-money-api-specification-1.2.0-master_0.yaml
+        httpStatus: 200
+        contentType: application/x-yaml
+        bytes: 467490
+        fetched: '2026-07-25'
+        openapi: 3.0.0
+        title: Mobile Money API
+        version: 1.2.0
+        paths: 53
+        discovery: Linked from the "Open OAS3 UI" page via a SwaggerComponent url prop in the
+          VuePress chunk /assets/js/85.82831500.js. Anonymous, no registration.
+      - file: openapi/gsma-open-gateway-call-forwarding-signal-openapi.yml
+        sourceURL: https://open-gateway.gsma.com/docs/call-forwarding-signal/api-reference
+        httpStatus: 200
+        fetched: '2026-07-25'
+        openapi: 3.0.3
+        title: Call Forwarding Signal
+        version: 0.2.0
+        paths: 2
+        operations: 2
+      - file: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+        sourceURL: https://open-gateway.gsma.com/docs/carrier-billing/api-reference
+        httpStatus: 200
+        fetched: '2026-07-25'
+        openapi: 3.0.3
+        title: Carrier Billing
+        version: wip
+        paths: 6
+        operations: 7
+      - file: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+        sourceURL: https://open-gateway.gsma.com/docs/carrier-billing-refund/api-reference
+        httpStatus: 200
+        fetched: '2026-07-25'
+        openapi: 3.0.3
+        title: Carrier Billing Refund
+        version: wip
+        paths: 3
+        operations: 4
+      - file: openapi/gsma-open-gateway-device-identifier-openapi.yml
+        sourceURL: https://open-gateway.gsma.com/docs/device-identifier/api-reference
+        httpStatus: 200
+        fetched: '2026-07-25'
+        openapi: 3.0.3
+        title: CAMARA Mobile Device Identifier
+        version: 0.2.0
+        paths: 2
+        operations: 2
+      - file: openapi/gsma-open-gateway-device-location-retrieval-openapi.yml
+        sourceURL: https://open-gateway.gsma.com/docs/device-location-retrieval/api-reference
+        httpStatus: 200
+        fetched: '2026-07-25'
+        openapi: 3.0.3
+        title: Device Location Retrieval
+        version: wip
+        paths: 1
+        operations: 1
+      - file: openapi/gsma-open-gateway-device-location-verification-openapi.yml
+        sourceURL: https://open-gateway.gsma.com/docs/device-location-verification/api-reference
+        httpStatus: 200
+        fetched: '2026-07-25'
+        openapi: 3.0.3
+        title: Device Location Verification
+        version: wip
+        paths: 1
+        operations: 1
+      - file: openapi/gsma-open-gateway-device-reachability-status-openapi.yml
+        sourceURL: https://open-gateway.gsma.com/docs/device-reachability-status/api-reference
+        httpStatus: 200
+        fetched: '2026-07-25'
+        openapi: 3.0.3
+        title: Device Reachability Status
+        version: 0.6.1
+        paths: 1
+        operations: 1
+      - file: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
+        sourceURL: https://open-gateway.gsma.com/docs/device-roaming-status/api-reference
+        httpStatus: 200
+        fetched: '2026-07-25'
+        openapi: 3.0.3
+        title: Device Roaming Status
+        version: 0.6.1
+        paths: 1
+        operations: 1
+      - file: openapi/gsma-open-gateway-device-swap-openapi.yml
+        sourceURL: https://open-gateway.gsma.com/docs/device-swap/api-reference
+        httpStatus: 200
+        fetched: '2026-07-25'
+        openapi: 3.0.3
+        title: Device Swap
+        version: 0.2.0
+        paths: 2
+        operations: 2
+      - file: openapi/gsma-open-gateway-home-devices-quality-on-demand-openapi.yml
+        sourceURL: https://open-gateway.gsma.com/docs/home-devices-quality-on-demand/api-reference
+        httpStatus: 200
+        fetched: '2026-07-25'
+        openapi: 3.0.3
+        title: Home Devices QoD
+        version: 0.4.0
+        paths: 1
+        operations: 1
+      - file: openapi/gsma-open-gateway-know-your-customer-openapi.yml
+        sourceURL: https://open-gateway.gsma.com/docs/know-your-customer/api-reference
+        httpStatus: 200
+        fetched: '2026-07-25'
+        openapi: 3.0.3
+        title: Know Your Customer Match
+        version: 0.3.0
+        paths: 1
+        operations: 1
+      - file: openapi/gsma-open-gateway-number-verification-openapi.yml
+        sourceURL: https://open-gateway.gsma.com/docs/number-verification/api-reference
+        httpStatus: 200
+        fetched: '2026-07-25'
+        openapi: 3.0.3
+        title: Number Verification
+        version: wip
+        paths: 2
+        operations: 2
+      - file: openapi/gsma-open-gateway-otp-validation-openapi.yml
+        sourceURL: https://open-gateway.gsma.com/docs/otp-validation/api-reference
+        httpStatus: 200
+        fetched: '2026-07-25'
+        openapi: 3.0.3
+        title: One Time Password SMS
+        version: 1.0.0
+        paths: 2
+        operations: 2
+      - file: openapi/gsma-open-gateway-population-density-data-openapi.yml
+        sourceURL: https://open-gateway.gsma.com/docs/population-density-data/api-reference
+        httpStatus: 200
+        fetched: '2026-07-25'
+        openapi: 3.0.3
+        title: Population Density Data
+        version: 0.2.0
+        paths: 1
+        operations: 1
+      - file: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+        sourceURL: https://open-gateway.gsma.com/docs/quality-on-demand/api-reference
+        httpStatus: 200
+        fetched: '2026-07-25'
+        openapi: 3.0.3
+        title: Quality-On-Demand
+        version: 0.11.1
+        paths: 4
+        operations: 5
+      - file: openapi/gsma-open-gateway-sim-swap-openapi.yml
+        sourceURL: https://open-gateway.gsma.com/docs/sim-swap/api-reference
+        httpStatus: 200
+        fetched: '2026-07-25'
+        openapi: 3.0.3
+        title: SIM Swap
+        version: wip
+        paths: 2
+        operations: 2
+      - file: openapi/gsma-open-gateway-simple-edge-discovery-openapi.yml
+        sourceURL: https://open-gateway.gsma.com/docs/simple-edge-discovery/api-reference
+        httpStatus: 200
+        fetched: '2026-07-25'
+        openapi: 3.0.3
+        title: Simple Edge Discovery
+        version: 1.0.0
+        paths: 1
+        operations: 1
+    harvestMethod: |
+      The 17 Open Gateway specifications are not exposed as static .yaml files. Each
+      /docs/{api}/api-reference page is a Next.js static export whose __NEXT_DATA__ JSON payload
+      carries the complete OpenAPI document verbatim as a YAML string in
+      props.pageProps.jsonData. Every one of the 17 was extracted from that payload and saved
+      unmodified. All 18 saved documents were re-parsed with PyYAML and confirmed to have an
+      openapi key and a non-empty paths object.
+    notPublished:
+      - Scam Signal — listed on the GSMA Open Gateway API Descriptions page and deployed by UK and
+        Indian operators, but by GSMA's own statement it is held in a private GSMA repository and
+        is not in public CAMARA. No spec is downloadable.
+      - Mobile Money API 1.0 and 1.1 — the version landing pages return 200 but carry no
+        Resources sidebar and no Open OAS3 UI page; only 1.2 exposes a downloadable spec.
+      - GSMA Services commercial products (Device Check, IMEI Database, Device Registry, Device
+        Attribute Data, PathFinder, Disposable Number Check, Network Settings Exchange, eSIM
+        Discovery) — contact-us and contract gated, no public API documentation found.
+      - GSMA Intelligence data — data.gsmaintelligence.com redirects to a sign-in wall.
+  camara:
+    posture: Convener and publisher, not an implementer — GSMA hosts the Open Gateway commitment
+      layer and republishes 17 CAMARA OpenAPI specs openly, while operators serve the endpoints
+    detail: |
+      This is not a press release. GSMA Open Gateway is the operator memorandum of understanding
+      layer sitting on top of the Linux Foundation CAMARA project, which authors the specifications.
+      The GSMA states on its own supporters page that the MoU has been signed by 69 of the world's
+      largest network operators, representing 78% of global mobile connections. The GSMA's Open
+      Gateway API Descriptions page names the full catalogue and defers every technical description
+      to camaraproject.org. The GSMA's own developer portal then goes further than a trade body
+      normally would: it publishes 17 complete CAMARA OpenAPI 3.0.3 documents anonymously and runs
+      a CAMARA-compliant sandbox. The GSMA itself exposes no CAMARA endpoint in production — every
+      instance in its own deployment map belongs to an operator or a channel partner.
+    apisWithEvidence:
+      - Number Verification
+      - SIM Swap
+      - Device Swap
+      - Device Location Retrieval
+      - Device Location Verification
+      - Device Reachability Status
+      - Device Roaming Status
+      - Mobile Device Identifier
+      - Know Your Customer Match
+      - One Time Password SMS
+      - Call Forwarding Signal
+      - Carrier Billing
+      - Carrier Billing Refund
+      - Quality on Demand
+      - Home Devices Quality on Demand
+      - Population Density Data
+      - Simple Edge Discovery
+    evidence: Each of the above was harvested as a complete OpenAPI 3.0.3 document from
+      open-gateway.gsma.com/docs/{api}/api-reference on 2026-07-25 and saved to openapi/.
+    alsoNamedNotHarvested:
+      - Scam Signal (private GSMA repository, not public CAMARA)
+      - Number Recycling
+      - Customer Insights
+      - Know Your Customer Age Verification
+      - Know Your Customer Fill-In
+      - Know Your Customer Tenure
+      - Connectivity Insights
+      - Connected Network Type
+      - Geofencing Subscriptions
+      - WebRTC Call Handling / Registration / Event Handling
+      - Application Profiles
+      - Blockchain Public Access
+      - Regional Device Count
+      - QoS Profiles / QoS Provisioning
+      - Verified Caller
+      - Brand Registration
+    note: The names above appear on the GSMA API Descriptions page or in the GSMA deployment feed
+      but do not have a documentation page with an embedded spec on open-gateway.gsma.com, so
+      nothing was harvested for them.
+  openGateway:
+    member: true
+    role: Owner and operator of the GSMA Open Gateway initiative (GSMA is the convener, not a
+      participating operator)
+    operatorsSignedMoU: 69
+    shareOfGlobalConnections: '78%'
+    source: https://www.gsma.com/solutions-and-impact/gsma-open-gateway/supporters/
+    liveDeploymentFeed:
+      url: https://d3bj8knxlstxyw.cloudfront.net/assets-map-launches.json
+      httpStatus: 200
+      contentType: application/json
+      bytes: 313316
+      generatedAt: '2026-07-25T11:55:10.988Z'
+      discovery: Referenced from /_next/static/chunks/3438-984856e567af1fcd.js, the JS chunk behind
+        https://open-gateway.gsma.com/map. Anonymous, unauthenticated, no documentation.
+      records: 607
+      distinctApiNames: 21
+      distinctOperators: 80
+      distinctCountries: 65
+      certifiedDeployments: 135
+      topApis:
+        SIM Swap: 205
+        Number Verification: 148
+        KnowYourCustomer: 53
+        OTP Validation: 40
+        Device Location Verification: 31
+        Device Status: 26
+      channelPartnersNamed:
+        - Enstream
+        - IDlayr
+        - Infobip
+        - IPification
+        - JT Global
+        - M1
+        - Openxpand
+        - Singtel
+        - TMT iD
+        - XConnect
+      note: Aduna does not appear anywhere in this feed; the aggregation layer represented here is
+        the CPaaS and identity channel-partner set listed above.
+  tmForum:
+    conformanceCertification: none found for the GSMA itself
+    note: The GSMA is not a TM Forum Open API conformance certificate holder — it publishes no
+      TMF620/TMF622/TMF641 implementation because it operates no BSS/OSS. TM Forum lists CAMARA as
+      an ODA partner at tmforum.org/oda/open-apis/partners/camara (HTTP 403 to automated fetch on
+      the review date), reflecting an alignment between the two bodies rather than a GSMA
+      conformance claim.
+  threeGPPExposure:
+    nef: false
+    scef: false
+    note: The GSMA operates no network and therefore no Network Exposure Function. The CAMARA APIs
+      it publishes are the northbound abstraction that operators map onto their own 3GPP NEF/SCEF
+      and network-slicing infrastructure. Edge/MEC is represented in the catalogue by the Simple
+      Edge Discovery API; 5G quality control by Quality on Demand.
+  auth:
+    schemes:
+      - type: OpenID Connect
+        evidence: Every one of the 17 harvested Open Gateway specs declares a single
+          `openId` securityScheme of type openIdConnect, with per-operation CAMARA scopes such as
+          `number-verification:verify`, `number-verification:device-phone-number:read`, and
+          `sim-swap:check`. The openIdConnectUrl in the published specs is the CAMARA placeholder
+          https://example.com/.well-known/openid-configuration — the real issuer is the operator's.
+      - type: CIBA (Client Initiated Backchannel Authentication)
+        present: true
+        evidence: Named explicitly in the GSMA sandbox page as one of four supported flows, cited
+          in the Number Verification spec narrative as the mechanism for passing a GSMA TS.43
+          temporary token via `login_hint=operatortoken:<token>`, and counted in the GSMA's own
+          deployment feed — 94 live deployments declare a CIBA auth flow, 57 of them certified.
+      - type: OAuth2 Client Credentials
+        evidence: 256 deployments in the GSMA feed (49 certified).
+      - type: OAuth2 Authorization Code
+        evidence: 190 deployments in the GSMA feed (58 certified).
+      - type: JWT Bearer
+        evidence: 7 deployments in the GSMA feed (1 certified); also described in the Number
+          Verification spec for TS.43 token exchange.
+    wellKnown:
+      - url: https://open-gateway.gsma.com/.well-known/openid-configuration
+        httpStatus: 404
+      - url: https://open-gateway.gsma.com/.well-known/oauth-authorization-server
+        httpStatus: 404
+    note: The GSMA issues no tokens. Authorization is always against an operator or aggregator
+      authorization server; the sandbox behind GitHub sign-in is the only GSMA-hosted credential
+      surface found.
+  webhooks:
+    present: true
+    scope: specification-level only
+    detail: Four of the harvested specs (Carrier Billing, Carrier Billing Refund, Population
+      Density Data, Quality on Demand) declare a `notificationsBearerAuth` security scheme for
+      CloudEvents-style callbacks delivered to a consumer-supplied sink URL. The GSMA itself
+      publishes no event catalogue, no AsyncAPI document, and no webhook endpoint of its own.
+  sdks:
+    firstParty:
+      - name: GSMA Mobile Money API SDKs
+        languages: [Java, JavaScript, Node.js, PHP, Android]
+        url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+        note: Documented on the Mobile Money developer portal for specification 1.2.0. Package
+          registry listings (npm/Maven/PyPI/NuGet) were not confirmed in this review.
+    openGateway:
+      - none
+    note: No first-party GSMA SDK exists for the Open Gateway/CAMARA APIs — GSMA publishes the
+      specifications and leaves client tooling to operators, aggregators, and CAMARA.
+  graphql:
+    present: false
+  grpc:
+    present: false
+  postman:
+    publicWorkspace: not found for GSMA
+    note: The Mobile Money developer portal describes "authenticated Postmans for each scenario"
+      behind its sign-up, not a public Postman workspace.
+  mcp:
+    present: false
+    note: GSMA event material for DTW Ignite 2026 references "the growing role of agentic AI and
+      MCP servers in using network APIs" as a discussion topic. No GSMA-published MCP server was
+      found.
+  github:
+    org: https://github.com/GSMA
+    publicRepos: 2
+    note: Both public repos (selectnav.js, craft-calltoaction) are front-end web utilities, last
+      updated 2023 and 2020. A code search across the org for "openapi" returns zero results. The
+      specifications GSMA convenes live at github.com/camaraproject under the Linux Foundation,
+      not in GSMA's own GitHub. A separate GSMATerminals org publishes eUICC test profiles.
+  transports:
+    - protocol: REST
+      scheme: https
+      documented: true
+      note: All 18 harvested specifications are HTTPS REST/JSON. The Open Gateway specs declare a
+        templated `{apiRoot}` server variable rather than a concrete host, because the GSMA does
+        not host the endpoints.
+    - protocol: Webhook callbacks
+      scheme: https
+      documented: true
+      note: CloudEvents-style notification sinks in 4 of the 17 Open Gateway specs.
+    - protocol: GraphQL
+      documented: false
+    - protocol: gRPC
+      documented: false
+    - protocol: WebSocket
+      documented: false
+  gated: false
+  gatedDetail: The two primary developer surfaces (open-gateway.gsma.com/docs and
+    developer.mobilemoneyapi.io) are anonymously readable with complete downloadable specs, so the
+    provider is not gated at the documentation layer. The gates that do exist are the sandbox
+    GitHub sign-in, the private Scam Signal repository, the GSMA Services commercial catalogue, and
+    GSMA Intelligence.
+sources:
+  - url: https://open-gateway.gsma.com/
+    type: DeveloperPortal
+    httpStatus: 200
+    note: GSMA Open Gateway developer portal — real, self-serve, no login for docs.
+  - url: https://open-gateway.gsma.com/docs
+    type: Documentation
+    httpStatus: 200
+    note: 17 API documentation pages across 7 categories.
+  - url: https://open-gateway.gsma.com/sandbox
+    type: Sandbox
+    httpStatus: 200
+    note: GitHub sign-in required. Names Client Credentials, CIBA, Authorization Code, JWT Bearer.
+  - url: https://open-gateway.gsma.com/map
+    type: Documentation
+    httpStatus: 200
+    note: Live API deployment map.
+  - url: https://d3bj8knxlstxyw.cloudfront.net/assets-map-launches.json
+    type: Dataset
+    httpStatus: 200
+    note: 607 Open Gateway API deployments, 80 operators, 65 countries, 135 certified.
+  - url: https://developer.mobilemoneyapi.io/
+    type: DeveloperPortal
+    httpStatus: 200
+    note: GSMA Mobile Money API developer portal.
+  - url: https://developer.mobilemoneyapi.io/swagger-files/mobile-money-api-specification-1.2.0-master_0.yaml
+    type: OpenAPI
+    httpStatus: 200
+    note: OpenAPI 3.0.0, 53 paths, 467KB, anonymous download.
+  - url: https://www.gsma.com/solutions-and-impact/gsma-open-gateway/gsma-open-gateway-api-descriptions/
+    type: Documentation
+    httpStatus: 200
+    note: Full Open Gateway API catalogue; every description defers to camaraproject.org.
+  - url: https://www.gsma.com/solutions-and-impact/gsma-open-gateway/supporters/
+    type: Documentation
+    httpStatus: 200
+    note: 69 operator groups signed the MoU, representing 78% of global mobile connections.
+  - url: https://camaraproject.org/api-overview
+    type: Specification
+    httpStatus: 200
+    note: The upstream CAMARA API catalogue the GSMA points to.
+  - url: https://github.com/GSMA
+    type: GitHubOrganization
+    httpStatus: 200
+    note: 2 public repos, neither API-related; zero "openapi" code-search hits.
+  - url: https://www.gsmaservices.com/device-services/device-check/
+    type: Documentation
+    httpStatus: 200
+    note: Commercial GSMA Services product — contact-gated, no public API documentation.
+actions:
+  apisYmlCreated: true
+  apisListed: 18
+  openapiHarvested: 18
+  readmeCreated: true
+  reason: |
+    GSMA is a standards body that, unusually for its tier, publishes machine-readable
+    specifications openly on two first-party developer portals. All 18 real specifications found
+    were saved verbatim with provenance. No endpoint, host, or scope was invented; the templated
+    `{apiRoot}` servers were left exactly as GSMA publishes them because GSMA hosts none of them.
