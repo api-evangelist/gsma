@@ -1,0 +1,66 @@
+generated: '2026-07-25'
+method: searched
+source: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+derived_from: openapi/*.yml
+note: >-
+  The GSMA is a specification publisher, not an endpoint operator, so its lifecycle signals are
+  specification-level: version strings in the OpenAPI and the URI path, a deprecation marker on
+  individual operations, and a per-version change list. There is no GSMA status page for the Open
+  Gateway or Mobile Money APIs — status.gsma.com does not resolve — because availability belongs to
+  the operator or aggregator serving each endpoint, and the GSMA publishes no SLA of its own.
+versioning:
+  scheme: uri-path
+  programmes:
+  - programme: GSMA Open Gateway (CAMARA)
+    pattern: '{apiRoot}/<api-name>/v<major>[.<minor>]'
+    examples:
+    - '{apiRoot}/quality-on-demand/v0.11'
+    - '{apiRoot}/one-time-password-sms/v1'
+    - '{apiRoot}/sim-swap/vwip'
+    wip_marker: >-
+      Specifications still in progress carry info.version "wip" and a /vwip path segment. Six of the
+      seventeen republished specs are at wip on the GSMA portal (carrier-billing,
+      carrier-billing-refund, device-location-retrieval, device-location-verification,
+      number-verification, sim-swap).
+    release_channel: CAMARA meta-releases, announced at https://camaraproject.org/
+    docs: https://camaraproject.org/api-overview
+  - programme: GSMA Mobile Money API
+    current: 1.2.0
+    pattern: '{domain}/v1.x/mm/...'
+    docs: https://developer.mobilemoneyapi.io/api-versions-1.2/
+deprecation:
+  policy_url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  policy_summary: >-
+    The Mobile Money API Change List names deprecations explicitly and states the replacement and
+    the removal horizon — "Deprecated /transactions API, marked for removal; use
+    /transactions/type/{type} instead" and "Deprecated requestingLei and receivingLei, fields marked
+    for removal in the next major release". Deprecated operations carry OpenAPI deprecated:true so
+    the marker is machine-readable.
+  sunset_header: false
+  rfc8594: false
+  note: >-
+    No Sunset or Deprecation HTTP header is defined in any of the eighteen specifications, and no
+    dated end-of-life calendar is published. The Open Gateway / CAMARA specifications carry no
+    deprecation markers at all on the GSMA portal.
+deprecated_operations:
+- openapi/gsma-mobile-money-api-openapi.yml#transactionsPOST
+- openapi/gsma-mobile-money-api-openapi.yml#requeststatesServerCorrelationIdPATCH
+deprecated_fields:
+- requestingLei
+- receivingLei
+status_page: null
+status_page_probe:
+  url: https://status.gsma.com
+  result: connection timed out (no service)
+sla:
+  url: null
+  note: >-
+    The GSMA publishes no uptime target. Every Open Gateway API instance is served by an operator or
+    a channel partner, so the SLA belongs to that party. The GSMA does publish a public deployment
+    and certification feed instead — 607 launched API instances across 80 operators and 65
+    countries, 135 of them certified.
+deployment_feed:
+  url: https://d3bj8knxlstxyw.cloudfront.net/assets-map-launches.json
+  human_url: https://open-gateway.gsma.com/map
+  status: 200
+  note: Live, anonymous JSON feed of every launched Open Gateway API instance worldwide.

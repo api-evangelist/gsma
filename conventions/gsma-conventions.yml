@@ -1,0 +1,147 @@
+generated: '2026-07-25'
+method: searched
+source: https://developer.mobilemoneyapi.io/GSMA-Mobile-Money-API-Guidelines.pdf
+derived_from:
+- openapi/gsma-mobile-money-api-openapi.yml
+- openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+- openapi/gsma-open-gateway-carrier-billing-openapi.yml
+note: >-
+  The GSMA convenes two independent API programmes with two distinct convention sets. The Open
+  Gateway APIs follow CAMARA Commonalities (x-correlator tracing, a code/status/message error
+  envelope, CloudEvents notification sinks, OpenID Connect authorization). The Mobile Money API
+  follows the GSMA's own Mobile Money API Guidelines (X- header family, client-correlation-id
+  idempotency, limit/offset pagination, three request-response flows). Both are captured below,
+  labelled per programme. The GSMA hosts no endpoints itself, so these are specification-level
+  conventions every operator implementation is expected to honour.
+programmes:
+- programme: GSMA Open Gateway (CAMARA)
+  specs: 17 OpenAPI 3.0.3 documents under openapi/gsma-open-gateway-*.yml
+  authentication:
+    style: OpenID Connect (openIdConnect security scheme), per-operation CAMARA scopes
+    flows_supported_by_gsma_sandbox: [client_credentials, CIBA, authorization_code, jwt_bearer]
+    token_issuer: >-
+      The operator or aggregator authorization server. The openIdConnectUrl published in every spec
+      is the CAMARA placeholder https://example.com/.well-known/openid-configuration.
+    detail: authentication/gsma-authentication.yml
+    scopes: scopes/gsma-scopes.yml
+  request_tracing:
+    header: x-correlator
+    direction: request and response
+    description: Correlation id for the different services
+    required: false
+    evidence: components.parameters.x-correlator and components.headers.x-correlator in every Open Gateway spec
+  idempotency:
+    supported: partial
+    mechanism: clientCorrelator
+    detail: >-
+      Carrier Billing and Quality on Demand accept a client-generated clientCorrelator on create
+      requests; resubmitting one that already exists is rejected with
+      INVALID_ARGUMENT "clientCorrelator already exist on server." There is no
+      Idempotency-Key header in the CAMARA specs.
+  error_envelope:
+    format: application/json
+    shape: '{status: <http status>, code: <SCREAMING_SNAKE_CASE code>, message: <human readable>}'
+    problem_json: false
+    note: CAMARA does not use RFC 9457 application/problem+json; it uses its own ErrorInfo object.
+    catalog: errors/gsma-problem-types.yml
+  rate_limit_signaling:
+    documented_status_codes: [429]
+    codes: [TOO_MANY_REQUESTS, QUOTA_EXCEEDED]
+    headers_published: false
+    note: >-
+      The specs define the 429 responses but publish no numeric quota and no RateLimit headers —
+      limits are set by each operator or aggregator, not by the GSMA.
+  events:
+    style: CloudEvents 1.0 delivered by HTTP POST to a consumer-supplied sink URL
+    request_field: sink (plus optional sinkCredential)
+    auth: notificationsBearerAuth (http bearer) on the callback endpoint
+    catalog: asyncapi/gsma-webhooks.yml
+  versioning:
+    scheme: uri-path
+    pattern: '{apiRoot}/<api-name>/v<major>[.<minor>] — e.g. /quality-on-demand/v0.11, /one-time-password-sms/v1'
+    wip_marker: 'vwip — work-in-progress specifications carry version "wip" and a /vwip path segment'
+    detail: lifecycle/gsma-lifecycle.yml
+- programme: GSMA Mobile Money API
+  specs: openapi/gsma-mobile-money-api-openapi.yml (OpenAPI 3.0.0, v1.2.0, 53 paths)
+  authentication:
+    style: >-
+      Pre-shared client credentials passed as headers (X-API-Key + X-Client-Id), optional end-user
+      OAuth 2.0/OIDC access token passed as X-User-Bearer, optional per-user credentials as
+      X-User-Credential-1/-2. No securitySchemes block is declared in the OpenAPI itself.
+    integrity: X-Content-Hash (SHA-256 hex digest of the request content, plain or encrypted) and X-Date freshness check
+    docs: https://developer.mobilemoneyapi.io/security/
+    guidelines_pdf: https://developer.mobilemoneyapi.io/GSMA_Mobile_Money_API_Security_Design_and_Implementation_Guidelines-1_8.pdf
+  idempotency:
+    supported: true
+    mechanism: client correlation id
+    header: X-CorrelationID
+    format: UUID
+    retention: >-
+      "The X-CorrelationID header must be stored by the API provider so that the client can use it
+      to retrieve the result should the client not receive the call-back." No expiry window is published.
+    duplicate_behaviour: >-
+      "When resending a creation request, the client must supply the same Client Correlation Id that
+      was previously used. If the previous request was subsequently processed then the API provider
+      will reject the request due to a duplicate Client Correlation Id."
+    update_requests: >-
+      "When resending an update request, use of the Client Correlation Id is not mandatory as all
+      update requests are idempotent."
+    error_category: duplicateRequest (errorCategory enum value in the Mobile Money error object)
+    replay_lookup: GET /responses/{clientCorrelationId} — "This endpoint returns a specific response."
+    source: https://developer.mobilemoneyapi.io/GSMA-Mobile-Money-API-Guidelines.pdf (section 3.2.2, 3.3.2)
+  request_tracing:
+    headers:
+    - name: X-CorrelationID
+      description: Header parameter to uniquely identify the request. Must be supplied as a UUID.
+    - name: X-Date
+      description: >-
+        Date and time the message was originated; used for basic message integrity checks to ensure
+        the request is not stale. Previously named 'Date' in version 1.0.
+    - name: X-Channel
+      description: Channel used to originate the request, e.g. USSD, Web, App.
+    server_correlation: serverCorrelationId — returned on async requests, polled via GET /requeststates/{serverCorrelationId}
+  pagination:
+    style: limit + offset (cursor position)
+    request_params:
+    - name: limit
+      in: query
+      default: 50
+      description: If not supplied, the server applies a limit of 50 records per request.
+    - name: offset
+      in: query
+      description: Cursor position from which to retrieve the set of records.
+    filters: [fromDateTime, toDateTime]
+    response_headers:
+    - X-Records-Available-Count
+    - X-Records-Returned-Count
+  request_response_flows:
+  - flow: asynchronous with call-back
+    detail: >-
+      Client generates X-CorrelationID and supplies X-Callback-URL; the provider PUTs the completed
+      resource (or the error object) to that URL. The only flow where the client is notified of the result.
+  - flow: asynchronous with polling
+    detail: Client polls GET /requeststates/{serverCorrelationId} until the request state resolves.
+  - flow: synchronous
+    detail: >-
+      "should only be used by adopters that expect low transaction volumes or have a platform that
+      cannot support either of the asynchronous flows." Read requests always use this flow.
+  error_envelope:
+    format: application/json
+    shape: '{errorCategory, errorCode, errorDescription, errorDateTime, errorParameters[]}'
+    problem_json: false
+    catalog: errors/gsma-problem-types.yml
+  metadata:
+    field: customData
+    description: Key/value arrays added in 1.2.0 across transactions, reversals, bills, mandates, quotations and accounts for provider-specific data.
+  versioning:
+    scheme: uri-path + portal version tree
+    current: 1.2.0
+    pattern: '{domain}/v1.x/mm/...'
+    changelog: changelog/gsma-changelog.yml
+cross_links:
+  authentication: authentication/gsma-authentication.yml
+  scopes: scopes/gsma-scopes.yml
+  errors: errors/gsma-problem-types.yml
+  lifecycle: lifecycle/gsma-lifecycle.yml
+  events: asyncapi/gsma-webhooks.yml
+  sandbox: sandbox/gsma-sandbox.yml

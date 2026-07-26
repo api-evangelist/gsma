@@ -2,23 +2,22 @@ aid: gsma
 url: https://raw.githubusercontent.com/api-evangelist/gsma/refs/heads/main/apis.yml
 name: GSMA
 kind: company
-description: 'The GSMA (GSM Association) is the London-headquartered global trade body for the mobile
-  industry, representing roughly 750 mobile network operators and around 400 companies in the wider mobile
-  ecosystem, and the organiser of MWC Barcelona. In telecom''s API value chain the GSMA is not a network
-  operator and not an aggregator; it is the standards and commitment layer. Its GSMA Open Gateway initiative
-  is the memorandum of understanding under which 69 operator groups, representing 78% of global mobile
-  connections, commit to exposing a common set of network APIs, while the API specifications themselves
-  are authored in the Linux Foundation''s CAMARA project. The GSMA''s API posture is unusually open for
-  a standards body: its Open Gateway developer portal at open-gateway.gsma.com publishes 17 CAMARA OpenAPI
-  3.0.3 documents in full, without login, alongside a live public deployment map covering 607 launched
-  API instances across 80 operators and 65 countries, and it runs a separate, fully open Mobile Money
-  API developer portal with a downloadable OpenAPI 3.0.0 specification, SDKs, and use-case guides. The
-  gates are real but narrow: the API sandbox requires a GitHub sign-in, the anti-fraud Scam Signal API
-  is held in a private GSMA repository rather than in public CAMARA, and the commercial GSMA Services
-  products (Device Check, IMEI Database, PathFinder, Disposable Number Check) are membership and contract
-  gated with no public documentation. The GSMA runs no production network API endpoints of its own — every
-  Open Gateway API is served by an operator or a channel partner such as Infobip, IPification, TMT iD,
-  XConnect, or Singtel.'
+description: 'The GSMA (GSM Association) is the London-headquartered global trade body for the mobile industry,
+  representing roughly 750 mobile network operators and around 400 companies in the wider mobile ecosystem,
+  and the organiser of MWC Barcelona. In telecom''s API value chain the GSMA is not a network operator and
+  not an aggregator; it is the standards and commitment layer. Its GSMA Open Gateway initiative is the memorandum
+  of understanding under which 69 operator groups, representing 78% of global mobile connections, commit to
+  exposing a common set of network APIs, while the API specifications themselves are authored in the Linux
+  Foundation''s CAMARA project. The GSMA''s API posture is unusually open for a standards body: its Open Gateway
+  developer portal at open-gateway.gsma.com publishes 17 CAMARA OpenAPI 3.0.3 documents in full, without login,
+  alongside a live public deployment map covering 607 launched API instances across 80 operators and 65 countries,
+  and it runs a separate, fully open Mobile Money API developer portal with a downloadable OpenAPI 3.0.0 specification,
+  SDKs, and use-case guides. The gates are real but narrow: the API sandbox requires a GitHub sign-in, the
+  anti-fraud Scam Signal API is held in a private GSMA repository rather than in public CAMARA, and the commercial
+  GSMA Services products (Device Check, IMEI Database, PathFinder, Disposable Number Check) are membership
+  and contract gated with no public documentation. The GSMA runs no production network API endpoints of its
+  own — every Open Gateway API is served by an operator or a channel partner such as Infobip, IPification,
+  TMT iD, XConnect, or Singtel.'
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
 - Telecommunications
@@ -46,9 +45,9 @@ apis:
     developed by the GSMA with the mobile money industry and published openly at developer.mobilemoneyapi.io.
     Version 1.2.0 defines 53 paths across Transactions, Quotations, Accounts, Bills, Debit Mandates, Links,
     and Authorisation Codes, covering merchant payments, disbursements, international transfers, P2P transfers,
-    recurring payments, account linking, bill payments, and agent cash-in/cash-out. The OpenAPI 3.0.0
-    document is downloadable without registration; the simulator sandbox host referenced in the spec did
-    not resolve in DNS on the review date.
+    recurring payments, account linking, bill payments, and agent cash-in/cash-out. The OpenAPI 3.0.0 document
+    is downloadable without registration; the simulator sandbox host referenced in the spec did not resolve
+    in DNS on the review date.
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   tags:
   - Mobile Money
@@ -70,13 +69,24 @@ apis:
     url: https://developer.mobilemoneyapi.io/security/
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Overlay
+    url: overlays/gsma-mobile-money-api-overlay.yaml
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+  baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
 - aid: gsma:gsma-open-gateway-call-forwarding-signal
   name: GSMA Open Gateway Call Forwarding Signal API
-  description: CAMARA Call Forwarding Signal API as published on the GSMA Open Gateway developer portal.
-    Lets an application check whether unconditional or conditional call forwarding is active on a subscriber's
-    line, a common indicator of an in-progress scam. Operators expose the endpoints; GSMA publishes the
-    specification and documentation. OpenAPI 3.0.3, version 0.2.0, 2 path(s) and 2 operation(s); authorization
-    is OpenID Connect (openIdConnect security scheme) with per-operation CAMARA scopes.
+  description: CAMARA Call Forwarding Signal API as published on the GSMA Open Gateway developer portal. Lets
+    an application check whether unconditional or conditional call forwarding is active on a subscriber's line,
+    a common indicator of an in-progress scam. Operators expose the endpoints; GSMA publishes the specification
+    and documentation. OpenAPI 3.0.3, version 0.2.0, 2 path(s) and 2 operation(s); authorization is OpenID
+    Connect (openIdConnect security scheme) with per-operation CAMARA scopes.
   humanURL: https://open-gateway.gsma.com/docs/call-forwarding-signal
   tags:
   - Anti-Fraud
@@ -95,13 +105,15 @@ apis:
     url: https://open-gateway.gsma.com/docs
   - type: Sandbox
     url: https://open-gateway.gsma.com/sandbox
+  - type: Overlay
+    url: overlays/gsma-open-gateway-call-forwarding-signal-overlay.yaml
 - aid: gsma:gsma-open-gateway-carrier-billing
   name: GSMA Open Gateway Carrier Billing API
-  description: CAMARA Carrier Billing API as published on the GSMA Open Gateway developer portal. Allows
-    a service provider to charge a purchase to the end user's mobile account through the operator, with
-    payment creation, confirmation, and status retrieval. Specification is at work-in-progress version
-    on the GSMA portal. OpenAPI 3.0.3, version wip, 6 path(s) and 7 operation(s); authorization is OpenID
-    Connect (openIdConnect security scheme) with per-operation CAMARA scopes.
+  description: CAMARA Carrier Billing API as published on the GSMA Open Gateway developer portal. Allows a
+    service provider to charge a purchase to the end user's mobile account through the operator, with payment
+    creation, confirmation, and status retrieval. Specification is at work-in-progress version on the GSMA
+    portal. OpenAPI 3.0.3, version wip, 6 path(s) and 7 operation(s); authorization is OpenID Connect (openIdConnect
+    security scheme) with per-operation CAMARA scopes.
   humanURL: https://open-gateway.gsma.com/docs/carrier-billing
   tags:
   - Payments
@@ -120,13 +132,17 @@ apis:
     url: https://open-gateway.gsma.com/docs
   - type: Sandbox
     url: https://open-gateway.gsma.com/sandbox
+  - type: Overlay
+    url: overlays/gsma-open-gateway-carrier-billing-overlay.yaml
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
 - aid: gsma:gsma-open-gateway-carrier-billing-refund
   name: GSMA Open Gateway Carrier Billing Refund API
-  description: CAMARA Carrier Billing Refund API as published on the GSMA Open Gateway developer portal.
-    Companion to Carrier Billing, allowing full or partial refunds of a carrier-billed payment to be requested
-    and tracked. Specification is at work-in-progress version on the GSMA portal. OpenAPI 3.0.3, version
-    wip, 3 path(s) and 4 operation(s); authorization is OpenID Connect (openIdConnect security scheme)
-    with per-operation CAMARA scopes.
+  description: CAMARA Carrier Billing Refund API as published on the GSMA Open Gateway developer portal. Companion
+    to Carrier Billing, allowing full or partial refunds of a carrier-billed payment to be requested and tracked.
+    Specification is at work-in-progress version on the GSMA portal. OpenAPI 3.0.3, version wip, 3 path(s)
+    and 4 operation(s); authorization is OpenID Connect (openIdConnect security scheme) with per-operation
+    CAMARA scopes.
   humanURL: https://open-gateway.gsma.com/docs/carrier-billing-refund
   tags:
   - Payments
@@ -146,13 +162,17 @@ apis:
     url: https://open-gateway.gsma.com/docs
   - type: Sandbox
     url: https://open-gateway.gsma.com/sandbox
+  - type: Overlay
+    url: overlays/gsma-open-gateway-carrier-billing-refund-overlay.yaml
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
 - aid: gsma:gsma-open-gateway-device-identifier
   name: GSMA Open Gateway Mobile Device Identifier API
   description: CAMARA Mobile Device Identifier API as published on the GSMA Open Gateway developer portal.
-    Returns identifying details for the device a subscriber is currently using, such as manufacturer,
-    model, and type allocation code, retrieved from the operator network rather than the handset. OpenAPI
-    3.0.3, version 0.2.0, 2 path(s) and 2 operation(s); authorization is OpenID Connect (openIdConnect
-    security scheme) with per-operation CAMARA scopes.
+    Returns identifying details for the device a subscriber is currently using, such as manufacturer, model,
+    and type allocation code, retrieved from the operator network rather than the handset. OpenAPI 3.0.3, version
+    0.2.0, 2 path(s) and 2 operation(s); authorization is OpenID Connect (openIdConnect security scheme) with
+    per-operation CAMARA scopes.
   humanURL: https://open-gateway.gsma.com/docs/device-identifier
   tags:
   - Device Information
@@ -171,13 +191,15 @@ apis:
     url: https://open-gateway.gsma.com/docs
   - type: Sandbox
     url: https://open-gateway.gsma.com/sandbox
+  - type: Overlay
+    url: overlays/gsma-open-gateway-device-identifier-overlay.yaml
 - aid: gsma:gsma-open-gateway-device-location-retrieval
   name: GSMA Open Gateway Device Location Retrieval API
   description: CAMARA Device Location Retrieval API as published on the GSMA Open Gateway developer portal.
-    Retrieves the network-derived location of a device as a circle or polygon with an accuracy radius,
-    without relying on handset GPS. Specification is at work-in-progress version on the GSMA portal. OpenAPI
-    3.0.3, version wip, 1 path(s) and 1 operation(s); authorization is OpenID Connect (openIdConnect security
-    scheme) with per-operation CAMARA scopes.
+    Retrieves the network-derived location of a device as a circle or polygon with an accuracy radius, without
+    relying on handset GPS. Specification is at work-in-progress version on the GSMA portal. OpenAPI 3.0.3,
+    version wip, 1 path(s) and 1 operation(s); authorization is OpenID Connect (openIdConnect security scheme)
+    with per-operation CAMARA scopes.
   humanURL: https://open-gateway.gsma.com/docs/device-location-retrieval
   tags:
   - Location
@@ -196,13 +218,15 @@ apis:
     url: https://open-gateway.gsma.com/docs
   - type: Sandbox
     url: https://open-gateway.gsma.com/sandbox
+  - type: Overlay
+    url: overlays/gsma-open-gateway-device-location-retrieval-overlay.yaml
 - aid: gsma:gsma-open-gateway-device-location-verification
   name: GSMA Open Gateway Device Location Verification API
-  description: CAMARA Device Location Verification API as published on the GSMA Open Gateway developer
-    portal. Answers whether a device is within a requested area rather than returning coordinates, a privacy-preserving
-    pattern widely used for transaction-risk checks. Specification is at work-in-progress version on the
-    GSMA portal. OpenAPI 3.0.3, version wip, 1 path(s) and 1 operation(s); authorization is OpenID Connect
-    (openIdConnect security scheme) with per-operation CAMARA scopes.
+  description: CAMARA Device Location Verification API as published on the GSMA Open Gateway developer portal.
+    Answers whether a device is within a requested area rather than returning coordinates, a privacy-preserving
+    pattern widely used for transaction-risk checks. Specification is at work-in-progress version on the GSMA
+    portal. OpenAPI 3.0.3, version wip, 1 path(s) and 1 operation(s); authorization is OpenID Connect (openIdConnect
+    security scheme) with per-operation CAMARA scopes.
   humanURL: https://open-gateway.gsma.com/docs/device-location-verification
   tags:
   - Location
@@ -222,11 +246,13 @@ apis:
     url: https://open-gateway.gsma.com/docs
   - type: Sandbox
     url: https://open-gateway.gsma.com/sandbox
+  - type: Overlay
+    url: overlays/gsma-open-gateway-device-location-verification-overlay.yaml
 - aid: gsma:gsma-open-gateway-device-reachability-status
   name: GSMA Open Gateway Device Reachability Status API
   description: CAMARA Device Reachability Status API as published on the GSMA Open Gateway developer portal.
-    Reports whether a device is currently reachable on the network and by which connectivity type, used
-    for IoT fleet monitoring and delivery decisions. OpenAPI 3.0.3, version 0.6.1, 1 path(s) and 1 operation(s);
+    Reports whether a device is currently reachable on the network and by which connectivity type, used for
+    IoT fleet monitoring and delivery decisions. OpenAPI 3.0.3, version 0.6.1, 1 path(s) and 1 operation(s);
     authorization is OpenID Connect (openIdConnect security scheme) with per-operation CAMARA scopes.
   humanURL: https://open-gateway.gsma.com/docs/device-reachability-status
   tags:
@@ -246,13 +272,14 @@ apis:
     url: https://open-gateway.gsma.com/docs
   - type: Sandbox
     url: https://open-gateway.gsma.com/sandbox
+  - type: Overlay
+    url: overlays/gsma-open-gateway-device-reachability-status-overlay.yaml
 - aid: gsma:gsma-open-gateway-device-roaming-status
   name: GSMA Open Gateway Device Roaming Status API
-  description: CAMARA Device Roaming Status API as published on the GSMA Open Gateway developer portal.
-    Reports whether a subscriber's device is currently roaming and, where available, the visited country,
-    used for fraud scoring and travel-aware experiences. OpenAPI 3.0.3, version 0.6.1, 1 path(s) and 1
-    operation(s); authorization is OpenID Connect (openIdConnect security scheme) with per-operation CAMARA
-    scopes.
+  description: CAMARA Device Roaming Status API as published on the GSMA Open Gateway developer portal. Reports
+    whether a subscriber's device is currently roaming and, where available, the visited country, used for
+    fraud scoring and travel-aware experiences. OpenAPI 3.0.3, version 0.6.1, 1 path(s) and 1 operation(s);
+    authorization is OpenID Connect (openIdConnect security scheme) with per-operation CAMARA scopes.
   humanURL: https://open-gateway.gsma.com/docs/device-roaming-status
   tags:
   - Device Status
@@ -271,6 +298,8 @@ apis:
     url: https://open-gateway.gsma.com/docs
   - type: Sandbox
     url: https://open-gateway.gsma.com/sandbox
+  - type: Overlay
+    url: overlays/gsma-open-gateway-device-roaming-status-overlay.yaml
 - aid: gsma:gsma-open-gateway-device-swap
   name: GSMA Open Gateway Device Swap API
   description: CAMARA Device Swap API as published on the GSMA Open Gateway developer portal. Checks whether
@@ -295,12 +324,14 @@ apis:
     url: https://open-gateway.gsma.com/docs
   - type: Sandbox
     url: https://open-gateway.gsma.com/sandbox
+  - type: Overlay
+    url: overlays/gsma-open-gateway-device-swap-overlay.yaml
 - aid: gsma:gsma-open-gateway-home-devices-quality-on-demand
   name: GSMA Open Gateway Home Devices QoD API
-  description: CAMARA Home Devices Quality on Demand API as published on the GSMA Open Gateway developer
-    portal. Requests a prioritised quality-of-service profile for a device on a fixed or home broadband
-    connection rather than a mobile connection. OpenAPI 3.0.3, version 0.4.0, 1 path(s) and 1 operation(s);
-    authorization is OpenID Connect (openIdConnect security scheme) with per-operation CAMARA scopes.
+  description: CAMARA Home Devices Quality on Demand API as published on the GSMA Open Gateway developer portal.
+    Requests a prioritised quality-of-service profile for a device on a fixed or home broadband connection
+    rather than a mobile connection. OpenAPI 3.0.3, version 0.4.0, 1 path(s) and 1 operation(s); authorization
+    is OpenID Connect (openIdConnect security scheme) with per-operation CAMARA scopes.
   humanURL: https://open-gateway.gsma.com/docs/home-devices-quality-on-demand
   tags:
   - Quality on Demand
@@ -319,13 +350,15 @@ apis:
     url: https://open-gateway.gsma.com/docs
   - type: Sandbox
     url: https://open-gateway.gsma.com/sandbox
+  - type: Overlay
+    url: overlays/gsma-open-gateway-home-devices-quality-on-demand-overlay.yaml
 - aid: gsma:gsma-open-gateway-know-your-customer
   name: GSMA Open Gateway Know Your Customer Match API
   description: CAMARA Know Your Customer Match API as published on the GSMA Open Gateway developer portal.
-    Submits customer-supplied identity attributes such as name, address, and date of birth and returns
-    per-attribute match results against the operator's subscriber record, without exposing the operator
-    data itself. OpenAPI 3.0.3, version 0.3.0, 1 path(s) and 1 operation(s); authorization is OpenID Connect
-    (openIdConnect security scheme) with per-operation CAMARA scopes.
+    Submits customer-supplied identity attributes such as name, address, and date of birth and returns per-attribute
+    match results against the operator's subscriber record, without exposing the operator data itself. OpenAPI
+    3.0.3, version 0.3.0, 1 path(s) and 1 operation(s); authorization is OpenID Connect (openIdConnect security
+    scheme) with per-operation CAMARA scopes.
   humanURL: https://open-gateway.gsma.com/docs/know-your-customer
   tags:
   - Identity Verification
@@ -344,14 +377,15 @@ apis:
     url: https://open-gateway.gsma.com/docs
   - type: Sandbox
     url: https://open-gateway.gsma.com/sandbox
+  - type: Overlay
+    url: overlays/gsma-open-gateway-know-your-customer-overlay.yaml
 - aid: gsma:gsma-open-gateway-number-verification
   name: GSMA Open Gateway Number Verification API
-  description: CAMARA Number Verification API as published on the GSMA Open Gateway developer portal.
-    Silently verifies or retrieves the mobile number of the device making a request using network-based
-    or SIM-based authentication, with single-use short-lived tokens and no refresh tokens. This is the
-    most widely deployed Open Gateway API after SIM Swap. OpenAPI 3.0.3, version wip, 2 path(s) and 2
-    operation(s); authorization is OpenID Connect (openIdConnect security scheme) with per-operation CAMARA
-    scopes.
+  description: CAMARA Number Verification API as published on the GSMA Open Gateway developer portal. Silently
+    verifies or retrieves the mobile number of the device making a request using network-based or SIM-based
+    authentication, with single-use short-lived tokens and no refresh tokens. This is the most widely deployed
+    Open Gateway API after SIM Swap. OpenAPI 3.0.3, version wip, 2 path(s) and 2 operation(s); authorization
+    is OpenID Connect (openIdConnect security scheme) with per-operation CAMARA scopes.
   humanURL: https://open-gateway.gsma.com/docs/number-verification
   tags:
   - Identity Verification
@@ -370,13 +404,14 @@ apis:
     url: https://open-gateway.gsma.com/docs
   - type: Sandbox
     url: https://open-gateway.gsma.com/sandbox
+  - type: Overlay
+    url: overlays/gsma-open-gateway-number-verification-overlay.yaml
 - aid: gsma:gsma-open-gateway-otp-validation
   name: GSMA Open Gateway One Time Password SMS API
-  description: CAMARA One Time Password SMS API as published on the GSMA Open Gateway developer portal.
-    Sends a one-time password by SMS through the operator and validates the code the user returns, offered
-    as a fallback where silent network authentication is unavailable. OpenAPI 3.0.3, version 1.0.0, 2
-    path(s) and 2 operation(s); authorization is OpenID Connect (openIdConnect security scheme) with per-operation
-    CAMARA scopes.
+  description: CAMARA One Time Password SMS API as published on the GSMA Open Gateway developer portal. Sends
+    a one-time password by SMS through the operator and validates the code the user returns, offered as a fallback
+    where silent network authentication is unavailable. OpenAPI 3.0.3, version 1.0.0, 2 path(s) and 2 operation(s);
+    authorization is OpenID Connect (openIdConnect security scheme) with per-operation CAMARA scopes.
   humanURL: https://open-gateway.gsma.com/docs/otp-validation
   tags:
   - Authentication
@@ -396,13 +431,14 @@ apis:
     url: https://open-gateway.gsma.com/docs
   - type: Sandbox
     url: https://open-gateway.gsma.com/sandbox
+  - type: Overlay
+    url: overlays/gsma-open-gateway-otp-validation-overlay.yaml
 - aid: gsma:gsma-open-gateway-population-density-data
   name: GSMA Open Gateway Population Density Data API
-  description: CAMARA Population Density Data API as published on the GSMA Open Gateway developer portal.
-    Returns aggregated, anonymised estimates of device density across a requested geographic area and
-    time window, delivered asynchronously with callback notifications. OpenAPI 3.0.3, version 0.2.0, 1
-    path(s) and 1 operation(s); authorization is OpenID Connect (openIdConnect security scheme) with per-operation
-    CAMARA scopes.
+  description: CAMARA Population Density Data API as published on the GSMA Open Gateway developer portal. Returns
+    aggregated, anonymised estimates of device density across a requested geographic area and time window,
+    delivered asynchronously with callback notifications. OpenAPI 3.0.3, version 0.2.0, 1 path(s) and 1 operation(s);
+    authorization is OpenID Connect (openIdConnect security scheme) with per-operation CAMARA scopes.
   humanURL: https://open-gateway.gsma.com/docs/population-density-data
   tags:
   - Analytics
@@ -421,6 +457,10 @@ apis:
     url: https://open-gateway.gsma.com/docs
   - type: Sandbox
     url: https://open-gateway.gsma.com/sandbox
+  - type: Overlay
+    url: overlays/gsma-open-gateway-population-density-data-overlay.yaml
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
 - aid: gsma:gsma-open-gateway-quality-on-demand
   name: GSMA Open Gateway Quality On Demand API
   description: CAMARA Quality on Demand API as published on the GSMA Open Gateway developer portal. Requests,
@@ -447,13 +487,17 @@ apis:
     url: https://open-gateway.gsma.com/docs
   - type: Sandbox
     url: https://open-gateway.gsma.com/sandbox
+  - type: Overlay
+    url: overlays/gsma-open-gateway-quality-on-demand-overlay.yaml
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
 - aid: gsma:gsma-open-gateway-sim-swap
   name: GSMA Open Gateway SIM Swap API
-  description: CAMARA SIM Swap API as published on the GSMA Open Gateway developer portal. Checks whether
-    the SIM associated with a mobile number has been swapped within a recent window and returns the last
-    swap date, the single most widely deployed Open Gateway API worldwide. Specification is at work-in-progress
-    version on the GSMA portal. OpenAPI 3.0.3, version wip, 2 path(s) and 2 operation(s); authorization
-    is OpenID Connect (openIdConnect security scheme) with per-operation CAMARA scopes.
+  description: CAMARA SIM Swap API as published on the GSMA Open Gateway developer portal. Checks whether the
+    SIM associated with a mobile number has been swapped within a recent window and returns the last swap date,
+    the single most widely deployed Open Gateway API worldwide. Specification is at work-in-progress version
+    on the GSMA portal. OpenAPI 3.0.3, version wip, 2 path(s) and 2 operation(s); authorization is OpenID Connect
+    (openIdConnect security scheme) with per-operation CAMARA scopes.
   humanURL: https://open-gateway.gsma.com/docs/sim-swap
   tags:
   - Anti-Fraud
@@ -472,12 +516,14 @@ apis:
     url: https://open-gateway.gsma.com/docs
   - type: Sandbox
     url: https://open-gateway.gsma.com/sandbox
+  - type: Overlay
+    url: overlays/gsma-open-gateway-sim-swap-overlay.yaml
 - aid: gsma:gsma-open-gateway-simple-edge-discovery
   name: GSMA Open Gateway Simple Edge Discovery API
-  description: CAMARA Simple Edge Discovery API as published on the GSMA Open Gateway developer portal.
-    Returns the closest edge cloud zone to a given device so an application can route traffic to the lowest-latency
-    multi-access edge computing deployment. OpenAPI 3.0.3, version 1.0.0, 1 path(s) and 1 operation(s);
-    authorization is OpenID Connect (openIdConnect security scheme) with per-operation CAMARA scopes.
+  description: CAMARA Simple Edge Discovery API as published on the GSMA Open Gateway developer portal. Returns
+    the closest edge cloud zone to a given device so an application can route traffic to the lowest-latency
+    multi-access edge computing deployment. OpenAPI 3.0.3, version 1.0.0, 1 path(s) and 1 operation(s); authorization
+    is OpenID Connect (openIdConnect security scheme) with per-operation CAMARA scopes.
   humanURL: https://open-gateway.gsma.com/docs/simple-edge-discovery
   tags:
   - Edge Computing
@@ -496,7 +542,17 @@ apis:
     url: https://open-gateway.gsma.com/docs
   - type: Sandbox
     url: https://open-gateway.gsma.com/sandbox
+  - type: Overlay
+    url: overlays/gsma-open-gateway-simple-edge-discovery-overlay.yaml
 common:
+- type: VulnerabilityDisclosure
+  url: security/gsma-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/gsma-domain-security.yml
+- type: AgenticAccess
+  url: agentic-access/gsma-agentic-access.yml
+- type: Authentication
+  url: authentication/gsma-authentication.yml
 - type: Website
   url: https://www.gsma.com/
 - type: DeveloperPortal
@@ -535,6 +591,68 @@ common:
   url: https://www.gsmaservices.com/
 - type: Membership
   url: https://www.gsma.com/get-involved/gsma-membership/
+- type: WellKnown
+  url: well-known/gsma-well-known.yml
+- type: SecurityTxt
+  url: well-known/gsma-security.txt
+- type: Security
+  url: https://www.gsma.com/security/
+- type: Packages
+  url: packages/gsma-packages.yml
+- type: SDKs
+  url: packages/gsma-packages.yml
+- type: LLMsTxt
+  url: llms/gsma-llms.txt
+- type: Conformance
+  url: conformance/gsma-conformance.yml
+- type: ErrorCatalog
+  url: errors/gsma-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/gsma-lifecycle.yml
+- type: Deprecation
+  url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+- type: OAuthScopes
+  url: scopes/gsma-scopes.yml
+- type: Conventions
+  url: conventions/gsma-conventions.yml
+- type: Idempotency
+  url: conventions/gsma-conventions.yml
+- type: ChangeLog
+  url: changelog/gsma-changelog.yml
+- type: ChangeLog
+  url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+- type: Sandbox
+  url: sandbox/gsma-sandbox.yml
+- type: DataModel
+  url: data-model/gsma-data-model.yml
+- type: MCPServer
+  url: mcp/gsma-mcp.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Webhooks
+  url: asyncapi/gsma-webhooks.yml
+- type: APIReference
+  url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+- type: GettingStarted
+  url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+- type: Support
+  url: https://developer.mobilemoneyapi.io/support/
+- type: Blog
+  url: https://www.gsma.com/newsroom/
+- type: SignUp
+  url: https://developer.mobilemoneyapi.io/signup/
+- type: Login
+  url: https://developer.mobilemoneyapi.io/login/
+- type: TermsOfService
+  url: https://www.gsma.com/aboutus/legal
+- type: PrivacyPolicy
+  url: https://www.gsma.com/aboutus/legal/privacy
+- type: FAQ
+  url: https://developer.mobilemoneyapi.io/faq/
+- type: Glossary
+  url: https://developer.mobilemoneyapi.io/glossary/
+- type: DeveloperPortal
+  url: https://developer.mobilemoneyapi.io/
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

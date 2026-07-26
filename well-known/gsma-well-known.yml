@@ -1,0 +1,74 @@
+generated: '2026-07-25'
+method: searched
+source: live probes of every GSMA host in apis.yml and every OpenAPI servers[] host
+note: >-
+  The GSMA operates no production API endpoints of its own, so there is no API host to probe —
+  every Open Gateway OpenAPI declares a templated {apiRoot} server variable that the operator or
+  aggregator fills in. The hosts below are the GSMA's own corporate and developer-portal hosts.
+  Only www.gsma.com publishes a /.well-known/ document (RFC 9116 security.txt). The Open Gateway
+  portal returns 404 for the OIDC and OAuth discovery documents because the GSMA issues no tokens:
+  authorization always happens against an operator's authorization server.
+hosts:
+- host: https://www.gsma.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: gsma-security.txt
+    spec: RFC 9116
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+- host: https://open-gateway.gsma.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+- host: https://developer.mobilemoneyapi.io
+  note: Host answers 403 to non-browser clients for all paths; no /.well-known/ document was retrievable.
+  documents:
+  - path: /.well-known/security.txt
+    status: 403
+  - path: /.well-known/openid-configuration
+    status: 403
+  - path: /.well-known/oauth-authorization-server
+    status: 403
+  - path: /.well-known/api-catalog
+    status: 403
+- host: https://sandbox.mobilemoneyapi.io
+  note: >-
+    The simulator host declared in the Mobile Money OpenAPI servers[] block does not resolve in
+    DNS; every probe failed at connection time rather than returning an HTTP status.
+  documents:
+  - path: /.well-known/security.txt
+    status: null
+    result: dns-resolution-failed
+- host: https://www.gsmaservices.com
+  note: Commercial GSMA Services host; answers 403 to non-browser clients.
+  documents:
+  - path: /.well-known/security.txt
+    status: 403
+upstream:
+- host: https://camaraproject.org
+  relationship: >-
+    Linux Foundation CAMARA project — the upstream author of the 17 Open Gateway specifications
+    the GSMA republishes. Not a GSMA host; recorded here only because apis.yml points at it as the
+    specification source.
+  documents:
+  - path: /.well-known/api-catalog
+    status: 200
+    note: RFC 9727 linkset; describes the camaraproject.org WordPress REST API, not a CAMARA network API.
+  - path: /llms.txt
+    status: 200
+    note: WordPress-generated llms.txt for the CAMARA project site.

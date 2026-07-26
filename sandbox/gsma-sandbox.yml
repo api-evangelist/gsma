@@ -1,0 +1,50 @@
+generated: '2026-07-25'
+method: searched
+source: https://open-gateway.gsma.com/sandbox
+note: >-
+  The GSMA runs two sandbox surfaces, one per programme. Neither publishes magic test values
+  (test numbers, test cards, fixture identifiers) on a public page — the Open Gateway sandbox is
+  behind a GitHub sign-in and the Mobile Money simulator host declared in the specification does
+  not currently resolve. Nothing below is invented; where a value is not published this file says so.
+sandboxes:
+- name: GSMA Open Gateway API Sandbox
+  url: https://open-gateway.gsma.com/sandbox
+  status: 200
+  gated: true
+  gate: Sign in with GitHub
+  purpose: >-
+    Pre-production playground for CAMARA / Open Gateway APIs before moving to an operator or an
+    aggregator. The GSMA operates no production endpoints, so the sandbox is the only GSMA-hosted
+    credential surface.
+  auth_flows_supported:
+  - client_credentials
+  - CIBA (Client Initiated Backchannel Authentication)
+  - authorization_code
+  - jwt_bearer
+  test_values_published: false
+  note: >-
+    Portal copy names the four supported authorization flows. Test identities, test phone numbers
+    and sandbox client credentials are issued behind the GitHub sign-in and are not published
+    anonymously.
+- name: GSMA Mobile Money API Simulator
+  declared_server: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  source: servers[0] of openapi/gsma-mobile-money-api-openapi.yml
+  server_description: This url points to the GSMA Mobile Money API v1.2 Simulator.
+  reachable: false
+  probe_result: DNS resolution failed for sandbox.mobilemoneyapi.io on 2026-07-25
+  gated: true
+  gate: Sign up / Log in on developer.mobilemoneyapi.io
+  companion_assets:
+    postman: >-
+      The Mobile Money developer portal describes authenticated Postman collections for each
+      scenario behind its sign-up; no public Postman workspace was found.
+  test_values_published: false
+related_test_tooling:
+- name: GSMA Mobile Money API Compliance Platform
+  url: https://github.com/gsmainclusivetechlab/compliance-docs
+  note: GSMA-run conformance testing platform for Mobile Money API implementations.
+- name: Interoperability Test Platform
+  url: https://github.com/gsmainclusivetechlab/interop-test-platform
+  note: >-
+    GSMA Inclusive Tech Lab test harness with mobile-money and Mojaloop simulators
+    (interop-mm-simulator, interop-mojaloop-simulator, interop-sp-simulator).

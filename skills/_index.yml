@@ -1,0 +1,42 @@
+generated: '2026-07-25'
+method: generated
+source: openapi/*.yml + conventions/gsma-conventions.yml + errors/gsma-problem-types.yml
+note: >-
+  Packaged agent skills for the two GSMA API programmes. Every step is grounded in an operationId
+  that exists verbatim in a saved specification; every error code quoted is one published in a
+  response example or schema enum in those specifications. No GSMA-published AGENTS.md or skill file
+  was found. The recurring constraint every skill repeats is real and structural: the GSMA hosts no
+  endpoints, so {apiRoot} must be resolved to an operator or aggregator and authorization always
+  happens against that party's authorization server.
+skills:
+- file: gsma-sim-swap-fraud-check.md
+  name: Check a subscriber line for SIM-swap and device-swap fraud signals
+  api: openapi/gsma-open-gateway-sim-swap-openapi.yml
+  operations: [checkSimSwap, retrieveSimSwapDate, checkDeviceSwap, retrieveDeviceSwapDate,
+    retrieveUnconditionalCallForwarding, retrieveCallForwarding]
+- file: gsma-number-verification.md
+  name: Verify a mobile number silently, with an SMS OTP fallback
+  api: openapi/gsma-open-gateway-number-verification-openapi.yml
+  operations: [phoneNumberVerify, phoneNumberShare, sendCode, validateCode]
+- file: gsma-quality-on-demand-session.md
+  name: Request and manage a prioritised network quality session
+  api: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  operations: [createSession, getSession, extendQosSessionDuration, retrieveSessionsByDevice,
+    deleteSession, postNotification]
+- file: gsma-carrier-billing-payment.md
+  name: Charge a purchase to the mobile bill and refund it
+  api: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  operations: [createPayment, preparePayment, validatePayment, confirmPayment, retrievePayment,
+    retrievePayments, cancelPayment, createRefund, retrieveRefund, retrieveRefunds,
+    retrievePaymentRemainingAmount]
+- file: gsma-mobile-money-transaction.md
+  name: Run a mobile money transaction with correlation-id idempotency
+  api: openapi/gsma-mobile-money-api-openapi.yml
+  operations: [quotationsPOST, quotationsQuotationReferenceGET, transactionstypetransactionTypePUT,
+    transactionsTransactionReferenceGET, transactionsTransactionReferenceReversalsPOST,
+    requeststatesServerCorrelationIdGET, responsesClientCorrelationIdGET,
+    accountsIdentifierTypeIdentifierBalanceGET]
+- file: gsma-device-location-and-kyc.md
+  name: Verify where a device is and whether the identity behind it matches
+  api: openapi/gsma-open-gateway-device-location-verification-openapi.yml
+  operations: [verifyLocation, retrieveLocation, KYC_Match, getRoamingStatus, getReachabilityStatus]

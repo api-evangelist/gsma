@@ -1,0 +1,30 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Mobile Money API
+  version: 1.0.0
+extends: openapi/gsma-mobile-money-api-openapi.yml
+x-generated: '2026-07-25'
+x-method: generated
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: gsma
+    x-apievangelist-source: https://github.com/api-evangelist/gsma
+    x-apievangelist-harvested: '2026-07-25'
+    x-apievangelist-artifacts:
+      authentication: authentication/gsma-authentication.yml
+      scopes: scopes/gsma-scopes.yml
+      errors: errors/gsma-problem-types.yml
+      conventions: conventions/gsma-conventions.yml
+      lifecycle: lifecycle/gsma-lifecycle.yml
+      agentic-access: agentic-access/gsma-agentic-access.yml
+    x-apievangelist-operation-count: 71
+- target: $.info
+  update:
+    x-apievangelist-idempotency:
+      mechanism: client correlation id
+      header: X-CorrelationID
+      format: uuid
+      update_requests_idempotent: true
+      replay_lookup: GET /responses/{clientCorrelationId}
+      source: https://developer.mobilemoneyapi.io/GSMA-Mobile-Money-API-Guidelines.pdf

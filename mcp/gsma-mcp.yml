@@ -1,0 +1,815 @@
+generated: '2026-07-25'
+method: derived
+status: candidate
+source: openapi/*.yml
+note: 'No GSMA-published MCP server exists. The GSMA operates no endpoints, so it has nothing to host an MCP server in
+  front of; the tool list below is a CANDIDATE derived one-per-operation from the eighteen harvested specifications,
+  for an implementer (an operator, an aggregator or a developer) who wants to expose these APIs to agents. Design context:
+  the Linux Foundation CAMARA project published a white paper in January 2026, ''Bridging AI Systems and Network Infrastructure
+  through MCP'', describing an MCP server that translates a CAMARA API into MCP tools (https://camaraproject.org/wp-content/uploads/sites/12/2026/01/camara_wp_mcp_011226.pdf).
+  Each candidate tool inherits its real input schema from the referenced operation''s parameters and requestBody, and
+  its authorization requirement from that operation''s CAMARA scope. Nothing here is a GSMA product claim.'
+server:
+  name: gsma
+  published: false
+  url: null
+  transport: null
+  would_target: an operator or aggregator apiRoot, not a GSMA host
+upstream_design_reference:
+  title: Bridging AI Systems and Network Infrastructure through MCP
+  publisher: CAMARA Project (Linux Foundation)
+  date: 2026-01
+  url: https://camaraproject.org/wp-content/uploads/sites/12/2026/01/camara_wp_mcp_011226.pdf
+tool_count: 107
+tools:
+- name: transactions_p_o_s_t
+  api: Mobile Money API
+  description: Create a Transaction
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#transactionsPOST
+  method: POST
+  path: /transactions
+  scopes: null
+- name: transactionstypetransaction_type_p_u_t
+  api: Mobile Money API
+  description: Create a Transaction
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#transactionstypetransactionTypePUT
+  method: POST
+  path: /transactions/type/{transactionType}
+  scopes: null
+- name: transactions_transaction_reference_g_e_t
+  api: Mobile Money API
+  description: View A Transaction
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#transactionsTransactionReferenceGET
+  method: GET
+  path: /transactions/{transactionReference}
+  scopes: null
+- name: transactions_transaction_reference_p_a_t_c_h
+  api: Mobile Money API
+  description: Update A Transaction
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#transactionsTransactionReferencePATCH
+  method: PATCH
+  path: /transactions/{transactionReference}
+  scopes: null
+- name: transactions_transaction_reference_reversals_p_o_s_t
+  api: Mobile Money API
+  description: Create A Reversal
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#transactionsTransactionReferenceReversalsPOST
+  method: POST
+  path: /transactions/{transactionReference}/reversals
+  scopes: null
+- name: batchtransactions_p_o_s_t
+  api: Mobile Money API
+  description: Create A Transaction Batch
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#batchtransactionsPOST
+  method: POST
+  path: /batchtransactions
+  scopes: null
+- name: batchtransactions_batch_id_g_e_t
+  api: Mobile Money API
+  description: View A Transaction Batch
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#batchtransactionsBatchIdGET
+  method: GET
+  path: /batchtransactions/{batchId}
+  scopes: null
+- name: batchtransactions_batch_id_p_a_t_c_h
+  api: Mobile Money API
+  description: Update A Transaction Batch
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#batchtransactionsBatchIdPATCH
+  method: PATCH
+  path: /batchtransactions/{batchId}
+  scopes: null
+- name: batchtransactions_batch_id_rejections_g_e_t
+  api: Mobile Money API
+  description: View Batch Rejections
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#batchtransactionsBatchIdRejectionsGET
+  method: GET
+  path: /batchtransactions/{batchId}/rejections
+  scopes: null
+- name: batchtransactions_batch_id_completions_g_e_t
+  api: Mobile Money API
+  description: View Batch Completions
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#batchtransactionsBatchIdCompletionsGET
+  method: GET
+  path: /batchtransactions/{batchId}/completions
+  scopes: null
+- name: accounts_p_o_s_t
+  api: Mobile Money API
+  description: Create an Account
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsPOST
+  method: POST
+  path: /accounts/{identityType}
+  scopes: null
+- name: accounts_account_id_g_e_t
+  api: Mobile Money API
+  description: View an Account
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdGET
+  method: GET
+  path: /accounts/{accountId}
+  scopes: null
+- name: accounts_account_id_p_a_t_c_h
+  api: Mobile Money API
+  description: Update an Account
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdPATCH
+  method: PATCH
+  path: /accounts/{accountId}
+  scopes: null
+- name: accounts_identifier_type_identifier_g_e_t
+  api: Mobile Money API
+  description: View an Account
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierGET
+  method: GET
+  path: /accounts/{identifierType}/{identifier}
+  scopes: null
+- name: accounts_identifier_type_identifier_p_a_t_c_h
+  api: Mobile Money API
+  description: Update an Account
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierPATCH
+  method: PATCH
+  path: /accounts/{identifierType}/{identifier}
+  scopes: null
+- name: account_identities_account_id_p_a_t_c_h
+  api: Mobile Money API
+  description: Update an Account Identity.
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountIdentitiesAccountIdPATCH
+  method: PATCH
+  path: /accounts/{accountId}/identities/{identityId}
+  scopes: null
+- name: account_identities_identifier_type_identifier_p_a_t_c_h
+  api: Mobile Money API
+  description: Update an Account Identity
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountIdentitiesIdentifierTypeIdentifierPATCH
+  method: PATCH
+  path: /accounts/{identifierType}/{identifier}/identities/{identityId}
+  scopes: null
+- name: accounts_account_id_status_g_e_t
+  api: Mobile Money API
+  description: View Account Status
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdStatusGET
+  method: GET
+  path: /accounts/{accountId}/status
+  scopes: null
+- name: accounts_identifier_type_identifier_status_g_e_t
+  api: Mobile Money API
+  description: View Account Status
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierStatusGET
+  method: GET
+  path: /accounts/{identifierType}/{identifier}/status
+  scopes: null
+- name: accounts_account_id_accountname_g_e_t
+  api: Mobile Money API
+  description: View Account Name
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdAccountnameGET
+  method: GET
+  path: /accounts/{accountId}/accountname
+  scopes: null
+- name: accounts_identifier_type_identifier_accountname_g_e_t
+  api: Mobile Money API
+  description: View Account Name
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierAccountnameGET
+  method: GET
+  path: /accounts/{identifierType}/{identifier}/accountname
+  scopes: null
+- name: accounts_account_id_balance_g_e_t
+  api: Mobile Money API
+  description: View Account Balance
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdBalanceGET
+  method: GET
+  path: /accounts/{accountId}/balance
+  scopes: null
+- name: accounts_identifier_type_identifier_balance_g_e_t
+  api: Mobile Money API
+  description: View Account Balance
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierBalanceGET
+  method: GET
+  path: /accounts/{identifierType}/{identifier}/balance
+  scopes: null
+- name: accounts_balance_g_e_t
+  api: Mobile Money API
+  description: View Account Balance
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsBalanceGET
+  method: GET
+  path: /accounts/balance
+  scopes: null
+- name: accounts_account_id_transactions_g_e_t
+  api: Mobile Money API
+  description: View Account Specific Transaction
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdTransactionsGET
+  method: GET
+  path: /accounts/{accountId}/transactions
+  scopes: null
+- name: accounts_identifier_type_identifier_transactions_g_e_t
+  api: Mobile Money API
+  description: View Account Specific Transaction
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierTransactionsGET
+  method: GET
+  path: /accounts/{identifierType}/{identifier}/transactions
+  scopes: null
+- name: accounts_account_id_statemententries_g_e_t
+  api: Mobile Money API
+  description: View Account Statements
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdStatemententriesGET
+  method: GET
+  path: /accounts/{accountId}/statemententries
+  scopes: null
+- name: accounts_identifier_type_identifier_statemententries_g_e_t
+  api: Mobile Money API
+  description: View Account Statements
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierStatemententriesGET
+  method: GET
+  path: /accounts/{identifierType}/{identifier}/statemententries
+  scopes: null
+- name: statemententries_transaction_reference_g_e_t
+  api: Mobile Money API
+  description: View Specific Statement
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#statemententriesTransactionReferenceGET
+  method: GET
+  path: /statemententries/{transactionReference}
+  scopes: null
+- name: bill_companies_g_e_t
+  api: Mobile Money API
+  description: View Bill Companies
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#billCompaniesGET
+  method: GET
+  path: /billcompanies
+  scopes: null
+- name: bill_companies_service_provider_g_e_t
+  api: Mobile Money API
+  description: View a Specific Bill Company
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#billCompaniesServiceProviderGET
+  method: GET
+  path: /billcompanies/{serviceProvider}
+  scopes: null
+- name: accounts_account_id_bill_companies_g_e_t
+  api: Mobile Money API
+  description: View Bill Companies
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdBillCompaniesGET
+  method: GET
+  path: /accounts/{accountId}/billcompanies
+  scopes: null
+- name: accounts_identifier_type_identifier_bill_companies_g_e_t
+  api: Mobile Money API
+  description: View Bill Companies
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierBillCompaniesGET
+  method: GET
+  path: /accounts/{identifierType}/{identifier}/billcompanies
+  scopes: null
+- name: accounts_account_id_bills_g_e_t
+  api: Mobile Money API
+  description: View Account Bills
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdBillsGET
+  method: GET
+  path: /accounts/{accountId}/bills
+  scopes: null
+- name: accounts_identifier_type_identifier_bills_g_e_t
+  api: Mobile Money API
+  description: View Account Bills
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierBillsGET
+  method: GET
+  path: /accounts/{identifierType}/{identifier}/bills
+  scopes: null
+- name: accounts_account_id_bills_bill_reference_payments_p_o_s_t
+  api: Mobile Money API
+  description: Create A Bill Payment
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdBillsBillReferencePaymentsPOST
+  method: POST
+  path: /accounts/{accountId}/bills/{billReference}/payments
+  scopes: null
+- name: accounts_account_id_bills_bill_reference_payments_g_e_t
+  api: Mobile Money API
+  description: View Payments for a Bill
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdBillsBillReferencePaymentsGET
+  method: GET
+  path: /accounts/{accountId}/bills/{billReference}/payments
+  scopes: null
+- name: accounts_identifier_type_identifier_bills_bill_reference_pay
+  api: Mobile Money API
+  description: Create A Bill Payment
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierBillsBillReferencePaymentsPOST
+  method: POST
+  path: /accounts/{identifierType}/{identifier}/bills/{billReference}/payments
+  scopes: null
+- name: accounts_identifier_type_identifier_bills_bill_reference_pay
+  api: Mobile Money API
+  description: View Payments for a Bill
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierBillsBillReferencePaymentsGET
+  method: GET
+  path: /accounts/{identifierType}/{identifier}/bills/{billReference}/payments
+  scopes: null
+- name: bills_bill_reference_payments_p_o_s_t
+  api: Mobile Money API
+  description: Create A Bill Payment
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#billsBillReferencePaymentsPOST
+  method: POST
+  path: /bills/{billReference}/payments
+  scopes: null
+- name: abills_bill_reference_payments_g_e_t
+  api: Mobile Money API
+  description: View Payments for a Bill
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#abillsBillReferencePaymentsGET
+  method: GET
+  path: /bills/{billReference}/payments
+  scopes: null
+- name: accounts_account_id_bills_bill_payments_p_o_s_t
+  api: Mobile Money API
+  description: Create A Bill Payment without a Bill Reference
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdBillsBillPaymentsPOST
+  method: POST
+  path: /accounts/{accountId}/bills/payments
+  scopes: null
+- name: accounts_account_id_bills_bill_payments_g_e_t
+  api: Mobile Money API
+  description: View Payments for a Bill without a Bill Reference
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdBillsBillPaymentsGET
+  method: GET
+  path: /accounts/{accountId}/bills/payments
+  scopes: null
+- name: accounts_identifier_type_identifier_bills_bill_payments_p_o_
+  api: Mobile Money API
+  description: Create A Bill Payment without a Bill Reference
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierBillsBillPaymentsPOST
+  method: POST
+  path: /accounts/{identifierType}/{identifier}/bills/payments
+  scopes: null
+- name: accounts_identifier_type_identifier_bills_bill_payments_g_e_
+  api: Mobile Money API
+  description: View Payments for a Bill without a Bill Reference
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierBillsBillPaymentsGET
+  method: GET
+  path: /accounts/{identifierType}/{identifier}/bills/payments
+  scopes: null
+- name: accounts_account_id_debitmandates_p_o_s_t
+  api: Mobile Money API
+  description: Create A Debit Mandate
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdDebitmandatesPOST
+  method: POST
+  path: /accounts/{accountId}/debitmandates
+  scopes: null
+- name: accounts_identifier_type_identifier_debitmandates_p_o_s_t
+  api: Mobile Money API
+  description: Create A Debit Mandate
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierDebitmandatesPOST
+  method: POST
+  path: /accounts/{identifierType}/{identifier}/debitmandates
+  scopes: null
+- name: accounts_account_id_debitmandates_debit_mandate_reference_g_
+  api: Mobile Money API
+  description: View A Debit Mandate
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdDebitmandatesDebitMandateReferenceGET
+  method: GET
+  path: /accounts/{accountId}/debitmandates/{debitMandateReference}
+  scopes: null
+- name: accounts_account_id_debitmandates_debit_mandate_reference_p_
+  api: Mobile Money API
+  description: Update A Debit Mandate
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdDebitmandatesDebitMandateReferencePATCH
+  method: PATCH
+  path: /accounts/{accountId}/debitmandates/{debitMandateReference}
+  scopes: null
+- name: accounts_identifier_type_identifier_debitmandates_debit_mand
+  api: Mobile Money API
+  description: View A Debit Mandate
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierDebitmandatesDebitMandateReferenceGET
+  method: GET
+  path: /accounts/{identifierType}/{identifier}/debitmandates/{debitMandateReference}
+  scopes: null
+- name: accounts_identifier_type_identifier_debitmandates_debit_mand
+  api: Mobile Money API
+  description: Update A Debit Mandate
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierDebitmandatesDebitMandateReferencePATCH
+  method: PATCH
+  path: /accounts/{identifierType}/{identifier}/debitmandates/{debitMandateReference}
+  scopes: null
+- name: accounts_account_id_links_p_o_s_t
+  api: Mobile Money API
+  description: Create A Link
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdLinksPOST
+  method: POST
+  path: /accounts/{accountId}/links
+  scopes: null
+- name: accounts_identifier_type_identifier_links_p_o_s_t
+  api: Mobile Money API
+  description: Create A Link
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierLinksPOST
+  method: POST
+  path: /accounts/{identifierType}/{identifier}/links
+  scopes: null
+- name: accounts_account_id_links_link_reference_g_e_t
+  api: Mobile Money API
+  description: View A Link
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdLinksLinkReferenceGET
+  method: GET
+  path: /accounts/{accountId}/links/{linkReference}
+  scopes: null
+- name: accounts_account_id_links_link_reference_p_a_t_c_h
+  api: Mobile Money API
+  description: Update A Link
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdLinksLinkReferencePATCH
+  method: PATCH
+  path: /accounts/{accountId}/links/{linkReference}
+  scopes: null
+- name: accounts_identifier_type_identifier_links_link_reference_g_e
+  api: Mobile Money API
+  description: View A Link
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierLinksLinkReferenceGET
+  method: GET
+  path: /accounts/{identifierType}/{identifier}/links/{linkReference}
+  scopes: null
+- name: accounts_identifier_type_identifier_links_link_reference_p_a
+  api: Mobile Money API
+  description: Update A Link
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierLinksLinkReferencePATCH
+  method: PATCH
+  path: /accounts/{identifierType}/{identifier}/links/{linkReference}
+  scopes: null
+- name: quotations_p_o_s_t
+  api: Mobile Money API
+  description: Create A New Quotation
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#quotationsPOST
+  method: POST
+  path: /quotations
+  scopes: null
+- name: quotations_quotation_reference_g_e_t
+  api: Mobile Money API
+  description: View A Quotation
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#quotationsQuotationReferenceGET
+  method: GET
+  path: /quotations/{quotationReference}
+  scopes: null
+- name: accounts_account_id_authorisationcodes_p_o_s_t
+  api: Mobile Money API
+  description: Create an Authorisation Code
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdAuthorisationcodesPOST
+  method: POST
+  path: /accounts/{accountId}/authorisationcodes
+  scopes: null
+- name: accounts_account_id_authorisationcodes_g_e_t
+  api: Mobile Money API
+  description: View Authorisation Codes for a given account
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdAuthorisationcodesGET
+  method: GET
+  path: /accounts/{accountId}/authorisationcodes
+  scopes: null
+- name: accounts_identifier_type_identifier_authorisation_codes_p_o_
+  api: Mobile Money API
+  description: Create an Authorisation Code via an account identifier.
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierAuthorisationCodesPOST
+  method: POST
+  path: /accounts/{identifierType}/{identifier}/authorisationcodes
+  scopes: null
+- name: accounts_identifier_type_identifier_authorisation_codes_g_e_
+  api: Mobile Money API
+  description: View Authorisation Codes for a given account
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierAuthorisationCodesGET
+  method: GET
+  path: /accounts/{identifierType}/{identifier}/authorisationcodes
+  scopes: null
+- name: accounts_account_id_authorisation_code_authorisation_code_g_
+  api: Mobile Money API
+  description: View an Authorisation Code
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdAuthorisationCodeAuthorisationCodeGET
+  method: GET
+  path: /accounts/{accountId}/authorisationcodes/{authorisationCode}
+  scopes: null
+- name: accounts_account_id_authorisation_codes_authorisation_code_p
+  api: Mobile Money API
+  description: Update an Authorisation Code
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsAccountIdAuthorisationCodesAuthorisationCodePATCH
+  method: PATCH
+  path: /accounts/{accountId}/authorisationcodes/{authorisationCode}
+  scopes: null
+- name: accounts_identifier_type_identifier_authorisation_codes_auth
+  api: Mobile Money API
+  description: View an Authorisation Code
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierAuthorisationCodesAuthorisationCodeGET
+  method: GET
+  path: /accounts/{identifierType}/{identifier}/authorisationcodes/{authorisationCode}
+  scopes: null
+- name: accounts_identifier_type_identifier_authorisation_codes_auth
+  api: Mobile Money API
+  description: Cancel an Authorisation Code
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#accountsIdentifierTypeIdentifierAuthorisationCodesAuthorisationCodePATCH
+  method: PATCH
+  path: /accounts/{identifierType}/{identifier}/authorisationcodes/{authorisationCode}
+  scopes: null
+- name: heartbeat_g_e_t
+  api: Mobile Money API
+  description: Check API availability
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#heartbeatGET
+  method: GET
+  path: /heartbeat
+  scopes: null
+- name: requeststates_server_correlation_id_g_e_t
+  api: Mobile Money API
+  description: View A Request State
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#requeststatesServerCorrelationIdGET
+  method: GET
+  path: /requeststates/{serverCorrelationId}
+  scopes: null
+- name: requeststates_server_correlation_id_p_a_t_c_h
+  api: Mobile Money API
+  description: Update A Request State
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#requeststatesServerCorrelationIdPATCH
+  method: PATCH
+  path: /requeststates/{serverCorrelationId}
+  scopes: null
+- name: responses_client_correlation_id_g_e_t
+  api: Mobile Money API
+  description: View A Response
+  source_operation: openapi/gsma-mobile-money-api-openapi.yml#responsesClientCorrelationIdGET
+  method: GET
+  path: /responses/{clientCorrelationId}
+  scopes: null
+- name: retrieve_unconditional_call_forwarding
+  api: Call Forwarding Signal
+  description: Retrieve the information about the status of the unconditional call forwarding service on a phone number
+    (PhoneNumber)
+  source_operation: openapi/gsma-open-gateway-call-forwarding-signal-openapi.yml#retrieveUnconditionalCallForwarding
+  method: POST
+  path: /unconditional-call-forwardings
+  scopes:
+  - call-forwarding-signal:unconditional-call-forwardings:read
+- name: retrieve_call_forwarding
+  api: Call Forwarding Signal
+  description: Retrieve the information about the type of call forwarding service active on a phone number (PhoneNumber)
+  source_operation: openapi/gsma-open-gateway-call-forwarding-signal-openapi.yml#retrieveCallForwarding
+  method: POST
+  path: /call-forwardings
+  scopes:
+  - call-forwarding-signal:call-forwardings:read
+- name: create_payment
+  api: Carrier Billing
+  description: Create a new Payment
+  source_operation: openapi/gsma-open-gateway-carrier-billing-openapi.yml#createPayment
+  method: POST
+  path: /payments
+  scopes:
+  - carrier-billing:payments:create
+- name: retrieve_payments
+  api: Carrier Billing
+  description: Get a list of payments
+  source_operation: openapi/gsma-open-gateway-carrier-billing-openapi.yml#retrievePayments
+  method: GET
+  path: /payments
+  scopes:
+  - carrier-billing:payments:read
+- name: retrieve_payment
+  api: Carrier Billing
+  description: Get payment details
+  source_operation: openapi/gsma-open-gateway-carrier-billing-openapi.yml#retrievePayment
+  method: GET
+  path: /payments/{paymentId}
+  scopes:
+  - carrier-billing:payments:read
+- name: prepare_payment
+  api: Carrier Billing
+  description: Prepare (reserve) a payment
+  source_operation: openapi/gsma-open-gateway-carrier-billing-openapi.yml#preparePayment
+  method: POST
+  path: /payments/prepare
+  scopes:
+  - carrier-billing:payments:create
+- name: validate_payment
+  api: Carrier Billing
+  description: Validate a payment
+  source_operation: openapi/gsma-open-gateway-carrier-billing-openapi.yml#validatePayment
+  method: POST
+  path: /payments/{paymentId}/validate
+  scopes:
+  - carrier-billing:payments:write
+- name: confirm_payment
+  api: Carrier Billing
+  description: Confirm a payment
+  source_operation: openapi/gsma-open-gateway-carrier-billing-openapi.yml#confirmPayment
+  method: POST
+  path: /payments/{paymentId}/confirm
+  scopes:
+  - carrier-billing:payments:write
+- name: cancel_payment
+  api: Carrier Billing
+  description: Cancel a payment
+  source_operation: openapi/gsma-open-gateway-carrier-billing-openapi.yml#cancelPayment
+  method: POST
+  path: /payments/{paymentId}/cancel
+  scopes:
+  - carrier-billing:payments:write
+- name: create_refund
+  api: Carrier Billing Refund
+  description: Create a new Refund
+  source_operation: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml#createRefund
+  method: POST
+  path: /payments/{paymentId}/refunds
+  scopes:
+  - carrier-billing-refund:refunds:create
+- name: retrieve_refunds
+  api: Carrier Billing Refund
+  description: Get a list of refunds
+  source_operation: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml#retrieveRefunds
+  method: GET
+  path: /payments/{paymentId}/refunds
+  scopes:
+  - carrier-billing-refund:refunds:read
+- name: retrieve_refund
+  api: Carrier Billing Refund
+  description: Get refund details
+  source_operation: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml#retrieveRefund
+  method: GET
+  path: /payments/{paymentId}/refunds/{refundId}
+  scopes:
+  - carrier-billing-refund:refunds:read
+- name: retrieve_payment_remaining_amount
+  api: Carrier Billing Refund
+  description: Get remaining amount not refunded for a given payment
+  source_operation: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml#retrievePaymentRemainingAmount
+  method: GET
+  path: /payments/{paymentId}/refunds/remaining-amount
+  scopes:
+  - carrier-billing-refund:refunds:read
+- name: retrieve_identifier
+  api: CAMARA Mobile Device Identifier
+  description: Get details about the specific device being used by a given mobile subscriber
+  source_operation: openapi/gsma-open-gateway-device-identifier-openapi.yml#retrieveIdentifier
+  method: POST
+  path: /retrieve-identifier
+  scopes:
+  - device-identifier:retrieve-identifier
+- name: retrieve_type
+  api: CAMARA Mobile Device Identifier
+  description: Get details about the type of device being used by a given mobile subscriber
+  source_operation: openapi/gsma-open-gateway-device-identifier-openapi.yml#retrieveType
+  method: POST
+  path: /retrieve-type
+  scopes:
+  - device-identifier:retrieve-type
+- name: retrieve_location
+  api: Device Location Retrieval
+  description: Execute location retrieval for a user device
+  source_operation: openapi/gsma-open-gateway-device-location-retrieval-openapi.yml#retrieveLocation
+  method: POST
+  path: /retrieve
+  scopes:
+  - location-retrieval:read
+- name: verify_location
+  api: Device Location Verification
+  description: Verify the location of a device
+  source_operation: openapi/gsma-open-gateway-device-location-verification-openapi.yml#verifyLocation
+  method: POST
+  path: /verify
+  scopes:
+  - location-verification:verify
+- name: get_reachability_status
+  api: Device Reachability Status
+  description: Get the current reachability status information
+  source_operation: openapi/gsma-open-gateway-device-reachability-status-openapi.yml#getReachabilityStatus
+  method: POST
+  path: /retrieve
+  scopes:
+  - device-reachability-status:read
+- name: get_roaming_status
+  api: Device Roaming Status
+  description: Get the current roaming status and the country information
+  source_operation: openapi/gsma-open-gateway-device-roaming-status-openapi.yml#getRoamingStatus
+  method: POST
+  path: /retrieve
+  scopes:
+  - device-roaming-status:read
+- name: retrieve_device_swap_date
+  api: Device Swap
+  description: Get timestamp of last device swap for a mobile user account provided with phone number.
+  source_operation: openapi/gsma-open-gateway-device-swap-openapi.yml#retrieveDeviceSwapDate
+  method: POST
+  path: /retrieve-date
+  scopes:
+  - device-swap
+  - device-swap:retrieve-date
+- name: check_device_swap
+  api: Device Swap
+  description: Check if device swap has been performed during a past period
+  source_operation: openapi/gsma-open-gateway-device-swap-openapi.yml#checkDeviceSwap
+  method: POST
+  path: /check
+  scopes:
+  - device-swap
+  - device-swap:check
+- name: set_qos
+  api: Home Devices QoD
+  description: Set the desired QoS behaviour for a user home device
+  source_operation: openapi/gsma-open-gateway-home-devices-quality-on-demand-openapi.yml#setQos
+  method: PUT
+  path: /qos
+  scopes: null
+- name: k_y_c__match
+  api: Know Your Customer Match
+  description: Matching a customer identity by checking a set of attributes related against the account data bound to
+    their phone number.
+  source_operation: openapi/gsma-open-gateway-know-your-customer-openapi.yml#KYC_Match
+  method: POST
+  path: /match
+  scopes:
+  - kyc-match:match
+- name: phone_number_verify
+  api: Number Verification
+  description: Verifies if the received hashed/plain text phone number matches the phone number associated with the access
+    token
+  source_operation: openapi/gsma-open-gateway-number-verification-openapi.yml#phoneNumberVerify
+  method: POST
+  path: /verify
+  scopes:
+  - number-verification:verify
+- name: phone_number_share
+  api: Number Verification
+  description: Returns the phone number associated with the access token
+  source_operation: openapi/gsma-open-gateway-number-verification-openapi.yml#phoneNumberShare
+  method: GET
+  path: /device-phone-number
+  scopes:
+  - number-verification:device-phone-number:read
+- name: send_code
+  api: One Time Password SMS
+  description: Sends a message including an OTP code to the given phone number
+  source_operation: openapi/gsma-open-gateway-otp-validation-openapi.yml#sendCode
+  method: POST
+  path: /send-code
+  scopes:
+  - one-time-password-sms:send-validate
+- name: validate_code
+  api: One Time Password SMS
+  description: Verifies the OTP received as input
+  source_operation: openapi/gsma-open-gateway-otp-validation-openapi.yml#validateCode
+  method: POST
+  path: /validate-code
+  scopes:
+  - one-time-password-sms:send-validate
+- name: retrieve_population_density
+  api: Population Density Data
+  description: Retrieves population density information in a specified area
+  source_operation: openapi/gsma-open-gateway-population-density-data-openapi.yml#retrievePopulationDensity
+  method: POST
+  path: /retrieve
+  scopes:
+  - population-density-data:read
+- name: create_session
+  api: Quality-On-Demand
+  description: Creates a new session
+  source_operation: openapi/gsma-open-gateway-quality-on-demand-openapi.yml#createSession
+  method: POST
+  path: /sessions
+  scopes:
+  - quality-on-demand:sessions:create
+- name: get_session
+  api: Quality-On-Demand
+  description: Get QoS session information
+  source_operation: openapi/gsma-open-gateway-quality-on-demand-openapi.yml#getSession
+  method: GET
+  path: /sessions/{sessionId}
+  scopes:
+  - quality-on-demand:sessions:read
+- name: delete_session
+  api: Quality-On-Demand
+  description: Delete a QoS session
+  source_operation: openapi/gsma-open-gateway-quality-on-demand-openapi.yml#deleteSession
+  method: DELETE
+  path: /sessions/{sessionId}
+  scopes:
+  - quality-on-demand:sessions:delete
+- name: extend_qos_session_duration
+  api: Quality-On-Demand
+  description: Extend the duration of an active session
+  source_operation: openapi/gsma-open-gateway-quality-on-demand-openapi.yml#extendQosSessionDuration
+  method: POST
+  path: /sessions/{sessionId}/extend
+  scopes:
+  - quality-on-demand:sessions:update
+- name: retrieve_sessions_by_device
+  api: Quality-On-Demand
+  description: Get QoS session information for a device
+  source_operation: openapi/gsma-open-gateway-quality-on-demand-openapi.yml#retrieveSessionsByDevice
+  method: POST
+  path: /retrieve-sessions
+  scopes:
+  - quality-on-demand:sessions:retrieve-by-device
+- name: retrieve_sim_swap_date
+  api: SIM Swap
+  description: Retrieve SIM swap date
+  source_operation: openapi/gsma-open-gateway-sim-swap-openapi.yml#retrieveSimSwapDate
+  method: POST
+  path: /retrieve-date
+  scopes:
+  - sim-swap
+  - sim-swap:retrieve-date
+- name: check_sim_swap
+  api: SIM Swap
+  description: Check SIM swap
+  source_operation: openapi/gsma-open-gateway-sim-swap-openapi.yml#checkSimSwap
+  method: POST
+  path: /check
+  scopes:
+  - sim-swap
+  - sim-swap:check
+- name: read_closest_edge_cloud_zone
+  api: Simple Edge Discovery
+  description: Returns the name of the Edge Cloud Zone closest to user device identified in the request.
+  source_operation: openapi/gsma-open-gateway-simple-edge-discovery-openapi.yml#readClosestEdgeCloudZone
+  method: GET
+  path: /edge-cloud-zones
+  scopes:
+  - simple-edge-discovery:edge-cloud-zones:read

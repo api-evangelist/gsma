@@ -1,0 +1,34 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Know Your Customer Match
+  version: 1.0.0
+extends: openapi/gsma-open-gateway-know-your-customer-openapi.yml
+x-generated: '2026-07-25'
+x-method: generated
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: gsma
+    x-apievangelist-source: https://github.com/api-evangelist/gsma
+    x-apievangelist-harvested: '2026-07-25'
+    x-apievangelist-artifacts:
+      authentication: authentication/gsma-authentication.yml
+      scopes: scopes/gsma-scopes.yml
+      errors: errors/gsma-problem-types.yml
+      conventions: conventions/gsma-conventions.yml
+      lifecycle: lifecycle/gsma-lifecycle.yml
+      agentic-access: agentic-access/gsma-agentic-access.yml
+    x-apievangelist-operation-count: 1
+- target: $.servers[0]
+  update:
+    x-apievangelist-note: The GSMA operates no production endpoint for this API. The apiRoot server variable is
+      filled in by the operator or aggregator serving the API; the default value published in the specification
+      is a placeholder, not a reachable host. Live deployments are listed at https://open-gateway.gsma.com/map
+- target: $.info
+  update:
+    x-apievangelist-camara:
+      programme: GSMA Open Gateway
+      upstream: https://camaraproject.org/api-overview
+      authorization: OpenID Connect against the operator authorization server; the openIdConnectUrl in the published
+        spec is a CAMARA placeholder
+      tracing_header: x-correlator

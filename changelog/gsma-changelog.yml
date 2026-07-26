@@ -1,0 +1,71 @@
+generated: '2026-07-25'
+method: searched
+source: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+note: >-
+  The GSMA publishes a dated release cadence for neither programme in a single feed. The Mobile
+  Money developer portal publishes a per-version Change List and Highlights page, captured below.
+  The Open Gateway portal republishes CAMARA specifications and carries no changelog of its own —
+  its release rhythm is the CAMARA meta-release, announced on camaraproject.org, and the per-spec
+  version string (0.2.0, 0.6.1, 1.0.0, wip) is the only version signal the GSMA portal exposes.
+programmes:
+- programme: GSMA Mobile Money API
+  scheme: semver-ish major.minor (1.0 -> 1.1 -> 1.2)
+  current: 1.2.0
+  changelog_url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  highlights_url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/highlights.html
+  version_index:
+  - version: '1.2'
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/
+    spec_downloadable: true
+  - version: '1.1'
+    url: https://developer.mobilemoneyapi.io/api-versions-1.1/
+    spec_downloadable: false
+  - version: '1.0'
+    url: https://developer.mobilemoneyapi.io/api-versions-1.0/
+    spec_downloadable: false
+  entries:
+  - version: 1.2.0
+    date: null
+    breaking:
+    - Deprecated /transactions — marked for removal; use /transactions/type/{transactionType} instead.
+    - Deprecated requestingLei and receivingLei fields — marked for removal in the next major release.
+    additions:
+    - Transaction Status Update — new PATCH endpoint for updating transaction status, for doubt resolution and two-stage transaction processing.
+    - Bill Payment Without Bill Reference — two new POST endpoints allowing bill payment without a bill reference number.
+    - Bill Payment Retrieval — new GET endpoints with query-parameter filtering and pagination response headers.
+    - Multiple Authorisation Codes Retrieval — new GET endpoints with standard filtering including state-based filtering.
+    - Mobile Money Customer Account Creation — new POST and GET endpoints for individual customer accounts.
+    - Mobile Money Customer Account Modification — new PATCH endpoints for account status, substatus, identity status and KYC verification information.
+    - Custom Data Array — key/value arrays across transactions, reversals, bills, mandates, quotations and accounts for provider-specific data.
+    - Debit Mandate Identification — enhanced payee identification on debit mandate endpoints.
+    - Consistent Date Fields — requestDate, creationDate and modificationDate added to batch transactions, bill payments and links.
+    - Bills Retrieval Cursor Mechanism — standard pagination and filtering headers applied to bills endpoints.
+    - Quotation Country Information — originCountry, receivingCountry and sendingServiceProviderCountry added.
+    - Requesting Organisation field added to transactions, batch transactions, reversals, quotations, links, debit mandates and authorisation codes.
+    - Authorisation Code Lifetime Validation — minimum value enforced for codeLifetime.
+- programme: GSMA Open Gateway (CAMARA)
+  scheme: per-API semantic version in the OpenAPI info.version and the URI path; releases coordinated as CAMARA meta-releases
+  changelog_url: null
+  upstream_release_channel: https://camaraproject.org/
+  note: >-
+    CAMARA issued its third meta-release of stable network APIs in October 2025, bringing OTP and
+    Number Verification to stable alongside new capabilities such as Verified Caller
+    (camaraproject.org announcement). The GSMA portal does not date its republished specifications.
+  current_versions:
+    call-forwarding-signal: 0.2.0
+    carrier-billing: wip
+    carrier-billing-refund: wip
+    device-identifier: 0.2.0
+    device-location-retrieval: wip
+    device-location-verification: wip
+    device-reachability-status: 0.6.1
+    device-roaming-status: 0.6.1
+    device-swap: 0.2.0
+    home-devices-quality-on-demand: 0.4.0
+    know-your-customer-match: 0.3.0
+    number-verification: wip
+    one-time-password-sms: 1.0.0
+    population-density-data: 0.2.0
+    quality-on-demand: 0.11.1
+    sim-swap: wip
+    simple-edge-discovery: 1.0.0

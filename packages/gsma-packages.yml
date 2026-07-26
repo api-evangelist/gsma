@@ -1,0 +1,88 @@
+generated: '2026-07-25'
+method: searched
+source: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+note: >-
+  The GSMA publishes five first-party client SDKs, all of them for the GSMA Mobile Money API
+  specification 1.2.0, maintained in the github.com/gsmainclusivetechlab organisation (the GSMA
+  Inclusive Tech Lab). The portal states: "The GSMA have provided 5 SDKs which enable developers
+  using 5 of the most common client and server application languages used today to easily work with
+  GSMA Mobile Money API Specification 1.2.0." None of the five is published to a public package
+  registry — npm (mmapi-nodejs-sdk, mmapi-javascript-sdk), Packagist (gsma/mmp) and Maven Central
+  (io.gsma / com.gsma / mmapi-java-sdk) all returned no listing on the probe date, and PyPI has no
+  GSMA package. Installation is by cloning the repository or, for Java/Android, by consuming the
+  jar/aar committed to the repo. There is no first-party SDK for the Open Gateway / CAMARA APIs:
+  the GSMA publishes the specifications and leaves client tooling to operators, aggregators and the
+  CAMARA project.
+registry_probes:
+- registry: npm
+  query: mmapi-nodejs-sdk
+  status: 404
+- registry: npm
+  query: mmapi-javascript-sdk
+  status: 404
+- registry: packagist
+  query: gsma/mmp
+  status: 404
+- registry: maven-central
+  query: g:io.gsma OR g:com.gsma OR a:mmapi-java-sdk
+  results: 0
+- registry: pypi
+  query: mobilemoney, gsma-mobile-money, mobile-money-api
+  status: 404
+packages:
+- language: javascript
+  registry: github
+  name: mmapi-nodejs-sdk
+  url: https://github.com/gsmainclusivetechlab/mmapi-nodejs-sdk
+  docs: https://developer.mobilemoneyapi.io/sdks/nodejs/introduction.html
+  install: git clone https://github.com/gsmainclusivetechlab/mmapi-nodejs-sdk
+  api: GSMA Mobile Money API 1.2.0
+  official: true
+  published_to_registry: false
+- language: javascript
+  registry: github
+  name: mmapi-javascript-sdk
+  url: https://github.com/gsmainclusivetechlab/mmapi-javascript-sdk
+  docs: https://developer.mobilemoneyapi.io/sdks/javascript/introduction.html
+  install: git clone https://github.com/gsmainclusivetechlab/mmapi-javascript-sdk
+  api: GSMA Mobile Money API 1.2.0
+  official: true
+  published_to_registry: false
+  note: Browser/client-side SDK, distinct from the Node.js server SDK.
+- language: php
+  registry: github
+  name: gsma/mmp (mmapi-php-sdk)
+  url: https://github.com/gsmainclusivetechlab/mmapi-php-sdk
+  docs: https://developer.mobilemoneyapi.io/sdks/php/introduction.html
+  install: git clone https://github.com/gsmainclusivetechlab/mmapi-php-sdk
+  api: GSMA Mobile Money API 1.2.0
+  official: true
+  published_to_registry: false
+  note: composer.json declares name "gsma/mmp", description "GSMA Mobile Money API SDK", PSR-4 namespace mmpsdk\; not listed on Packagist.
+- language: java
+  registry: github
+  name: mmapi-java-sdk
+  url: https://github.com/gsmainclusivetechlab/mmapi-java-sdk
+  docs: https://developer.mobilemoneyapi.io/sdks/java/introduction.html
+  install: git clone https://github.com/gsmainclusivetechlab/mmapi-java-sdk  # jar/ directory ships the built artifact
+  api: GSMA Mobile Money API 1.2.0
+  official: true
+  published_to_registry: false
+- language: java
+  registry: github
+  name: mmapi-android-sdk
+  url: https://github.com/gsmainclusivetechlab/mmapi-android-sdk
+  docs: https://developer.mobilemoneyapi.io/sdks/android/introduction.html
+  install: git clone https://github.com/gsmainclusivetechlab/mmapi-android-sdk  # aar/ directory ships the built artifact
+  api: GSMA Mobile Money API 1.2.0
+  platform: Android
+  official: true
+  published_to_registry: false
+related_first_party_tooling:
+- name: Mobile Money API Compliance Platform
+  url: https://github.com/gsmainclusivetechlab/compliance-docs
+  note: GSMA-run conformance testing platform for Mobile Money API implementations.
+- name: Interoperability Test Platform
+  url: https://github.com/gsmainclusivetechlab/interop-test-platform
+  note: GSMA Inclusive Tech Lab test harness, including Mojaloop and mobile-money simulators.
+open_gateway_sdks: none

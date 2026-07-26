@@ -1,0 +1,437 @@
+generated: '2026-07-25'
+method: derived
+source: callbacks[] declared in the harvested OpenAPI documents
+spec_type: null
+asyncapi_published: false
+note: The GSMA publishes no AsyncAPI document and operates no event broker — it is a specification publisher, not an
+  endpoint operator. Five of the eighteen harvested specifications do declare a real, machine-readable webhook surface
+  as OpenAPI callbacks[], captured below. The four Open Gateway specs deliver CloudEvents 1.0 notifications by HTTP POST
+  to a consumer-supplied sink URL, authenticated with the notificationsBearerAuth scheme and a sinkCredential supplied
+  on the subscribing request. The Mobile Money API delivers its asynchronous results by HTTP PUT to the URL the client
+  passes in the X-Callback-URL header. Nothing here was invented; every entry maps to a callback object in a saved spec.
+delivery:
+- programme: GSMA Open Gateway (CAMARA)
+  style: CloudEvents 1.0 over HTTP POST
+  sink: '{$request.body#/sink}'
+  credential: sinkCredential on the request body
+  auth_scheme: notificationsBearerAuth (http bearer)
+- programme: GSMA Mobile Money API
+  style: HTTP PUT of the completed resource (or error object)
+  sink: '{$request.header.X-Callback-URL}'
+  correlation: X-CorrelationID supplied by the client on the originating request
+  fallback: Asynchronous with polling — GET /requeststates/{serverCorrelationId}
+surface_count: 5
+surfaces:
+- api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  callback_count: 58
+  event_types: null
+  callbacks:
+  - callback: transactionsSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: transactionsSuccessPUT
+    summary: Transaction Success Callback
+    triggered_by: POST /transactions
+  - callback: transactionsFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: transactionsFailurePUT
+    summary: Transaction Failure Callback
+    triggered_by: POST /transactions
+  - callback: transactionsSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: transactionsTransactionTypeSuccessPUT
+    summary: Transaction Success Callback
+    triggered_by: POST /transactions/type/{transactionType}
+  - callback: transactionsFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: transactionsTransactionTypeFailurePUT
+    summary: Transaction Failure Callback
+    triggered_by: POST /transactions/type/{transactionType}
+  - callback: transactionsUpdateSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: transactionsTransactionsUpdatePUT
+    summary: Transactions Update Success Callback
+    triggered_by: PATCH /transactions/{transactionReference}
+  - callback: transactionsUpdateFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: transactionsTransactionsUpdateFailurePUT
+    summary: Transaction Update Failure Callback
+    triggered_by: PATCH /transactions/{transactionReference}
+  - callback: reversalsSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: transactionsTransactionReferenceReversalsSuccessPUT
+    summary: Reversal Callback
+    triggered_by: POST /transactions/{transactionReference}/reversals
+  - callback: reversalsFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: transactionsTransactionReferenceReversalfailurePUT
+    summary: Reversal Failure Callback
+    triggered_by: POST /transactions/{transactionReference}/reversals
+  - callback: batchTransactionsSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: transactionsBatchTransactionsSuccessPUT
+    summary: Batch Transactions Callback
+    triggered_by: POST /batchtransactions
+  - callback: batchTransactionsFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: transactionsBatchTransactionsFailurePUT
+    summary: Batch Transaction Failure Callback
+    triggered_by: POST /batchtransactions
+  - callback: batchTransactionsUpdateSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: transactionsBatchTransactionsUpdatePUT
+    summary: Batch Transactions Update Success Callback
+    triggered_by: PATCH /batchtransactions/{batchId}
+  - callback: batchTransactionsUpdateFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: transactionsBatchTransactionsUpdateFailurePUT
+    summary: Batch Transaction Update Failure Callback
+    triggered_by: PATCH /batchtransactions/{batchId}
+  - callback: accountsSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: accountsSuccessPUT
+    summary: Account Success Callback
+    triggered_by: POST /accounts/{identityType}
+  - callback: accountsFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: accountsFailurePUT
+    summary: Account Failure Callback
+    triggered_by: POST /accounts/{identityType}
+  - callback: accountsUpdateSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: accountsUpdateAccountIdSuccessPUT
+    summary: Account Update Success Callback
+    triggered_by: PATCH /accounts/{accountId}
+  - callback: accountsUpdateFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: accountsUpdateAccountIdFailurePUT
+    summary: Account Update Failure Callback
+    triggered_by: PATCH /accounts/{accountId}
+  - callback: accountsUpdateSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: accountsUpdateIdentifierTypeIdentifierSuccessPUT
+    summary: Account Update Success Callback
+    triggered_by: PATCH /accounts/{identifierType}/{identifier}
+  - callback: accountsUpdateFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: accountsUpdateIdentifierTypeIdentifierFailurePUT
+    summary: Account Update Failure Callback
+    triggered_by: PATCH /accounts/{identifierType}/{identifier}
+  - callback: accountIdentitiesUpdateSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: accountIdentitiesUpdateAccountIdSuccessPUT
+    summary: Account Identity Update Success Callback
+    triggered_by: PATCH /accounts/{accountId}/identities/{identityId}
+  - callback: accountIdentitiesUpdateFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: accountIdentitiesUpdateAccountIdFailurePUT
+    summary: Account Identities Update Failure Callback
+    triggered_by: PATCH /accounts/{accountId}/identities/{identityId}
+  - callback: accountsUpdateSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: accountIdentitiesUpdateIdentifierTypeIdentifierSuccessPUT
+    summary: Account Identity Update Success Callback
+    triggered_by: PATCH /accounts/{identifierType}/{identifier}/identities/{identityId}
+  - callback: accountIdentitiesUpdateFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: accountIdentitiesUpdateIdentifierTypeIdentifierFailurePUT
+    summary: Account Identity Update Failure Callback
+    triggered_by: PATCH /accounts/{identifierType}/{identifier}/identities/{identityId}
+  - callback: billsPaymentsSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: billsPaymentsSuccessPUT
+    summary: Bill Payments Success Callback
+    triggered_by: POST /accounts/{accountId}/bills/{billReference}/payments
+  - callback: billsPaymentsFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: billsPaymentsFailurePUT
+    summary: Bill Payments Failure Callback
+    triggered_by: POST /accounts/{accountId}/bills/{billReference}/payments
+  - callback: billsPaymentsSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: billsPaymentsIdentifierTypeIdentifierSuccessPUT
+    summary: Bill Payments Success Callback
+    triggered_by: POST /accounts/{identifierType}/{identifier}/bills/{billReference}/payments
+  - callback: billsPaymentsFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: billsPaymentsIdentifierTypeIdentifierFailurePUT
+    summary: Bill Payments Failure Callback
+    triggered_by: POST /accounts/{identifierType}/{identifier}/bills/{billReference}/payments
+  - callback: billsPaymentsSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: billsPaymentsReferenceSuccessPUT
+    summary: Bill Payments Success Callback
+    triggered_by: POST /bills/{billReference}/payments
+  - callback: billsPaymentsFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: billsPaymentsReferenceFailurePUT
+    summary: Bill Payments Failure Callback
+    triggered_by: POST /bills/{billReference}/payments
+  - callback: billsPaymentsSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: billsPaymentsSuccessPUT
+    summary: Bill Payments Success Callback
+    triggered_by: POST /accounts/{accountId}/bills/payments
+  - callback: billsPaymentsFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: billsPaymentsFailurePUT
+    summary: Bill Payments Failure Callback
+    triggered_by: POST /accounts/{accountId}/bills/payments
+  - callback: billsPaymentsSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: billsPaymentsIdentifierTypeIdentifierSuccessPUT
+    summary: Bill Payments Success Callback
+    triggered_by: POST /accounts/{identifierType}/{identifier}/bills/payments
+  - callback: billsPaymentsFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: billsPaymentsIdentifierTypeIdentifierFailurePUT
+    summary: Bill Payments Failure Callback
+    triggered_by: POST /accounts/{identifierType}/{identifier}/bills/payments
+  - callback: debitMandatesSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: debitMandatesAccountIdSuccessPUT
+    summary: Debit Mandates Success Callback
+    triggered_by: POST /accounts/{accountId}/debitmandates
+  - callback: debitMandatesFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: debitMandatesAccountIdFailurePUT
+    summary: Debit Mandates Failure Callback
+    triggered_by: POST /accounts/{accountId}/debitmandates
+  - callback: debitMandatesSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: debitMandatesIdentifierTypeIdentifierSuccessPUT
+    summary: Debit Mandates Success Callback
+    triggered_by: POST /accounts/{identifierType}/{identifier}/debitmandates
+  - callback: debitMandatesFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: debitMandatesIdentifierTypeIdentifierFailurePUT
+    summary: Debit Mandates Failure Callback
+    triggered_by: POST /accounts/{identifierType}/{identifier}/debitmandates
+  - callback: debitMandatesUpdateSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: debitMandateUpdateAccountIdSuccessPUT
+    summary: Debit Mandate Update Success Callback
+    triggered_by: PATCH /accounts/{accountId}/debitmandates/{debitMandateReference}
+  - callback: debitMandateUpdateFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: debitMandateUpdateAccountIdFailurePUT
+    summary: Debit Mandate Update Failure Callback
+    triggered_by: PATCH /accounts/{accountId}/debitmandates/{debitMandateReference}
+  - callback: debitMandatesUpdateSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: debitMandateUpdateIdentifierTypeIdentifierSuccessPUT
+    summary: Debit Mandate Update Success Callback
+    triggered_by: PATCH /accounts/{identifierType}/{identifier}/debitmandates/{debitMandateReference}
+  - callback: debitMandateUpdateFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: debitMandateUpdateIdentifierTypeIdentifierFailurePUT
+    summary: Debit Mandate Update Failure Callback
+    triggered_by: PATCH /accounts/{identifierType}/{identifier}/debitmandates/{debitMandateReference}
+  - callback: linksSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: linksAccountIdSuccessPUT
+    summary: Links Success Callback
+    triggered_by: POST /accounts/{accountId}/links
+  - callback: linksFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: linksAccountIdFailurePUT
+    summary: Links Failure Callback
+    triggered_by: POST /accounts/{accountId}/links
+  - callback: linksSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: linksIdentifierTypeIdentifierSuccessPUT
+    summary: Links Success Callback
+    triggered_by: POST /accounts/{identifierType}/{identifier}/links
+  - callback: linksFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: linksIdentifierTypeIdentifierFailurePUT
+    summary: Links Failure Callback
+    triggered_by: POST /accounts/{identifierType}/{identifier}/links
+  - callback: linksUpdateSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: linkUpdateAccountIdSuccessPUT
+    summary: Account Link Update Success Callback
+    triggered_by: PATCH /accounts/{accountId}/links/{linkReference}
+  - callback: linkUpdateFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: linkUpdateAccountIdFailurePUT
+    summary: Account Link Update Failure Callback
+    triggered_by: PATCH /accounts/{accountId}/links/{linkReference}
+  - callback: linksUpdateSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: linkUpdateIdentifierTypeIdentifierSuccessPUT
+    summary: Account Link Update Success Callback
+    triggered_by: PATCH /accounts/{identifierType}/{identifier}/links/{linkReference}
+  - callback: linkUpdateFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: linkUpdateIdentifierTypeIdentifierFailurePUT
+    summary: Account Link Update Failure Callback
+    triggered_by: PATCH /accounts/{identifierType}/{identifier}/links/{linkReference}
+  - callback: quotationsSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: quotationsSuccessPUT
+    summary: Quotations Success Callback
+    triggered_by: POST /quotations
+  - callback: quotationsFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: quotationsFailurePUT
+    summary: Quotations Failure Callback
+    triggered_by: POST /quotations
+  - callback: authorisationCodesSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: authorisationCodesAccountIdSuccessPUT
+    summary: Authorisation Codes Success Callback
+    triggered_by: POST /accounts/{accountId}/authorisationcodes
+  - callback: authorisationCodesFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: authorisationCodesAccountIdFailurePUT
+    summary: Authorisation Codes Failure Callback
+    triggered_by: POST /accounts/{accountId}/authorisationcodes
+  - callback: authorisationCodesSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: authorisationCodesIdentifierTypeIdentifierSuccessPUT
+    summary: Authorisation Codes Success Callback
+    triggered_by: POST /accounts/{identifierType}/{identifier}/authorisationcodes
+  - callback: authorisationCodesFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: authorisationCodesIdentifierTypeIdentifierFailurePUT
+    summary: Authorisation Codes Failure Callback
+    triggered_by: POST /accounts/{identifierType}/{identifier}/authorisationcodes
+  - callback: authorisationCodesSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: authorisationCodeUpdateAccountIdSuccessPUT
+    summary: Authorisation Code Update Success Callback
+    triggered_by: PATCH /accounts/{accountId}/authorisationcodes/{authorisationCode}
+  - callback: authorisationCodesFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: authorisationCodeAccountIdFailurePUT
+    summary: Authorisation Code Update Failure Callback
+    triggered_by: PATCH /accounts/{accountId}/authorisationcodes/{authorisationCode}
+  - callback: authorisationCodesSuccessEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: authorisationCodeUpdateIdentifierTypeIdentifierSuccessPUT
+    summary: Authorisation Code Update Success Callback
+    triggered_by: PATCH /accounts/{identifierType}/{identifier}/authorisationcodes/{authorisationCode}
+  - callback: authorisationCodesFailureEvent
+    sink_expression: '{$request.header.X-Callback-URL}'
+    method: PUT
+    operationId: authorisationCodeIdentifierTypeIdentifierFailurePUT
+    summary: Authorisation Code Update Failure Callback
+    triggered_by: PATCH /accounts/{identifierType}/{identifier}/authorisationcodes/{authorisationCode}
+- api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  callback_count: 2
+  event_types:
+  - org.camaraproject.carrier-billing.v0.payment-cancelled
+  - org.camaraproject.carrier-billing.v0.payment-completed
+  - org.camaraproject.carrier-billing.v0.payment-denied
+  - org.camaraproject.carrier-billing.v0.payment-pending-validation
+  - org.camaraproject.carrier-billing.v0.payment-reserved
+  callbacks:
+  - callback: notifications
+    sink_expression: '{$request.body#/sink}'
+    method: POST
+    operationId: createPaymentNotification
+    summary: Carrier Billing payment notifications
+    triggered_by: POST /payments
+  - callback: notifications
+    sink_expression: '{$request.body#/sink}'
+    method: POST
+    operationId: preparePaymentNotification
+    summary: Carrier Billing payment notifications
+    triggered_by: POST /payments/prepare
+- api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  callback_count: 1
+  event_types:
+  - org.camaraproject.carrier-billing-refund.v0.refund-completed
+  - org.camaraproject.carrier-billing-refund.v0.refund-denied
+  - org.camaraproject.carrier-billing-refund.v0.refund-in-bill
+  - org.camaraproject.carrier-billing.v0.payment-reserved
+  callbacks:
+  - callback: notifications
+    sink_expression: '{$request.body#/sink}'
+    method: POST
+    operationId: createRefundNotification
+    summary: Carrier Billing refund notifications
+    triggered_by: POST /payments/{paymentId}/refunds
+- api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  callback_count: 1
+  event_types: null
+  callbacks:
+  - callback: populationDensityDataCallback
+    sink_expression: '{$request.body#/sink}'
+    method: POST
+    operationId: postNotification
+    summary: Population Density Data callback
+    triggered_by: POST /retrieve
+- api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  callback_count: 1
+  event_types:
+  - org.camaraproject.quality-on-demand.v0.qos-status-changed
+  callbacks:
+  - callback: notifications
+    sink_expression: '{$request.body#/sink}'
+    method: POST
+    operationId: postNotification
+    summary: Session notifications callback
+    triggered_by: POST /sessions

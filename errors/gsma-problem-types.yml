@@ -1,0 +1,801 @@
+generated: '2026-07-25'
+method: derived
+source: openapi/*.yml (4xx/5xx response definitions and their published examples)
+docs: https://developer.mobilemoneyapi.io/GSMA-Mobile-Money-API-Guidelines.pdf
+format: camara-error-info
+note: Neither GSMA programme uses RFC 9457 application/problem+json. The Open Gateway / CAMARA specifications return
+  an ErrorInfo object {status, code, message} as application/json; the Mobile Money API returns its own error object
+  {errorCategory, errorCode, errorDescription, errorDateTime, errorParameters}. Every code below was read out of a published
+  response example or schema enum in the harvested specifications — none was invented. Codes are namespaced <API_NAME>.<CODE>
+  when API-specific and bare when they come from CAMARA Commonalities.
+envelopes:
+- programme: GSMA Open Gateway (CAMARA)
+  media_type: application/json
+  shape: '{status: integer, code: string, message: string}'
+  sources: components.responses across the 17 Open Gateway specs
+- programme: GSMA Mobile Money API
+  media_type: application/json
+  shape: '{errorCategory, errorCode, errorDescription, errorDateTime, errorParameters[]}'
+  sources: openapi/gsma-mobile-money-api-openapi.yml
+camara_problem_count: 91
+camara_problems:
+- status: 400
+  code: CARRIER_BILLING.INVALID_AUTHORIZATION_ID
+  messages:
+  - Invalid authorizationId.
+  apis:
+  - Carrier Billing
+- status: 400
+  code: CARRIER_BILLING.INVALID_CODE
+  messages:
+  - Invalid code.
+  apis:
+  - Carrier Billing
+- status: 400
+  code: CARRIER_BILLING.INVALID_DATE_RANGE
+  messages:
+  - Client specified an invalid date range.
+  apis:
+  - Carrier Billing
+- status: 400
+  code: CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS
+  messages:
+  - Too many matching records found. Specify additional/suitable criteria to limit the number of records.
+  apis:
+  - Carrier Billing
+- status: 400
+  code: CARRIER_BILLING.VALIDATION_FAILED
+  messages:
+  - the maximum number of attempts have been consumed for this validation.
+  apis:
+  - Carrier Billing
+- status: 400
+  code: CARRIER_BILLING_REFUND.INVALID_DATE_RANGE
+  messages:
+  - Client specified an invalid date range.
+  apis:
+  - Carrier Billing Refund
+- status: 400
+  code: CARRIER_BILLING_REFUND.TOO_MANY_MATCHING_RECORDS
+  messages:
+  - Too many matching records found. Specify additional/suitable criteria to limit the number of records.
+  apis:
+  - Carrier Billing Refund
+- status: 400
+  code: INVALID_ARGUMENT
+  messages:
+  - At least one of phoneNumber, networkAccessIdentifier, ipv4Address and ipv6Address must be specified
+  - Client specified an invalid argument, request body or query param
+  - Client specified an invalid argument, request body or query param.
+  - Currency is unknown or not authorized.
+  apis:
+  - CAMARA Mobile Device Identifier
+  - Carrier Billing
+  - Carrier Billing Refund
+  - Device Reachability Status
+  - Device Roaming Status
+  - Device Swap
+  - Know Your Customer Match
+  - One Time Password SMS
+  - Population Density Data
+  - Quality-On-Demand
+- status: 400
+  code: INVALID_CREDENTIAL
+  messages:
+  - Only Access token is supported
+  apis:
+  - Carrier Billing
+  - Carrier Billing Refund
+  - Population Density Data
+  - Quality-On-Demand
+- status: 400
+  code: INVALID_SINK
+  messages:
+  - sink not valid for the specified protocol
+  apis:
+  - Carrier Billing
+  - Carrier Billing Refund
+- status: 400
+  code: INVALID_TOKEN
+  messages:
+  - Only bearer token is supported
+  apis:
+  - Carrier Billing
+  - Carrier Billing Refund
+  - Population Density Data
+  - Quality-On-Demand
+- status: 400
+  code: KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION
+  messages:
+  - Indicated parameter combination is invalid
+  apis:
+  - Know Your Customer Match
+- status: 400
+  code: ONE_TIME_PASSWORD_SMS.INVALID_OTP
+  messages:
+  - The provided OTP is not valid for this authenticationId
+  apis:
+  - One Time Password SMS
+- status: 400
+  code: ONE_TIME_PASSWORD_SMS.VERIFICATION_EXPIRED
+  messages:
+  - The authenticationId is no longer valid
+  apis:
+  - One Time Password SMS
+- status: 400
+  code: ONE_TIME_PASSWORD_SMS.VERIFICATION_FAILED
+  messages:
+  - The maximum number of attempts for this authenticationId was exceeded without providing a valid OTP
+  apis:
+  - One Time Password SMS
+- status: 400
+  code: OUT_OF_RANGE
+  messages:
+  - Client specified an invalid range.
+  - 'Invalid value: ipv4Address.publicPort'
+  apis:
+  - CAMARA Mobile Device Identifier
+  - Carrier Billing
+  - Carrier Billing Refund
+  - Device Swap
+  - Quality-On-Demand
+- status: 400
+  code: POPULATION_DENSITY_DATA.INVALID_AREA
+  messages:
+  - The area is not a polygon shape or has an arbitrary complexity
+  apis:
+  - Population Density Data
+- status: 400
+  code: POPULATION_DENSITY_DATA.INVALID_END_TIME
+  messages:
+  - Indicated endDate is earlier than the startTime
+  apis:
+  - Population Density Data
+- status: 400
+  code: POPULATION_DENSITY_DATA.INVALID_TIME_PERIOD
+  messages:
+  - Indicated time period is partially in the past and partially in the future
+  apis:
+  - Population Density Data
+- status: 400
+  code: POPULATION_DENSITY_DATA.MAX_STARTTIME_EXCEEDED
+  messages:
+  - Indicated startTime is greater than the maximum allowed
+  apis:
+  - Population Density Data
+- status: 400
+  code: POPULATION_DENSITY_DATA.MAX_TIME_PERIOD_EXCEEDED
+  messages:
+  - Indicated time period is greater than the maximum allowed (More than maximum hours between startTime and endTime)
+  apis:
+  - Population Density Data
+- status: 400
+  code: POPULATION_DENSITY_DATA.MIN_STARTTIME_EXCEEDED
+  messages:
+  - Indicated startTime is earlier than the minimum allowed
+  apis:
+  - Population Density Data
+- status: 400
+  code: QUALITY_ON_DEMAND.DURATION_OUT_OF_RANGE
+  messages:
+  - The requested duration is out of the allowed range for the specific QoS profile
+  apis:
+  - Quality-On-Demand
+- status: 401
+  code: AUTHENTICATION_REQUIRED
+  messages:
+  - A new authentication is needed, as the access token has expired.
+  - New authentication is required.
+  apis:
+  - CAMARA Mobile Device Identifier
+  - Device Reachability Status
+  - Device Roaming Status
+  - Know Your Customer Match
+  - Quality-On-Demand
+  - Simple Edge Discovery
+- status: 401
+  code: UNAUTHENTICATED
+  messages:
+  - Request not authenticated due to missing, invalid, or expired credentials.
+  - Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
+  apis:
+  - CAMARA Mobile Device Identifier
+  - Carrier Billing
+  - Carrier Billing Refund
+  - Device Reachability Status
+  - Device Roaming Status
+  - Device Swap
+  - Know Your Customer Match
+  - Population Density Data
+  - Quality-On-Demand
+  - Simple Edge Discovery
+- status: 403
+  code: CARRIER_BILLING.PAYMENT_DENIED
+  messages:
+  - Payment denied by business.
+  apis:
+  - Carrier Billing
+- status: 403
+  code: CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND
+  messages:
+  - Payment not eligible for refund.
+  apis:
+  - Carrier Billing Refund
+- status: 403
+  code: CARRIER_BILLING_REFUND.REFUND_DENIED
+  messages:
+  - Refund denied by business.
+  apis:
+  - Carrier Billing Refund
+- status: 403
+  code: INVALID_TOKEN_CONTEXT
+  messages:
+  - PhoneNumber parameter doesn't match the value from the access token context
+  - User home network cannot be deducted from access token context
+  - phoneNumber is not consistent with access token.
+  - '{{field}} is not consistent with access token.'
+  apis:
+  - Call Forwarding Signal
+  - Device Reachability Status
+  - Device Roaming Status
+  - Home Devices QoD
+  - Know Your Customer Match
+  - Quality-On-Demand
+  - Simple Edge Discovery
+- status: 403
+  code: KNOW_YOUR_CUSTOMER.ID_DOCUMENT_MISMATCH
+  messages:
+  - The idDocument needs to match the one associated with the provided phoneNumber
+  apis:
+  - Know Your Customer Match
+- status: 403
+  code: KNOW_YOUR_CUSTOMER.ID_DOCUMENT_REQUIRED
+  messages:
+  - The idDocument is required to perform the properties validation
+  apis:
+  - Know Your Customer Match
+- status: 403
+  code: NUMBER_VERIFICATION.USER_NOT_AUTHENTICATED_BY_MOBILE_NETWORK
+  messages:
+  - Client must authenticate via the mobile network to use this service
+  apis:
+  - Number Verification
+- status: 403
+  code: ONE_TIME_PASSWORD_SMS.MAX_OTP_CODES_EXCEEDED
+  messages:
+  - Too many OTPs have been requested for this MSISDN. Try later.
+  apis:
+  - One Time Password SMS
+- status: 403
+  code: ONE_TIME_PASSWORD_SMS.PHONE_NUMBER_BLOCKED
+  messages:
+  - Phone_number is blocked to receive SMS due to any blocking business reason in the operator.
+  apis:
+  - One Time Password SMS
+- status: 403
+  code: ONE_TIME_PASSWORD_SMS.PHONE_NUMBER_NOT_ALLOWED
+  messages:
+  - Phone_number can't receive an SMS due to business reasons in the operator.
+  apis:
+  - One Time Password SMS
+- status: 403
+  code: PERMISSION_DENIED
+  messages:
+  - Client does not have sufficient permissions to perform this action
+  - Client does not have sufficient permissions to perform this action.
+  apis:
+  - CAMARA Mobile Device Identifier
+  - Call Forwarding Signal
+  - Carrier Billing
+  - Carrier Billing Refund
+  - Device Location Retrieval
+  - Device Location Verification
+  - Device Reachability Status
+  - Device Roaming Status
+  - Device Swap
+  - Home Devices QoD
+  - Know Your Customer Match
+  - Number Verification
+  - One Time Password SMS
+  - Population Density Data
+  - Quality-On-Demand
+  - Simple Edge Discovery
+- status: 404
+  code: DEVICE_NOT_FOUND
+  messages:
+  - Device identifier not found.
+  - No connected device found for the input criteria provided
+  - Some identifier cannot be matched to a device
+  apis:
+  - Device Reachability Status
+  - Device Roaming Status
+  - Home Devices QoD
+  - Quality-On-Demand
+  - Simple Edge Discovery
+- status: 404
+  code: IDENTIFIER_NOT_FOUND
+  messages:
+  - Device identifier not found.
+  - The phone number provided is not associated with a customer account
+  - The provided identifier cannot be matched to a device.
+  - phoneNumber not found.
+  apis:
+  - CAMARA Mobile Device Identifier
+  - Carrier Billing
+  - Device Location Retrieval
+  - Device Location Verification
+  - Device Swap
+  - Know Your Customer Match
+- status: 404
+  code: NOT_FOUND
+  messages:
+  - The specified resource is not found
+  - The specified resource is not found.
+  apis:
+  - Carrier Billing
+  - Carrier Billing Refund
+  - Device Reachability Status
+  - Device Roaming Status
+  - Device Swap
+  - Home Devices QoD
+  - Know Your Customer Match
+  - Population Density Data
+  - Quality-On-Demand
+  - Simple Edge Discovery
+- status: 406
+  code: NOT_ACCEPTABLE
+  messages:
+  - The server cannot produce a response matching the content requested by the client through `Accept-*` headers.
+  apis:
+  - Device Reachability Status
+  - Device Roaming Status
+  - Simple Edge Discovery
+- status: 409
+  code: ABORTED
+  messages:
+  - Concurrency conflict.
+  apis:
+  - Call Forwarding Signal
+- status: 409
+  code: ALREADY_EXISTS
+  messages:
+  - The resource that a client tried to create already exists.
+  apis:
+  - Call Forwarding Signal
+  - Carrier Billing
+  - Carrier Billing Refund
+- status: 409
+  code: CARRIER_BILLING.PAYMENT_CANCELLED
+  messages:
+  - Payment has been cancelled.
+  apis:
+  - Carrier Billing
+- status: 409
+  code: CARRIER_BILLING.PAYMENT_CONFIRMED
+  messages:
+  - Payment has been confirmed.
+  apis:
+  - Carrier Billing
+- status: 409
+  code: CONFLICT
+  messages:
+  - A specified resource duplicate entry found.
+  - Conflict with the current state of the target resource
+  apis:
+  - Call Forwarding Signal
+  - Home Devices QoD
+- status: 409
+  code: HOME_DEVICES_QOD.NOT_CONNECTED_TO_REQUIRED_INTERFACE
+  messages:
+  - Device is not connected to the required interface (e.g. WiFi 5GHz interface)
+  apis:
+  - Home Devices QoD
+- status: 409
+  code: HOME_DEVICES_QOD.NOT_SUPPORTED_REQUIRED_INTERFACE
+  messages:
+  - Device does not support required interface (e.g. WiFi 5GHz interface)
+  apis:
+  - Home Devices QoD
+- status: 409
+  code: HOME_DEVICES_QOD.OCCUPANCY_ABOVE_THRESHOLD
+  messages:
+  - The occupancy is above the allowed threshold
+  apis:
+  - Home Devices QoD
+- status: 409
+  code: HOME_DEVICES_QOD.QOS_ALREADY_SET_TO_DEFAULT
+  messages:
+  - Device QoS is already set to default value
+  apis:
+  - Home Devices QoD
+- status: 409
+  code: HOME_DEVICES_QOD.QOS_TOO_HIGH
+  messages:
+  - Requested QoS is higher than the maximum QoS allowed
+  apis:
+  - Home Devices QoD
+- status: 409
+  code: HOME_DEVICES_QOD.RSSI_BELOW_THRESHOLD
+  messages:
+  - RSSI from device is below allowed threshold
+  apis:
+  - Home Devices QoD
+- status: 409
+  code: HOME_DEVICES_QOD.TOO_MANY_DEVICES
+  messages:
+  - Exceeded the maximum quantity of devices with non-default QoS behaviour
+  apis:
+  - Home Devices QoD
+- status: 409
+  code: QUALITY_ON_DEMAND.SESSION_EXTENSION_NOT_ALLOWED
+  messages:
+  - Extending the session duration is not allowed in the current state ({qosStatus}). The session must be in the AVAILABLE
+    state.
+  apis:
+  - Quality-On-Demand
+- status: 410
+  code: GONE
+  messages:
+  - Access to the target resource is no longer available.
+  apis:
+  - Carrier Billing
+  - Carrier Billing Refund
+  - Population Density Data
+  - Quality-On-Demand
+- status: 415
+  code: UNSUPPORTED_MEDIA_TYPE
+  messages:
+  - The server refuses to accept the request because the payload format is in an unsupported format.
+  apis:
+  - Call Forwarding Signal
+  - Device Reachability Status
+  - Device Roaming Status
+- status: 422
+  code: CARRIER_BILLING.UNAUTHORIZED_AMOUNT
+  messages:
+  - Unauthorized amount requested.
+  apis:
+  - Carrier Billing
+- status: 422
+  code: CARRIER_BILLING.USER_AMOUNT_THRESHOLD_OVERPASSED
+  messages:
+  - Unauthorized payment request. Accumulated user mobile payments overpass account amount threshold.
+  apis:
+  - Carrier Billing
+- status: 422
+  code: CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS
+  messages:
+  - Payment is not yet completed.
+  apis:
+  - Carrier Billing Refund
+- status: 422
+  code: CARRIER_BILLING_REFUND.REFUND_DETAILS_MISMATCH
+  messages:
+  - Inconsistent refundDetails information with regards to related payment.
+  apis:
+  - Carrier Billing Refund
+- status: 422
+  code: CARRIER_BILLING_REFUND.TAXES_MANAGEMENT_MISMATCH
+  messages:
+  - Inconsistent isTaxIncluded value with regards to related payment.
+  apis:
+  - Carrier Billing Refund
+- status: 422
+  code: CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT
+  messages:
+  - Unauthorized amount requested.
+  apis:
+  - Carrier Billing Refund
+- status: 422
+  code: CARRIER_BILLING_REFUND.USER_AMOUNT_THRESHOLD_OVERPASSED
+  messages:
+  - Unauthorized refund request. Accumulated user mobile payments overpass account amount threshold.
+  apis:
+  - Carrier Billing Refund
+- status: 422
+  code: DEVICE_IDENTIFIERS_MISMATCH
+  messages:
+  - Provided device identifiers are not consistent.
+  apis:
+  - Call Forwarding Signal
+  - Device Reachability Status
+  - Device Roaming Status
+  - Quality-On-Demand
+  - Simple Edge Discovery
+- status: 422
+  code: DEVICE_NOT_APPLICABLE
+  messages:
+  - The Service is not available for the provided device.
+  - The service is not available for the provided device.
+  apis:
+  - Call Forwarding Signal
+  - Device Reachability Status
+  - Device Roaming Status
+  - Quality-On-Demand
+  - Simple Edge Discovery
+- status: 422
+  code: IDENTIFIER_MISMATCH
+  messages:
+  - Provided identifiers are not consistent.
+  apis:
+  - CAMARA Mobile Device Identifier
+- status: 422
+  code: LOCATION_RETRIEVAL.UNABLE_TO_FULFILL_MAX_AGE
+  messages:
+  - Unable to provide expected freshness for location
+  apis:
+  - Device Location Retrieval
+- status: 422
+  code: LOCATION_RETRIEVAL.UNABLE_TO_FULFILL_MAX_SURFACE
+  messages:
+  - Unable to provide accurate acceptable surface for location
+  apis:
+  - Device Location Retrieval
+- status: 422
+  code: LOCATION_RETRIEVAL.UNABLE_TO_LOCATE
+  messages:
+  - The network is unable to locate the device
+  apis:
+  - Device Location Retrieval
+- status: 422
+  code: LOCATION_VERIFICATION.AREA_NOT_COVERED
+  messages:
+  - Unable to cover the requested area
+  apis:
+  - Device Location Verification
+- status: 422
+  code: LOCATION_VERIFICATION.INVALID_AREA
+  messages:
+  - The requested area is too small
+  apis:
+  - Device Location Verification
+- status: 422
+  code: LOCATION_VERIFICATION.UNABLE_TO_FULFILL_MAX_AGE
+  messages:
+  - Unable to provide expected freshness for location
+  apis:
+  - Device Location Verification
+- status: 422
+  code: LOCATION_VERIFICATION.UNABLE_TO_LOCATE
+  messages:
+  - The network is unable to locate the device
+  apis:
+  - Device Location Verification
+- status: 422
+  code: MISSING_IDENTIFIER
+  messages:
+  - An identifier is not included in the request and the device cannot be identified from the 2-legged access token
+  - No phone number has been provided
+  - The device cannot be identified.
+  - The phone number cannot be identified.
+  apis:
+  - CAMARA Mobile Device Identifier
+  - Carrier Billing
+  - Device Location Retrieval
+  - Device Location Verification
+  - Device Swap
+  - Know Your Customer Match
+- status: 422
+  code: POPULATION_DENSITY_DATA.UNSUPPORTED_PRECISION
+  messages:
+  - Indicated cell precision (Geohash length) is not supported
+  apis:
+  - Population Density Data
+- status: 422
+  code: POPULATION_DENSITY_DATA.UNSUPPORTED_REQUEST
+  messages:
+  - Indicated combination of area, time interval and precision is too big
+  apis:
+  - Population Density Data
+- status: 422
+  code: POPULATION_DENSITY_DATA.UNSUPPORTED_SYNC_RESPONSE
+  messages:
+  - Indicated combination of area, time interval and precision is too big for a sync response
+  apis:
+  - Population Density Data
+- status: 422
+  code: SERVICE_NOT_APPLICABLE
+  messages:
+  - The service is not applicable for the identified device.
+  - The service is not applicable for the provided phone number
+  - The service is not available for the provided identifier.
+  apis:
+  - CAMARA Mobile Device Identifier
+  - Carrier Billing
+  - Device Location Retrieval
+  - Device Location Verification
+  - Device Swap
+  - Know Your Customer Match
+- status: 422
+  code: UNABLE_TO_PROVIDE_REACHABILITY_STATUS
+  messages:
+  - Network issue - Unable to provide reachability status
+  apis:
+  - Device Reachability Status
+- status: 422
+  code: UNABLE_TO_PROVIDE_ROAMING_STATUS
+  messages:
+  - Network issue - Unable to provide roaming status
+  apis:
+  - Device Roaming Status
+- status: 422
+  code: UNIDENTIFIABLE_DEVICE
+  messages:
+  - The device cannot be identified.
+  - phone number not defined
+  apis:
+  - Call Forwarding Signal
+  - Quality-On-Demand
+  - Simple Edge Discovery
+- status: 422
+  code: UNNECESSARY_IDENTIFIER
+  messages:
+  - An explicit identifier has been provided for the device when this is already identified by the access token
+  - The device is already identified by the access token.
+  - The phone number is already identified by the access token.
+  apis:
+  - CAMARA Mobile Device Identifier
+  - Carrier Billing
+  - Device Location Retrieval
+  - Device Location Verification
+  - Device Swap
+- status: 422
+  code: UNSUPPORTED_DEVICE_IDENTIFIERS
+  messages:
+  - None of the provided device identifiers is supported by the implementation
+  apis:
+  - Device Reachability Status
+  - Device Roaming Status
+- status: 422
+  code: UNSUPPORTED_IDENTIFIER
+  messages:
+  - None of the provided identifiers is supported by the implementation.
+  - The identifier provided is not supported.
+  apis:
+  - CAMARA Mobile Device Identifier
+  - Device Location Retrieval
+  - Device Location Verification
+- status: 429
+  code: QUOTA_EXCEEDED
+  messages:
+  - Either out of resource quota or reaching rate limiting.
+  - Out of resource quota
+  - Out of resource quota.
+  - Rejected due to exceeding a business quota limit.
+  apis:
+  - CAMARA Mobile Device Identifier
+  - Call Forwarding Signal
+  - Device Reachability Status
+  - Device Roaming Status
+  - Device Swap
+  - Population Density Data
+  - Quality-On-Demand
+  - Simple Edge Discovery
+- status: 429
+  code: TOO_MANY_REQUESTS
+  messages:
+  - Either out of resource quota or reaching rate limiting.
+  - Rate limit reached
+  - Rate limit reached.
+  - Rejected due to request rate limit overpassed.
+  apis:
+  - CAMARA Mobile Device Identifier
+  - Call Forwarding Signal
+  - Carrier Billing
+  - Carrier Billing Refund
+  - Device Reachability Status
+  - Device Roaming Status
+  - Device Swap
+  - Population Density Data
+  - Quality-On-Demand
+  - Simple Edge Discovery
+- status: 500
+  code: INTERNAL
+  messages:
+  - Unknown server error. Typically a server bug.
+  apis:
+  - Device Reachability Status
+  - Device Roaming Status
+  - Simple Edge Discovery
+- status: 501
+  code: NOT_IMPLEMENTED
+  messages:
+  - This functionality is not implemented yet.
+  apis:
+  - Call Forwarding Signal
+  - Device Reachability Status
+  - Device Roaming Status
+  - Simple Edge Discovery
+- status: 502
+  code: BAD_GATEWAY
+  messages:
+  - An upstream internal service cannot be reached.
+  apis:
+  - Device Reachability Status
+  - Device Roaming Status
+  - Simple Edge Discovery
+- status: 503
+  code: HOME_DEVICES_QOD.ROUTER_OFFLINE
+  messages:
+  - Router is not online. Try it later
+  apis:
+  - Home Devices QoD
+- status: 503
+  code: UNAVAILABLE
+  messages:
+  - Service Unavailable
+  - Service Unavailable.
+  apis:
+  - Device Reachability Status
+  - Device Roaming Status
+  - Home Devices QoD
+  - Quality-On-Demand
+  - Simple Edge Discovery
+- status: 504
+  code: TIMEOUT
+  messages:
+  - Request timeout exceeded.
+  apis:
+  - Device Reachability Status
+  - Device Roaming Status
+  - Simple Edge Discovery
+mobile_money_error_object:
+  schema: errorObject
+  fields:
+  - errorCategory
+  - errorCode
+  - errorDateTime
+  - errorParameters
+  - errordescription
+  errorCategory_enum:
+  - businessRule
+  - validation
+  - authorisation
+  - identification
+  - internal
+  - serviceUnavailable
+  errorCode_enum:
+  - genericError
+  - dailyVolumeLimitExceeded
+  - dailyValueLimitExceeded
+  - weeklyVolumeLimitExceeded
+  - weeklyValueLimitExceeded
+  - monthlyVolumeLimitExceeded
+  - monthlyValueLimitExceeded
+  - accountMaxTotalVolumeExceeded
+  - accountMaxTotalValueExceeded
+  - lessThanTransactionMinValue
+  - greaterThanTransactionMaxValue
+  - maxBalanceExceeded
+  - samePartiesError
+  - duplicateRequest
+  - insufficientFunds
+  - incorrectState
+  - underPaymentNotAllowed
+  - overPaymentNotAllowed
+  - rateLimitError
+  - transactionTypeError
+  - noMandateAuthority
+  - linkViolation
+  - countryofOriginNotPermitted
+  - nationalityNotPermitted
+  - idDocumentNotSupported
+  - issuingCountryNotSupported
+  - quoteHasExpired
+  - identifierError
+  - lengthError
+  - formatError
+  - negativeValue
+  - currencyNotSupported
+  - mandatoryValueNotSupplied
+  - invalidOffset
+  - clientAuthorisationError
+  - requestDeclined
+  - servicingPartyAuthorisationError
+  - requestingPartyAuthorisationError
+mobile_money_status_usage:
+  '400': 71
+  '401': 71
+  '404': 71
+  '500': 71
+  '503': 71

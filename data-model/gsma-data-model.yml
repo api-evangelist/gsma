@@ -1,0 +1,4384 @@
+generated: '2026-07-25'
+method: derived
+source: components.schemas $ref graph and id-reference fields across openapi/*.yml
+note: 'Derived entity-relationship graph across all eighteen harvested specifications. The GSMA publishes no object reference
+  or id-prefix registry, so no id prefixes or domains are asserted here — only what the specifications themselves declare.
+  Relationships are read from schema $ref edges; the property carrying the reference is recorded as ''via''. The two
+  programmes share no schemas: the Mobile Money data model (transactions, accounts, bills, mandates, links, quotations,
+  authorisation codes) and the CAMARA device/session model are independent.'
+summary:
+  specs: 18
+  entities: 201
+  relationships: 446
+  by_api:
+    CAMARA Mobile Device Identifier:
+      entities: 7
+    Call Forwarding Signal:
+      entities: 3
+    Carrier Billing:
+      entities: 36
+    Carrier Billing Refund:
+      entities: 27
+    Device Location Retrieval:
+      entities: 2
+    Device Location Verification:
+      entities: 4
+    Device Reachability Status:
+      entities: 5
+    Device Roaming Status:
+      entities: 5
+    Device Swap:
+      entities: 5
+    Home Devices QoD:
+      entities: 2
+    Know Your Customer Match:
+      entities: 3
+    Mobile Money API:
+      entities: 56
+    Number Verification:
+      entities: 3
+    One Time Password SMS:
+      entities: 4
+    Population Density Data:
+      entities: 17
+    Quality-On-Demand:
+      entities: 16
+    SIM Swap:
+      entities: 4
+    Simple Edge Discovery:
+      entities: 2
+entities:
+- entity: Device
+  api: CAMARA Mobile Device Identifier
+  spec: openapi/gsma-open-gateway-device-identifier-openapi.yml
+  fields: 4
+  id_fields:
+  - networkAccessIdentifier
+  references:
+  - DeviceIpv4Addr
+  - DeviceIpv6Address
+  - NetworkAccessIdentifier
+  - PhoneNumber
+- entity: DeviceIdentifier
+  api: CAMARA Mobile Device Identifier
+  spec: openapi/gsma-open-gateway-device-identifier-openapi.yml
+  fields: 2
+- entity: DeviceIpv4Addr
+  api: CAMARA Mobile Device Identifier
+  spec: openapi/gsma-open-gateway-device-identifier-openapi.yml
+  fields: 3
+  references:
+  - Port
+  - SingleIpv4Addr
+- entity: DeviceType
+  api: CAMARA Mobile Device Identifier
+  spec: openapi/gsma-open-gateway-device-identifier-openapi.yml
+  fields: 3
+- entity: ErrorInfo
+  api: CAMARA Mobile Device Identifier
+  spec: openapi/gsma-open-gateway-device-identifier-openapi.yml
+  fields: 3
+- entity: LastChecked
+  api: CAMARA Mobile Device Identifier
+  spec: openapi/gsma-open-gateway-device-identifier-openapi.yml
+  fields: 1
+- entity: RequestBody
+  api: CAMARA Mobile Device Identifier
+  spec: openapi/gsma-open-gateway-device-identifier-openapi.yml
+  fields: 1
+  references:
+  - Device
+- entity: CreateCallForwardingSignal
+  api: Call Forwarding Signal
+  spec: openapi/gsma-open-gateway-call-forwarding-signal-openapi.yml
+  fields: 1
+  references:
+  - PhoneNumber
+- entity: ErrorInfo
+  api: Call Forwarding Signal
+  spec: openapi/gsma-open-gateway-call-forwarding-signal-openapi.yml
+  fields: 3
+- entity: UnconditionalCallForwardingSignal
+  api: Call Forwarding Signal
+  spec: openapi/gsma-open-gateway-call-forwarding-signal-openapi.yml
+  fields: 1
+- entity: AccessTokenCredential
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 0
+  references:
+  - SinkCredential
+- entity: AmountReservationTransactionForReserve
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 6
+  references:
+  - PaymentAmountForReserve
+- entity: AmountReservationTransactionForReserveInput
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 4
+  references:
+  - PaymentAmountForReserve
+- entity: AmountTransaction
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 6
+  references:
+  - PaymentAmountForCharge
+- entity: AmountTransactionInput
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 4
+  references:
+  - PaymentAmountForCharge
+- entity: BasicEvent
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 3
+  id_fields:
+  - paymentId
+- entity: BodyAmountReservationTransactionForReserve
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 6
+  id_fields:
+  - paymentId
+  references:
+  - AmountReservationTransactionForReserve
+  - ValidationInfo
+- entity: BodyAmountReservationTransactionForReserveInput
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 3
+  references:
+  - AmountReservationTransactionForReserveInput
+  - SinkCredential
+- entity: ChargingInformation
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 5
+- entity: ChargingMetaData
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 7
+  id_fields:
+  - merchantIdentifier
+  - productId
+  - serviceId
+- entity: CloudEvent
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 7
+  references:
+  - DateTime
+  - EventPaymentCancelled
+  - EventPaymentCompleted
+  - EventPaymentDenied
+  - EventPaymentPendingValidation
+  - EventPaymentReserved
+  - Source
+- entity: CreatePayment
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 3
+  references:
+  - AmountTransactionInput
+  - SinkCredential
+- entity: ErrorInfo
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 3
+- entity: EventPaymentCancelled
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 0
+  references:
+  - CloudEvent
+  - PaymentCancelled
+- entity: EventPaymentCompleted
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 0
+  references:
+  - CloudEvent
+  - PaymentCompleted
+- entity: EventPaymentDenied
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 0
+  references:
+  - CloudEvent
+  - PaymentDenied
+- entity: EventPaymentPendingValidation
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 0
+  references:
+  - CloudEvent
+  - PaymentPendingValidation
+- entity: EventPaymentReserved
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 0
+  references:
+  - CloudEvent
+  - PaymentReserved
+- entity: Open
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 0
+  references:
+  - ValidationInfo
+- entity: Payment
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 6
+  id_fields:
+  - paymentId
+  references:
+  - AmountTransaction
+- entity: PaymentAmountForCharge
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 3
+  references:
+  - ChargingInformation
+  - ChargingMetaData
+  - PaymentDetails
+- entity: PaymentAmountForReserve
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 3
+  references:
+  - ChargingInformation
+  - ChargingMetaData
+  - PaymentDetails
+- entity: PaymentCancelled
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 0
+  references:
+  - BasicEvent
+- entity: PaymentCompleted
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 0
+  references:
+  - BasicEvent
+- entity: PaymentCreated
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 6
+  id_fields:
+  - paymentId
+  references:
+  - AmountTransaction
+- entity: PaymentDenied
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 0
+  references:
+  - BasicEvent
+- entity: PaymentItem
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 6
+- entity: PaymentPendingValidation
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 0
+  references:
+  - BasicEvent
+- entity: PaymentReserved
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 0
+  references:
+  - BasicEvent
+- entity: PhoneNumber
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 1
+- entity: PlainCredential
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 0
+  references:
+  - SinkCredential
+- entity: RefreshTokenCredential
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 0
+  references:
+  - SinkCredential
+- entity: SinkCredential
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 1
+  references:
+  - AccessTokenCredential
+  - PlainCredential
+  - RefreshTokenCredential
+- entity: Validate
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 0
+  references:
+  - ValidationInfo
+- entity: ValidatePayment
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 2
+  id_fields:
+  - authorizationId
+- entity: ValidationInfo
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+  fields: 1
+  references:
+  - Open
+  - Validate
+- entity: AccessTokenCredential
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 0
+  references:
+  - SinkCredential
+- entity: AmountTransactionPartialRefund
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 3
+  references:
+  - RefundAmountPartialRefund
+- entity: AmountTransactionTotalRefund
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 3
+  references:
+  - RefundAmountTotalRefund
+- entity: BasicEvent
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 4
+  id_fields:
+  - paymentId
+  - refundId
+- entity: ChargingInformation
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 5
+- entity: ChargingMetaData
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 1
+  id_fields:
+  - merchantIdentifier
+- entity: CloudEvent
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 7
+  references:
+  - DateTime
+  - EventRefundCompleted
+  - EventRefundDenied
+  - EventRefundInBill
+  - Source
+- entity: CreatePartialRefund
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 0
+  references:
+  - AmountTransactionPartialRefund
+  - CreateRefund
+- entity: CreateRefund
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 4
+  references:
+  - CreatePartialRefund
+  - CreateTotalRefund
+  - SinkCredential
+- entity: CreateTotalRefund
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 0
+  references:
+  - AmountTransactionTotalRefund
+  - CreateRefund
+- entity: ErrorInfo
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 3
+- entity: EventRefundCompleted
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 0
+  references:
+  - CloudEvent
+  - RefundCompleted
+- entity: EventRefundDenied
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 0
+  references:
+  - CloudEvent
+  - RefundDenied
+- entity: EventRefundInBill
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 0
+  references:
+  - CloudEvent
+  - RefundInBill
+- entity: PartialRefund
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 0
+  references:
+  - AmountTransactionPartialRefund
+  - Refund
+- entity: PaymentRemainingAmount
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 5
+- entity: PlainCredential
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 0
+  references:
+  - SinkCredential
+- entity: RefreshTokenCredential
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 0
+  references:
+  - SinkCredential
+- entity: Refund
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 7
+  id_fields:
+  - refundId
+  references:
+  - PartialRefund
+  - TotalRefund
+- entity: RefundAmountPartialRefund
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 3
+  references:
+  - ChargingInformation
+  - ChargingMetaData
+  - RefundDetails
+- entity: RefundAmountTotalRefund
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 1
+  references:
+  - ChargingMetaData
+- entity: RefundCompleted
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 0
+  references:
+  - BasicEvent
+- entity: RefundDenied
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 0
+  references:
+  - BasicEvent
+- entity: RefundInBill
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 0
+  references:
+  - BasicEvent
+- entity: RefundItem
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 6
+  id_fields:
+  - paymentItemId
+- entity: SinkCredential
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 1
+  references:
+  - AccessTokenCredential
+  - PlainCredential
+  - RefreshTokenCredential
+- entity: TotalRefund
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+  fields: 0
+  references:
+  - AmountTransactionTotalRefund
+  - Refund
+- entity: Location
+  api: Device Location Retrieval
+  spec: openapi/gsma-open-gateway-device-location-retrieval-openapi.yml
+  fields: 3
+  references:
+  - Area
+  - DeviceResponse
+  - LastLocationTime
+- entity: RetrievalLocationRequest
+  api: Device Location Retrieval
+  spec: openapi/gsma-open-gateway-device-location-retrieval-openapi.yml
+  fields: 3
+  references:
+  - Device
+- entity: Area
+  api: Device Location Verification
+  spec: openapi/gsma-open-gateway-device-location-verification-openapi.yml
+  fields: 1
+  references:
+  - AreaType
+  - Circle
+- entity: Circle
+  api: Device Location Verification
+  spec: openapi/gsma-open-gateway-device-location-verification-openapi.yml
+  fields: 0
+  references:
+  - Area
+  - Point
+- entity: VerifyLocationRequest
+  api: Device Location Verification
+  spec: openapi/gsma-open-gateway-device-location-verification-openapi.yml
+  fields: 3
+  references:
+  - Area
+  - Device
+  - MaxAge
+- entity: VerifyLocationResponse
+  api: Device Location Verification
+  spec: openapi/gsma-open-gateway-device-location-verification-openapi.yml
+  fields: 4
+  references:
+  - DeviceResponse
+  - LastLocationTime
+  - MatchRate
+  - VerificationResult
+- entity: Device
+  api: Device Reachability Status
+  spec: openapi/gsma-open-gateway-device-reachability-status-openapi.yml
+  fields: 4
+  id_fields:
+  - networkAccessIdentifier
+  references:
+  - DeviceIpv4Addr
+  - DeviceIpv6Address
+  - NetworkAccessIdentifier
+  - PhoneNumber
+- entity: DeviceIpv4Addr
+  api: Device Reachability Status
+  spec: openapi/gsma-open-gateway-device-reachability-status-openapi.yml
+  fields: 3
+  references:
+  - Port
+  - SingleIpv4Addr
+- entity: ErrorInfo
+  api: Device Reachability Status
+  spec: openapi/gsma-open-gateway-device-reachability-status-openapi.yml
+  fields: 3
+- entity: ReachabilityStatusResponse
+  api: Device Reachability Status
+  spec: openapi/gsma-open-gateway-device-reachability-status-openapi.yml
+  fields: 2
+  references:
+  - LastStatusTime
+  - ReachabilityStatus
+- entity: RequestReachabilityStatus
+  api: Device Reachability Status
+  spec: openapi/gsma-open-gateway-device-reachability-status-openapi.yml
+  fields: 1
+  references:
+  - Device
+- entity: Device
+  api: Device Roaming Status
+  spec: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
+  fields: 4
+  id_fields:
+  - networkAccessIdentifier
+  references:
+  - DeviceIpv4Addr
+  - DeviceIpv6Address
+  - NetworkAccessIdentifier
+  - PhoneNumber
+- entity: DeviceIpv4Addr
+  api: Device Roaming Status
+  spec: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
+  fields: 3
+  references:
+  - Port
+  - SingleIpv4Addr
+- entity: ErrorInfo
+  api: Device Roaming Status
+  spec: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
+  fields: 3
+- entity: RoamingStatusRequest
+  api: Device Roaming Status
+  spec: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
+  fields: 1
+  references:
+  - Device
+- entity: RoamingStatusResponse
+  api: Device Roaming Status
+  spec: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
+  fields: 4
+  references:
+  - ActiveRoaming
+  - CountryCode
+  - CountryName
+  - LastStatusTime
+- entity: CheckDeviceSwapInfo
+  api: Device Swap
+  spec: openapi/gsma-open-gateway-device-swap-openapi.yml
+  fields: 1
+- entity: CreateCheckDeviceSwap
+  api: Device Swap
+  spec: openapi/gsma-open-gateway-device-swap-openapi.yml
+  fields: 2
+  references:
+  - PhoneNumber
+- entity: CreateDeviceSwapDate
+  api: Device Swap
+  spec: openapi/gsma-open-gateway-device-swap-openapi.yml
+  fields: 1
+  references:
+  - PhoneNumber
+- entity: DeviceSwapInfo
+  api: Device Swap
+  spec: openapi/gsma-open-gateway-device-swap-openapi.yml
+  fields: 2
+- entity: ErrorInfo
+  api: Device Swap
+  spec: openapi/gsma-open-gateway-device-swap-openapi.yml
+  fields: 3
+- entity: ErrorInfo
+  api: Home Devices QoD
+  spec: openapi/gsma-open-gateway-home-devices-quality-on-demand-openapi.yml
+  fields: 3
+- entity: QosOnDemandUpdate
+  api: Home Devices QoD
+  spec: openapi/gsma-open-gateway-home-devices-quality-on-demand-openapi.yml
+  fields: 2
+- entity: ErrorInfo
+  api: Know Your Customer Match
+  spec: openapi/gsma-open-gateway-know-your-customer-openapi.yml
+  fields: 3
+- entity: KYC_MatchRequestBody
+  api: Know Your Customer Match
+  spec: openapi/gsma-open-gateway-know-your-customer-openapi.yml
+  fields: 20
+- entity: KYC_MatchResponse
+  api: Know Your Customer Match
+  spec: openapi/gsma-open-gateway-know-your-customer-openapi.yml
+  fields: 32
+  references:
+  - MatchResult
+  - MatchScoreResult
+- entity: availableBalance
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 0
+  references:
+  - amount
+- entity: commissionEarned
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 3
+  references:
+  - amount
+  - currency
+- entity: currentBalance
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 0
+  references:
+  - amount
+- entity: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 2
+- entity: errorObject
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 5
+  references:
+  - metadataArray
+- entity: fees
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 3
+  references:
+  - amount
+  - currency
+- entity: genericUpdateSuccess
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 1
+- entity: idDocument
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 8
+  references:
+  - nationality
+- entity: identityRequest
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 6
+  references:
+  - accountRelationship
+  - customDataArray
+  - kyc
+  - kycLevel
+  - kycVerificationEntity
+  - kycVerificationStatus
+- entity: identityResponse
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 9
+  id_fields:
+  - identityId
+  references:
+  - accountRelationship
+  - customDataArray
+  - identityId
+  - identityStatus
+  - identityType
+  - kyc
+  - kycLevel
+  - kycVerificationEntity
+  - kycVerificationStatus
+- entity: internationalTransferInformation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 8
+  id_fields:
+  - quotationReference
+  - quoteId
+  references:
+  - deliveryMethod
+  - nationality
+  - quotationReference
+  - quoteId
+  - relationshipSender
+  - remittancePurpose
+- entity: internationalTransferInformationResponse
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 10
+  id_fields:
+  - quotationReference
+  - quoteId
+  references:
+  - deliveryMethod
+  - nationality
+  - quotationReference
+  - quoteId
+  - recipientBlockingReason
+  - relationshipSender
+  - remittancePurpose
+  - senderBlockingReason
+- entity: kyc
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 11
+  references:
+  - contactPhone
+  - dateOfBirth
+  - emailAddress
+  - employerName
+  - gender
+  - idDocumentArray
+  - nationality
+  - occupation
+  - postalAddress
+  - subjectName
+- entity: metadata
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 2
+- entity: party
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 2
+- entity: postalAddress
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 7
+  references:
+  - nationality
+- entity: quotes
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 10
+  id_fields:
+  - quoteId
+  references:
+  - amount
+  - currency
+  - deliveryMethod
+  - feesArray
+  - fxRate
+  - quoteExpiryTime
+  - quoteId
+  - receivingServiceProvider
+- entity: requestAccount
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 7
+  references:
+  - accountIdentifiersArray
+  - accountType
+  - customDataArray
+  - feesArray
+  - identityRequestArray
+  - registeringEntity
+  - requestDate
+- entity: requestAuthorisationCode
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 12
+  references:
+  - amount
+  - amountType
+  - codeLifetime
+  - currency
+  - customDataArray
+  - holdFundsIndicator
+  - metadataArray
+  - redemptionAccountIdentifiers
+  - redemptionChannels
+  - redemptionTransactionTypes
+  - requestDate
+  - requestingOrganisation
+- entity: requestBatchTransaction
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 9
+  references:
+  - batchDescription
+  - batchStatus
+  - batchTitle
+  - customDataArray
+  - modificationDate
+  - requestDate
+  - requestTransaction
+  - requestingOrganisation
+  - scheduledStartDate
+- entity: requestBillPayment
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 12
+  id_fields:
+  - customerReference
+  - requestingOrganisationTransactionReference
+  - serviceProviderPaymentReference
+  references:
+  - amount
+  - currency
+  - customDataArray
+  - customerReference
+  - metadataArray
+  - paymentType
+  - requestDate
+  - requestingOrganisationBillPay
+  - requestingOrganisationTransactionReference
+  - serviceProviderPaymentReference
+  - supplementaryBillReferenceDetailsArray
+- entity: requestBillPayment2
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 11
+  id_fields:
+  - customerReference
+  - requestingOrganisationTransactionReference
+  - serviceProviderPaymentReference
+  references:
+  - amount
+  - currency
+  - customDataArray
+  - customerReference
+  - metadataArray
+  - paymentType
+  - requestDate
+  - requestingOrganisationBillPay
+  - requestingOrganisationTransactionReference
+  - serviceProviderPaymentReference
+- entity: requestDebitMandate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 11
+  references:
+  - currency
+  - customDataArray
+  - endDate
+  - frequencyType
+  - mandateStatus
+  - numberOfPayments
+  - payee
+  - requestDate
+  - requestingOrganisation
+  - startDate
+- entity: requestGenericPatch
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 3
+- entity: requestLink
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 6
+  references:
+  - customDataArray
+  - debitPartyArray
+  - mode
+  - requestDate
+  - requestingOrganisation
+  - status
+- entity: requestQuotation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 16
+  references:
+  - amount
+  - creditPartyArray
+  - currency
+  - customDataArray
+  - debitPartyArray
+  - deliveryMethod
+  - kyc
+  - metadataArray
+  - nationality
+  - requestDate
+  - requestingOrganisation
+  - subType
+  - type
+- entity: requestReversal
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 17
+  id_fields:
+  - requestingOrganisationTransactionReference
+  references:
+  - amount
+  - creditPartyArray
+  - currency
+  - customDataArray
+  - debitPartyArray
+  - descriptionText
+  - feesArray
+  - geoCode
+  - metadataArray
+  - receivingLei
+  - requestDate
+  - requestingLei
+  - requestingOrganisation
+  - requestingOrganisationTransactionReference
+- entity: requestStateObject
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 8
+  id_fields:
+  - objectReference
+  - serverCorrelationId
+  references:
+  - errorObject
+- entity: requestTransaction
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 22
+  id_fields:
+  - originalTransactionReference
+  - requestingOrganisationTransactionReference
+  references:
+  - amount
+  - creditPartyArray
+  - currency
+  - customDataArray
+  - debitPartyArray
+  - descriptionText
+  - feesArray
+  - geoCode
+  - internationalTransferInformation
+  - kyc
+  - metadataArray
+  - oneTimeCode
+  - originalTransactionReference
+  - receivingLei
+- entity: requestTransactionType
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 0
+  references:
+  - amount
+  - creditPartyArray
+  - currency
+  - customDataArray
+  - debitPartyArray
+  - descriptionText
+  - feesArray
+  - geoCode
+  - internationalTransferInformation
+  - kyc
+  - metadataArray
+  - oneTimeCode
+  - originalTransactionReference
+  - receivingLei
+- entity: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 2
+  id_fields:
+  - requestingOrganisationIdentifier
+- entity: reservedBalance
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 0
+  references:
+  - amount
+- entity: responseAccount
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 17
+  references:
+  - accountIdentifiersArray
+  - accountStatus
+  - accountSubStatus
+  - accountType
+  - availableBalance
+  - commissionEarnedArray
+  - creationDate
+  - currency
+  - currentBalance
+  - customDataArray
+  - feesArray
+  - identityResponseArray
+  - modificationDate
+  - registeringEntity
+- entity: responseAccountBalance
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 6
+  references:
+  - accountStatus
+  - availableBalance
+  - currency
+  - currentBalance
+  - reservedBalance
+  - unclearedBalance
+- entity: responseAccountName
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 2
+  references:
+  - lei
+  - subjectName
+- entity: responseAccountStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 3
+  references:
+  - accountStatus
+  - lei
+  - subStatus
+- entity: responseAuthorisationCode
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 16
+  references:
+  - amount
+  - amountType
+  - authorisationCode
+  - codeLifetime
+  - codeState
+  - creationDate
+  - currency
+  - customDataArray
+  - holdFundsIndicator
+  - metadataArray
+  - modificationDate
+  - redemptionAccountIdentifiers
+  - redemptionChannels
+  - redemptionTransactionTypes
+- entity: responseBatchTransaction
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 17
+  id_fields:
+  - batchId
+  references:
+  - approvalDate
+  - batchDescription
+  - batchId
+  - batchStatus
+  - batchTitle
+  - completedCount
+  - completedDate
+  - completionDate
+  - creationDate
+  - customDataArray
+  - modificationDate
+  - parsingSuccessCount
+  - processingFlag
+  - rejectionCount
+- entity: responseBatchTransactionCompletion
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 8
+  id_fields:
+  - requestingOrganisationTransactionReference
+  - transactionReference
+  references:
+  - creditPartyArray
+  - customDataArray
+  - debitPartyArray
+  - link
+  - requestingOrganisationTransactionReference
+  - transactionCompletedDate
+  - transactionCompletionDate
+  - transactionReference
+- entity: responseBatchTransactionRejection
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 8
+  id_fields:
+  - requestingOrganisationTransactionReference
+  - transactionReference
+  references:
+  - creditPartyArray
+  - customDataArray
+  - dateRejected
+  - debitPartyArray
+  - rejectionDate
+  - rejectionReason
+  - requestingOrganisationTransactionReference
+  - transactionReference
+- entity: responseBillCompanies
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 5
+  references:
+  - companyName
+  - metadata
+  - serviceProvider
+  - serviceProviderSubType
+  - serviceProviderType
+- entity: responseBillPayment
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 17
+  id_fields:
+  - customerReference
+  - requestingOrganisationTransactionReference
+  - serviceProviderPaymentReference
+  references:
+  - amount
+  - billPaymentStatus
+  - creationDate
+  - currency
+  - customDataArray
+  - customerReference
+  - metadataArray
+  - modificationDate
+  - paymentType
+  - requestDate
+  - requestingOrganisationBillPay
+  - requestingOrganisationTransactionReference
+  - serviceProviderComment
+  - serviceProviderNotification
+- entity: responseBillPayment2
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 16
+  id_fields:
+  - customerReference
+  - requestingOrganisationTransactionReference
+  - serviceProviderPaymentReference
+  references:
+  - amount
+  - billPaymentStatus
+  - creationDate
+  - currency
+  - customDataArray
+  - customerReference
+  - metadataArray
+  - modificationDate
+  - paymentType
+  - requestDate
+  - requestingOrganisationBillPay
+  - requestingOrganisationTransactionReference
+  - serviceProviderComment
+  - serviceProviderNotification
+- entity: responseBills
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 11
+  id_fields:
+  - billReference
+  references:
+  - amount
+  - billDescription
+  - billReference
+  - billStatus
+  - creationDate
+  - currency
+  - customDataArray
+  - dueDate
+  - metadataArray
+  - modificationDate
+- entity: responseDebitMandate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 16
+  id_fields:
+  - mandateReference
+  references:
+  - amount
+  - creationDate
+  - currency
+  - customDataArray
+  - dateCreated
+  - dateModified
+  - endDate
+  - frequencyType
+  - mandateReference
+  - mandateStatus
+  - modificationDate
+  - numberOfPayments
+  - payee
+  - requestDate
+- entity: responseHeartbeat
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 3
+  references:
+  - delay
+  - plannedRestorationTime
+  - serviceStatus
+- entity: responseLink
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 9
+  id_fields:
+  - linkReference
+  references:
+  - creationDate
+  - customDataArray
+  - debitPartyArray
+  - linkReference
+  - mode
+  - modificationDate
+  - requestDate
+  - requestingOrganisation
+  - status
+- entity: responseQuotation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 26
+  id_fields:
+  - quotationReference
+  references:
+  - amount
+  - creationDate
+  - creditPartyArray
+  - currency
+  - customDataArray
+  - dateCreated
+  - dateModified
+  - debitPartyArray
+  - deliveryMethod
+  - kyc
+  - metadataArray
+  - modificationDate
+  - nationality
+  - quotationReference
+- entity: responseResponse
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 1
+  references:
+  - link
+- entity: responseReversal
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 25
+  id_fields:
+  - originalTransactionReference
+  - requestingOrganisationTransactionReference
+  - transactionReference
+  references:
+  - amount
+  - creationDate
+  - currency
+  - customDataArray
+  - dateCreated
+  - dateModified
+  - debitPartyArray
+  - descriptionText
+  - feesArray
+  - geoCode
+  - metadataArray
+  - modificationDate
+  - originalTransactionReference
+  - receivingLei
+- entity: responseStatementEntries
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 15
+  id_fields:
+  - transactionReference
+  references:
+  - amount
+  - creationDate
+  - creditPartyArray
+  - currency
+  - customDataArray
+  - dateCreated
+  - dateModified
+  - debitPartyArray
+  - descriptionText
+  - displayType
+  - modificationDate
+  - requestDate
+  - transactionReceipt
+  - transactionReference
+- entity: responseTransaction
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 29
+  id_fields:
+  - originalTransactionReference
+  - requestingOrganisationTransactionReference
+  - transactionReference
+  references:
+  - amount
+  - creationDate
+  - creditPartyArray
+  - currency
+  - customDataArray
+  - dateCreated
+  - dateModified
+  - debitPartyArray
+  - descriptionText
+  - feesArray
+  - geoCode
+  - internationalTransferInformationResponse
+  - kyc
+  - metadataArray
+- entity: responseTransactionType
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 0
+  references:
+  - amount
+  - creationDate
+  - creditPartyArray
+  - currency
+  - customDataArray
+  - dateCreated
+  - dateModified
+  - debitPartyArray
+  - descriptionText
+  - feesArray
+  - geoCode
+  - internationalTransferInformationResponse
+  - kyc
+  - metadataArray
+- entity: subjectName
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 6
+- entity: supplementaryBillReferenceDetails
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 2
+- entity: unclearedBalance
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+  fields: 0
+  references:
+  - amount
+- entity: NumberVerificationMatchResponse
+  api: Number Verification
+  spec: openapi/gsma-open-gateway-number-verification-openapi.yml
+  fields: 1
+  references:
+  - DevicePhoneNumberVerified
+- entity: NumberVerificationRequestBody
+  api: Number Verification
+  spec: openapi/gsma-open-gateway-number-verification-openapi.yml
+  fields: 2
+  references:
+  - PhoneNumber
+- entity: NumberVerificationShareResponse
+  api: Number Verification
+  spec: openapi/gsma-open-gateway-number-verification-openapi.yml
+  fields: 1
+  references:
+  - DevicePhoneNumber
+- entity: ErrorInfo
+  api: One Time Password SMS
+  spec: openapi/gsma-open-gateway-otp-validation-openapi.yml
+  fields: 3
+- entity: SendCodeBody
+  api: One Time Password SMS
+  spec: openapi/gsma-open-gateway-otp-validation-openapi.yml
+  fields: 2
+  references:
+  - Message
+  - PhoneNumber
+- entity: SendCodeResponse
+  api: One Time Password SMS
+  spec: openapi/gsma-open-gateway-otp-validation-openapi.yml
+  fields: 1
+  id_fields:
+  - authenticationId
+  references:
+  - AuthenticationId
+- entity: ValidateCodeBody
+  api: One Time Password SMS
+  spec: openapi/gsma-open-gateway-otp-validation-openapi.yml
+  fields: 2
+  id_fields:
+  - authenticationId
+  references:
+  - AuthenticationId
+  - Code
+- entity: AcceptedAsyncResponse
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  fields: 1
+  id_fields:
+  - operationId
+  references:
+  - OperationId
+- entity: AccessTokenCredential
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  fields: 0
+  references:
+  - SinkCredential
+- entity: Area
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  fields: 1
+  references:
+  - AreaType
+  - Polygon
+- entity: CellPopulationDensityData
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  fields: 2
+  references:
+  - DENSITY_ESTIMATION
+  - LOW_DENSITY
+  - NO_DATA
+- entity: DENSITY_ESTIMATION
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  fields: 0
+  references:
+  - CellPopulationDensityData
+- entity: ErrorInfo
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  fields: 3
+- entity: LOW_DENSITY
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  fields: 0
+  references:
+  - CellPopulationDensityData
+- entity: NO_DATA
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  fields: 0
+  references:
+  - CellPopulationDensityData
+- entity: PlainCredential
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  fields: 0
+  references:
+  - SinkCredential
+- entity: Point
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  fields: 2
+  references:
+  - Latitude
+  - Longitude
+- entity: Polygon
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  fields: 0
+  references:
+  - Area
+  - PointList
+- entity: PopulationDensityAsyncResponse
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  fields: 0
+  references:
+  - OperationId
+  - PopulationDensityResponse
+- entity: PopulationDensityRequest
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  fields: 6
+  references:
+  - Area
+  - SinkCredential
+- entity: PopulationDensityResponse
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  fields: 3
+  references:
+  - ResponseStatus
+  - TimedPopulationDensityData
+- entity: RefreshTokenCredential
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  fields: 0
+  references:
+  - SinkCredential
+- entity: SinkCredential
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  fields: 1
+  references:
+  - AccessTokenCredential
+  - PlainCredential
+  - RefreshTokenCredential
+- entity: TimedPopulationDensityData
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+  fields: 3
+  references:
+  - CellPopulationDensityDataArray
+- entity: AccessTokenCredential
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  fields: 0
+  references:
+  - SinkCredential
+- entity: ApplicationServer
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  fields: 2
+  references:
+  - ApplicationServerIpv4Address
+  - ApplicationServerIpv6Address
+- entity: BaseSessionInfo
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  fields: 7
+  references:
+  - ApplicationServer
+  - Device
+  - PortsSpec
+  - QosProfileName
+  - SinkCredential
+- entity: CloudEvent
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  fields: 7
+  references:
+  - EventQosStatusChanged
+- entity: CreateSession
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  fields: 0
+  references:
+  - BaseSessionInfo
+- entity: Device
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  fields: 4
+  id_fields:
+  - networkAccessIdentifier
+  references:
+  - DeviceIpv4Addr
+  - DeviceIpv6Address
+  - NetworkAccessIdentifier
+  - PhoneNumber
+- entity: DeviceIpv4Addr
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  fields: 3
+  references:
+  - Port
+  - SingleIpv4Addr
+- entity: ErrorInfo
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  fields: 3
+- entity: EventQosStatusChanged
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  fields: 0
+  references:
+  - CloudEvent
+  - EventQosStatus
+  - SessionId
+  - StatusInfo
+- entity: ExtendSessionDuration
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  fields: 1
+- entity: PlainCredential
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  fields: 0
+  references:
+  - SinkCredential
+- entity: PortsSpec
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  fields: 2
+  references:
+  - Port
+- entity: RefreshTokenCredential
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  fields: 0
+  references:
+  - SinkCredential
+- entity: RetrieveSessionsInput
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  fields: 1
+  references:
+  - Device
+- entity: SessionInfo
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  fields: 0
+  references:
+  - BaseSessionInfo
+  - QosStatus
+  - SessionId
+  - StatusInfo
+- entity: SinkCredential
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+  fields: 1
+  references:
+  - AccessTokenCredential
+  - PlainCredential
+  - RefreshTokenCredential
+- entity: CheckSimSwapInfo
+  api: SIM Swap
+  spec: openapi/gsma-open-gateway-sim-swap-openapi.yml
+  fields: 1
+- entity: CreateCheckSimSwap
+  api: SIM Swap
+  spec: openapi/gsma-open-gateway-sim-swap-openapi.yml
+  fields: 2
+  references:
+  - PhoneNumber
+- entity: CreateSimSwapDate
+  api: SIM Swap
+  spec: openapi/gsma-open-gateway-sim-swap-openapi.yml
+  fields: 1
+  references:
+  - PhoneNumber
+- entity: SimSwapInfo
+  api: SIM Swap
+  spec: openapi/gsma-open-gateway-sim-swap-openapi.yml
+  fields: 2
+- entity: EdgeCloudZone
+  api: Simple Edge Discovery
+  spec: openapi/gsma-open-gateway-simple-edge-discovery-openapi.yml
+  fields: 3
+  id_fields:
+  - edgeCloudZoneId
+  references:
+  - EdgeCloudProvider
+  - EdgeCloudZoneId
+  - EdgeCloudZoneName
+- entity: ErrorInfo
+  api: Simple Edge Discovery
+  spec: openapi/gsma-open-gateway-simple-edge-discovery-openapi.yml
+  fields: 3
+relationships:
+- from: Device
+  to: DeviceIpv4Addr
+  cardinality: has_one
+  via: ipv4Address
+  api: CAMARA Mobile Device Identifier
+  spec: openapi/gsma-open-gateway-device-identifier-openapi.yml
+- from: Device
+  to: DeviceIpv6Address
+  cardinality: has_one
+  via: ipv6Address
+  api: CAMARA Mobile Device Identifier
+  spec: openapi/gsma-open-gateway-device-identifier-openapi.yml
+- from: Device
+  to: NetworkAccessIdentifier
+  cardinality: has_one
+  via: networkAccessIdentifier
+  api: CAMARA Mobile Device Identifier
+  spec: openapi/gsma-open-gateway-device-identifier-openapi.yml
+- from: Device
+  to: PhoneNumber
+  cardinality: has_one
+  via: phoneNumber
+  api: CAMARA Mobile Device Identifier
+  spec: openapi/gsma-open-gateway-device-identifier-openapi.yml
+- from: DeviceIpv4Addr
+  to: Port
+  cardinality: has_one
+  via: publicPort
+  api: CAMARA Mobile Device Identifier
+  spec: openapi/gsma-open-gateway-device-identifier-openapi.yml
+- from: DeviceIpv4Addr
+  to: SingleIpv4Addr
+  cardinality: has_one
+  via: publicAddress
+  api: CAMARA Mobile Device Identifier
+  spec: openapi/gsma-open-gateway-device-identifier-openapi.yml
+- from: RequestBody
+  to: Device
+  cardinality: has_one
+  via: device
+  api: CAMARA Mobile Device Identifier
+  spec: openapi/gsma-open-gateway-device-identifier-openapi.yml
+- from: CreateCallForwardingSignal
+  to: PhoneNumber
+  cardinality: has_one
+  via: phoneNumber
+  api: Call Forwarding Signal
+  spec: openapi/gsma-open-gateway-call-forwarding-signal-openapi.yml
+- from: AmountReservationTransactionForReserve
+  to: PaymentAmountForReserve
+  cardinality: has_one
+  via: paymentAmount
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+- from: AmountReservationTransactionForReserveInput
+  to: PaymentAmountForReserve
+  cardinality: has_one
+  via: paymentAmount
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+- from: AmountTransaction
+  to: PaymentAmountForCharge
+  cardinality: has_one
+  via: paymentAmount
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+- from: AmountTransactionInput
+  to: PaymentAmountForCharge
+  cardinality: has_one
+  via: paymentAmount
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+- from: BodyAmountReservationTransactionForReserve
+  to: AmountReservationTransactionForReserve
+  cardinality: has_one
+  via: amountTransaction
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+- from: BodyAmountReservationTransactionForReserveInput
+  to: AmountReservationTransactionForReserveInput
+  cardinality: has_one
+  via: amountTransaction
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+- from: CloudEvent
+  to: DateTime
+  cardinality: has_one
+  via: time
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+- from: CloudEvent
+  to: Source
+  cardinality: has_one
+  via: source
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+- from: CreatePayment
+  to: AmountTransactionInput
+  cardinality: has_one
+  via: amountTransaction
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+- from: Payment
+  to: AmountTransaction
+  cardinality: has_one
+  via: amountTransaction
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+- from: PaymentAmountForCharge
+  to: ChargingInformation
+  cardinality: has_one
+  via: chargingInformation
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+- from: PaymentAmountForCharge
+  to: ChargingMetaData
+  cardinality: has_one
+  via: chargingMetaData
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+- from: PaymentAmountForCharge
+  to: PaymentDetails
+  cardinality: has_one
+  via: paymentDetails
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+- from: PaymentAmountForReserve
+  to: ChargingInformation
+  cardinality: has_one
+  via: chargingInformation
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+- from: PaymentAmountForReserve
+  to: ChargingMetaData
+  cardinality: has_one
+  via: chargingMetaData
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+- from: PaymentAmountForReserve
+  to: PaymentDetails
+  cardinality: has_one
+  via: paymentDetails
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+- from: PaymentCreated
+  to: AmountTransaction
+  cardinality: has_one
+  via: amountTransaction
+  api: Carrier Billing
+  spec: openapi/gsma-open-gateway-carrier-billing-openapi.yml
+- from: AmountTransactionPartialRefund
+  to: RefundAmountPartialRefund
+  cardinality: has_one
+  via: refundAmount
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+- from: AmountTransactionTotalRefund
+  to: RefundAmountTotalRefund
+  cardinality: has_one
+  via: refundAmount
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+- from: CloudEvent
+  to: DateTime
+  cardinality: has_one
+  via: time
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+- from: CloudEvent
+  to: Source
+  cardinality: has_one
+  via: source
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+- from: RefundAmountPartialRefund
+  to: ChargingInformation
+  cardinality: has_one
+  via: chargingInformation
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+- from: RefundAmountPartialRefund
+  to: ChargingMetaData
+  cardinality: has_one
+  via: chargingMetaData
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+- from: RefundAmountPartialRefund
+  to: RefundDetails
+  cardinality: has_one
+  via: refundDetails
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+- from: RefundAmountTotalRefund
+  to: ChargingMetaData
+  cardinality: has_one
+  via: chargingMetaData
+  api: Carrier Billing Refund
+  spec: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
+- from: Location
+  to: Area
+  cardinality: has_one
+  via: area
+  api: Device Location Retrieval
+  spec: openapi/gsma-open-gateway-device-location-retrieval-openapi.yml
+- from: Location
+  to: DeviceResponse
+  cardinality: has_one
+  via: device
+  api: Device Location Retrieval
+  spec: openapi/gsma-open-gateway-device-location-retrieval-openapi.yml
+- from: Location
+  to: LastLocationTime
+  cardinality: has_one
+  via: lastLocationTime
+  api: Device Location Retrieval
+  spec: openapi/gsma-open-gateway-device-location-retrieval-openapi.yml
+- from: RetrievalLocationRequest
+  to: Device
+  cardinality: has_one
+  via: device
+  api: Device Location Retrieval
+  spec: openapi/gsma-open-gateway-device-location-retrieval-openapi.yml
+- from: Area
+  to: AreaType
+  cardinality: has_one
+  via: areaType
+  api: Device Location Verification
+  spec: openapi/gsma-open-gateway-device-location-verification-openapi.yml
+- from: VerifyLocationRequest
+  to: Area
+  cardinality: has_one
+  via: area
+  api: Device Location Verification
+  spec: openapi/gsma-open-gateway-device-location-verification-openapi.yml
+- from: VerifyLocationRequest
+  to: Device
+  cardinality: has_one
+  via: device
+  api: Device Location Verification
+  spec: openapi/gsma-open-gateway-device-location-verification-openapi.yml
+- from: VerifyLocationRequest
+  to: MaxAge
+  cardinality: has_one
+  via: maxAge
+  api: Device Location Verification
+  spec: openapi/gsma-open-gateway-device-location-verification-openapi.yml
+- from: VerifyLocationResponse
+  to: DeviceResponse
+  cardinality: has_one
+  via: device
+  api: Device Location Verification
+  spec: openapi/gsma-open-gateway-device-location-verification-openapi.yml
+- from: VerifyLocationResponse
+  to: LastLocationTime
+  cardinality: has_one
+  via: lastLocationTime
+  api: Device Location Verification
+  spec: openapi/gsma-open-gateway-device-location-verification-openapi.yml
+- from: VerifyLocationResponse
+  to: MatchRate
+  cardinality: has_one
+  via: matchRate
+  api: Device Location Verification
+  spec: openapi/gsma-open-gateway-device-location-verification-openapi.yml
+- from: VerifyLocationResponse
+  to: VerificationResult
+  cardinality: has_one
+  via: verificationResult
+  api: Device Location Verification
+  spec: openapi/gsma-open-gateway-device-location-verification-openapi.yml
+- from: Device
+  to: DeviceIpv4Addr
+  cardinality: has_one
+  via: ipv4Address
+  api: Device Reachability Status
+  spec: openapi/gsma-open-gateway-device-reachability-status-openapi.yml
+- from: Device
+  to: DeviceIpv6Address
+  cardinality: has_one
+  via: ipv6Address
+  api: Device Reachability Status
+  spec: openapi/gsma-open-gateway-device-reachability-status-openapi.yml
+- from: Device
+  to: NetworkAccessIdentifier
+  cardinality: has_one
+  via: networkAccessIdentifier
+  api: Device Reachability Status
+  spec: openapi/gsma-open-gateway-device-reachability-status-openapi.yml
+- from: Device
+  to: PhoneNumber
+  cardinality: has_one
+  via: phoneNumber
+  api: Device Reachability Status
+  spec: openapi/gsma-open-gateway-device-reachability-status-openapi.yml
+- from: DeviceIpv4Addr
+  to: Port
+  cardinality: has_one
+  via: publicPort
+  api: Device Reachability Status
+  spec: openapi/gsma-open-gateway-device-reachability-status-openapi.yml
+- from: DeviceIpv4Addr
+  to: SingleIpv4Addr
+  cardinality: has_one
+  via: publicAddress
+  api: Device Reachability Status
+  spec: openapi/gsma-open-gateway-device-reachability-status-openapi.yml
+- from: ReachabilityStatusResponse
+  to: LastStatusTime
+  cardinality: has_one
+  via: lastStatusTime
+  api: Device Reachability Status
+  spec: openapi/gsma-open-gateway-device-reachability-status-openapi.yml
+- from: ReachabilityStatusResponse
+  to: ReachabilityStatus
+  cardinality: has_one
+  via: reachabilityStatus
+  api: Device Reachability Status
+  spec: openapi/gsma-open-gateway-device-reachability-status-openapi.yml
+- from: RequestReachabilityStatus
+  to: Device
+  cardinality: has_one
+  via: device
+  api: Device Reachability Status
+  spec: openapi/gsma-open-gateway-device-reachability-status-openapi.yml
+- from: Device
+  to: DeviceIpv4Addr
+  cardinality: has_one
+  via: ipv4Address
+  api: Device Roaming Status
+  spec: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
+- from: Device
+  to: DeviceIpv6Address
+  cardinality: has_one
+  via: ipv6Address
+  api: Device Roaming Status
+  spec: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
+- from: Device
+  to: NetworkAccessIdentifier
+  cardinality: has_one
+  via: networkAccessIdentifier
+  api: Device Roaming Status
+  spec: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
+- from: Device
+  to: PhoneNumber
+  cardinality: has_one
+  via: phoneNumber
+  api: Device Roaming Status
+  spec: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
+- from: DeviceIpv4Addr
+  to: Port
+  cardinality: has_one
+  via: publicPort
+  api: Device Roaming Status
+  spec: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
+- from: DeviceIpv4Addr
+  to: SingleIpv4Addr
+  cardinality: has_one
+  via: publicAddress
+  api: Device Roaming Status
+  spec: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
+- from: RoamingStatusRequest
+  to: Device
+  cardinality: has_one
+  via: device
+  api: Device Roaming Status
+  spec: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
+- from: RoamingStatusResponse
+  to: ActiveRoaming
+  cardinality: has_one
+  via: roaming
+  api: Device Roaming Status
+  spec: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
+- from: RoamingStatusResponse
+  to: CountryCode
+  cardinality: has_one
+  via: countryCode
+  api: Device Roaming Status
+  spec: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
+- from: RoamingStatusResponse
+  to: CountryName
+  cardinality: has_one
+  via: countryName
+  api: Device Roaming Status
+  spec: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
+- from: RoamingStatusResponse
+  to: LastStatusTime
+  cardinality: has_one
+  via: lastStatusTime
+  api: Device Roaming Status
+  spec: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
+- from: CreateCheckDeviceSwap
+  to: PhoneNumber
+  cardinality: has_one
+  via: phoneNumber
+  api: Device Swap
+  spec: openapi/gsma-open-gateway-device-swap-openapi.yml
+- from: CreateDeviceSwapDate
+  to: PhoneNumber
+  cardinality: has_one
+  via: phoneNumber
+  api: Device Swap
+  spec: openapi/gsma-open-gateway-device-swap-openapi.yml
+- from: KYC_MatchResponse
+  to: MatchScoreResult
+  cardinality: has_one
+  via: nameMatchScore
+  api: Know Your Customer Match
+  spec: openapi/gsma-open-gateway-know-your-customer-openapi.yml
+- from: identityRequest
+  to: accountRelationship
+  cardinality: has_one
+  via: accountRelationship
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: identityRequest
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: identityRequest
+  to: kyc
+  cardinality: has_one
+  via: identityKyc
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: identityRequest
+  to: kycLevel
+  cardinality: has_one
+  via: kycLevel
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: identityRequest
+  to: kycVerificationEntity
+  cardinality: has_one
+  via: kycVerificationEntity
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: identityRequest
+  to: kycVerificationStatus
+  cardinality: has_one
+  via: kycVerificationStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: identityResponse
+  to: accountRelationship
+  cardinality: has_one
+  via: accountRelationship
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: identityResponse
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: identityResponse
+  to: identityId
+  cardinality: has_one
+  via: identityId
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: identityResponse
+  to: identityStatus
+  cardinality: has_one
+  via: identityStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: identityResponse
+  to: identityType
+  cardinality: has_one
+  via: identityType
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: identityResponse
+  to: kyc
+  cardinality: has_one
+  via: identityKyc
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: identityResponse
+  to: kycLevel
+  cardinality: has_one
+  via: kycLevel
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: identityResponse
+  to: kycVerificationEntity
+  cardinality: has_one
+  via: kycVerificationEntity
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: identityResponse
+  to: kycVerificationStatus
+  cardinality: has_one
+  via: kycVerificationStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: internationalTransferInformation
+  to: quotationReference
+  cardinality: has_one
+  via: quotationReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: internationalTransferInformation
+  to: quoteId
+  cardinality: has_one
+  via: quoteId
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: internationalTransferInformation
+  to: relationshipSender
+  cardinality: has_one
+  via: relationshipSender
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: internationalTransferInformation
+  to: remittancePurpose
+  cardinality: has_one
+  via: remittancePurpose
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: internationalTransferInformationResponse
+  to: quotationReference
+  cardinality: has_one
+  via: quotationReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: internationalTransferInformationResponse
+  to: quoteId
+  cardinality: has_one
+  via: quoteId
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: internationalTransferInformationResponse
+  to: recipientBlockingReason
+  cardinality: has_one
+  via: recipientBlockingReason
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: internationalTransferInformationResponse
+  to: relationshipSender
+  cardinality: has_one
+  via: relationshipSender
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: internationalTransferInformationResponse
+  to: remittancePurpose
+  cardinality: has_one
+  via: remittancePurpose
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: internationalTransferInformationResponse
+  to: senderBlockingReason
+  cardinality: has_one
+  via: senderBlockingReason
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: kyc
+  to: contactPhone
+  cardinality: has_one
+  via: contactPhone
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: kyc
+  to: dateOfBirth
+  cardinality: has_one
+  via: dateOfBirth
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: kyc
+  to: emailAddress
+  cardinality: has_one
+  via: emailAddress
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: kyc
+  to: employerName
+  cardinality: has_one
+  via: employerName
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: kyc
+  to: gender
+  cardinality: has_one
+  via: gender
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: kyc
+  to: idDocumentArray
+  cardinality: has_one
+  via: idDocument
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: kyc
+  to: occupation
+  cardinality: has_one
+  via: occupation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: kyc
+  to: postalAddress
+  cardinality: has_one
+  via: postalAddress
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: kyc
+  to: subjectName
+  cardinality: has_one
+  via: subjectName
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: quotes
+  to: feesArray
+  cardinality: has_one
+  via: fees
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: quotes
+  to: fxRate
+  cardinality: has_one
+  via: fxRate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: quotes
+  to: quoteExpiryTime
+  cardinality: has_one
+  via: quoteExpiryTime
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: quotes
+  to: quoteId
+  cardinality: has_one
+  via: quoteId
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: quotes
+  to: receivingServiceProvider
+  cardinality: has_one
+  via: receivingServiceProvider
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestAccount
+  to: accountIdentifiersArray
+  cardinality: has_one
+  via: accountIdentifiers
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestAccount
+  to: accountType
+  cardinality: has_one
+  via: accountType
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestAccount
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestAccount
+  to: feesArray
+  cardinality: has_one
+  via: fees
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestAccount
+  to: identityRequestArray
+  cardinality: has_one
+  via: identity
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestAccount
+  to: registeringEntity
+  cardinality: has_one
+  via: registeringEntity
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestAccount
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestAuthorisationCode
+  to: amountType
+  cardinality: has_one
+  via: amountType
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestAuthorisationCode
+  to: codeLifetime
+  cardinality: has_one
+  via: codeLifetime
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestAuthorisationCode
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestAuthorisationCode
+  to: holdFundsIndicator
+  cardinality: has_one
+  via: holdFundsIndicator
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestAuthorisationCode
+  to: metadataArray
+  cardinality: has_one
+  via: metadata
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestAuthorisationCode
+  to: redemptionAccountIdentifiers
+  cardinality: has_one
+  via: redemptionAccountIdentifiers
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestAuthorisationCode
+  to: redemptionChannels
+  cardinality: has_one
+  via: redemptionChannels
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestAuthorisationCode
+  to: redemptionTransactionTypes
+  cardinality: has_one
+  via: redemptionTransactionTypes
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestAuthorisationCode
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestAuthorisationCode
+  to: requestingOrganisation
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBatchTransaction
+  to: batchDescription
+  cardinality: has_one
+  via: batchdescription
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBatchTransaction
+  to: batchStatus
+  cardinality: has_one
+  via: batchStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBatchTransaction
+  to: batchTitle
+  cardinality: has_one
+  via: batchTitle
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBatchTransaction
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBatchTransaction
+  to: modificationDate
+  cardinality: has_one
+  via: modificationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBatchTransaction
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBatchTransaction
+  to: requestTransaction
+  cardinality: has_many
+  via: transactions
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBatchTransaction
+  to: requestingOrganisation
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBatchTransaction
+  to: scheduledStartDate
+  cardinality: has_one
+  via: scheduledStartDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBillPayment
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBillPayment
+  to: customerReference
+  cardinality: has_one
+  via: customerReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBillPayment
+  to: metadataArray
+  cardinality: has_one
+  via: metadata
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBillPayment
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBillPayment
+  to: requestingOrganisationBillPay
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBillPayment
+  to: requestingOrganisationTransactionReference
+  cardinality: has_one
+  via: requestingOrganisationTransactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBillPayment
+  to: serviceProviderPaymentReference
+  cardinality: has_one
+  via: serviceProviderPaymentReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBillPayment
+  to: supplementaryBillReferenceDetailsArray
+  cardinality: has_one
+  via: supplementaryBillReferenceDetails
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBillPayment2
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBillPayment2
+  to: customerReference
+  cardinality: has_one
+  via: customerReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBillPayment2
+  to: metadataArray
+  cardinality: has_one
+  via: metadata
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBillPayment2
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBillPayment2
+  to: requestingOrganisationBillPay
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBillPayment2
+  to: requestingOrganisationTransactionReference
+  cardinality: has_one
+  via: requestingOrganisationTransactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestBillPayment2
+  to: serviceProviderPaymentReference
+  cardinality: has_one
+  via: serviceProviderPaymentReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestDebitMandate
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestDebitMandate
+  to: endDate
+  cardinality: has_one
+  via: endDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestDebitMandate
+  to: numberOfPayments
+  cardinality: has_one
+  via: numberOfPayments
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestDebitMandate
+  to: payee
+  cardinality: has_one
+  via: payee
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestDebitMandate
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestDebitMandate
+  to: requestingOrganisation
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestDebitMandate
+  to: startDate
+  cardinality: has_one
+  via: startDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestLink
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestLink
+  to: debitPartyArray
+  cardinality: has_one
+  via: sourceAccountIdentifiers
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestLink
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestLink
+  to: requestingOrganisation
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestQuotation
+  to: creditPartyArray
+  cardinality: has_one
+  via: creditParty
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestQuotation
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestQuotation
+  to: debitPartyArray
+  cardinality: has_one
+  via: debitParty
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestQuotation
+  to: kyc
+  cardinality: has_one
+  via: recipientKyc
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestQuotation
+  to: metadataArray
+  cardinality: has_one
+  via: metadata
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestQuotation
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestQuotation
+  to: requestingOrganisation
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestQuotation
+  to: subType
+  cardinality: has_one
+  via: subType
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestQuotation
+  to: type
+  cardinality: has_one
+  via: type
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestReversal
+  to: creditPartyArray
+  cardinality: has_one
+  via: creditParty
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestReversal
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestReversal
+  to: debitPartyArray
+  cardinality: has_one
+  via: debitParty
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestReversal
+  to: descriptionText
+  cardinality: has_one
+  via: descriptionText
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestReversal
+  to: feesArray
+  cardinality: has_one
+  via: fees
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestReversal
+  to: geoCode
+  cardinality: has_one
+  via: geoCode
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestReversal
+  to: metadataArray
+  cardinality: has_one
+  via: metadata
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestReversal
+  to: receivingLei
+  cardinality: has_one
+  via: receivingLei
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestReversal
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestReversal
+  to: requestingLei
+  cardinality: has_one
+  via: requestingLei
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestReversal
+  to: requestingOrganisation
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestReversal
+  to: requestingOrganisationTransactionReference
+  cardinality: has_one
+  via: requestingOrganisationTransactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestReversal
+  to: servicingIdentity
+  cardinality: has_one
+  via: servicingIdentity
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestReversal
+  to: subType
+  cardinality: has_one
+  via: subType
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestReversal
+  to: typeReversal
+  cardinality: has_one
+  via: type
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: creditPartyArray
+  cardinality: has_one
+  via: creditParty
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: debitPartyArray
+  cardinality: has_one
+  via: debitParty
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: descriptionText
+  cardinality: has_one
+  via: descriptionText
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: feesArray
+  cardinality: has_one
+  via: fees
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: geoCode
+  cardinality: has_one
+  via: geoCode
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: internationalTransferInformation
+  cardinality: has_one
+  via: internationalTransferInformation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: kyc
+  cardinality: has_one
+  via: recipientKyc
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: metadataArray
+  cardinality: has_one
+  via: metadata
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: oneTimeCode
+  cardinality: has_one
+  via: oneTimeCode
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: originalTransactionReference
+  cardinality: has_one
+  via: originalTransactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: receivingLei
+  cardinality: has_one
+  via: receivingLei
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: requestingLei
+  cardinality: has_one
+  via: requestingLei
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: requestingOrganisation
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: requestingOrganisationTransactionReference
+  cardinality: has_one
+  via: requestingOrganisationTransactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: servicingIdentity
+  cardinality: has_one
+  via: servicingIdentity
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: subType
+  cardinality: has_one
+  via: subType
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: requestTransaction
+  to: type
+  cardinality: has_one
+  via: type
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccount
+  to: accountIdentifiersArray
+  cardinality: has_one
+  via: accountIdentifiers
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccount
+  to: accountStatus
+  cardinality: has_one
+  via: accountStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccount
+  to: accountSubStatus
+  cardinality: has_one
+  via: accountSubStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccount
+  to: accountType
+  cardinality: has_one
+  via: accountType
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccount
+  to: availableBalance
+  cardinality: has_one
+  via: availableBalance
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccount
+  to: commissionEarnedArray
+  cardinality: has_one
+  via: commissionEarned
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccount
+  to: creationDate
+  cardinality: has_one
+  via: creationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccount
+  to: currentBalance
+  cardinality: has_one
+  via: currentBalance
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccount
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccount
+  to: feesArray
+  cardinality: has_one
+  via: fees
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccount
+  to: identityResponseArray
+  cardinality: has_one
+  via: identity
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccount
+  to: modificationDate
+  cardinality: has_one
+  via: modificationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccount
+  to: registeringEntity
+  cardinality: has_one
+  via: registeringEntity
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccount
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccount
+  to: reservedBalance
+  cardinality: has_one
+  via: reservedBalance
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccount
+  to: unclearedBalance
+  cardinality: has_one
+  via: unclearedBalance
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccountBalance
+  to: accountStatus
+  cardinality: has_one
+  via: accountStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccountBalance
+  to: availableBalance
+  cardinality: has_one
+  via: availableBalance
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccountBalance
+  to: currentBalance
+  cardinality: has_one
+  via: currentBalance
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccountBalance
+  to: reservedBalance
+  cardinality: has_one
+  via: reservedBalance
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccountBalance
+  to: unclearedBalance
+  cardinality: has_one
+  via: unclearedBalance
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccountName
+  to: subjectName
+  cardinality: has_one
+  via: name
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccountStatus
+  to: accountStatus
+  cardinality: has_one
+  via: accountStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAccountStatus
+  to: subStatus
+  cardinality: has_one
+  via: subStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAuthorisationCode
+  to: amountType
+  cardinality: has_one
+  via: amountType
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAuthorisationCode
+  to: authorisationCode
+  cardinality: has_one
+  via: authorisationCode
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAuthorisationCode
+  to: codeLifetime
+  cardinality: has_one
+  via: codeLifetime
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAuthorisationCode
+  to: codeState
+  cardinality: has_one
+  via: codeState
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAuthorisationCode
+  to: creationDate
+  cardinality: has_one
+  via: creationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAuthorisationCode
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAuthorisationCode
+  to: holdFundsIndicator
+  cardinality: has_one
+  via: holdFundsIndicator
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAuthorisationCode
+  to: metadataArray
+  cardinality: has_one
+  via: metadata
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAuthorisationCode
+  to: modificationDate
+  cardinality: has_one
+  via: modificationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAuthorisationCode
+  to: redemptionAccountIdentifiers
+  cardinality: has_one
+  via: redemptionAccountIdentifiers
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAuthorisationCode
+  to: redemptionChannels
+  cardinality: has_one
+  via: redemptionChannels
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAuthorisationCode
+  to: redemptionTransactionTypes
+  cardinality: has_one
+  via: redemptionTransactionTypes
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAuthorisationCode
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseAuthorisationCode
+  to: requestingOrganisation
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransaction
+  to: approvalDate
+  cardinality: has_one
+  via: approvalDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransaction
+  to: batchDescription
+  cardinality: has_one
+  via: batchdescription
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransaction
+  to: batchId
+  cardinality: has_one
+  via: batchId
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransaction
+  to: batchStatus
+  cardinality: has_one
+  via: batchStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransaction
+  to: batchTitle
+  cardinality: has_one
+  via: batchTitle
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransaction
+  to: completedCount
+  cardinality: has_one
+  via: completedCount
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransaction
+  to: completedDate
+  cardinality: has_one
+  via: completedDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransaction
+  to: completionDate
+  cardinality: has_one
+  via: completionDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransaction
+  to: creationDate
+  cardinality: has_one
+  via: creationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransaction
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransaction
+  to: modificationDate
+  cardinality: has_one
+  via: modificationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransaction
+  to: parsingSuccessCount
+  cardinality: has_one
+  via: parsingSuccessCount
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransaction
+  to: processingFlag
+  cardinality: has_one
+  via: processingFlag
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransaction
+  to: rejectionCount
+  cardinality: has_one
+  via: rejectionCount
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransaction
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransaction
+  to: requestingOrganisation
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransaction
+  to: scheduledStartDate
+  cardinality: has_one
+  via: scheduledStartDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransactionCompletion
+  to: creditPartyArray
+  cardinality: has_one
+  via: creditParty
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransactionCompletion
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransactionCompletion
+  to: debitPartyArray
+  cardinality: has_one
+  via: debitParty
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransactionCompletion
+  to: link
+  cardinality: has_one
+  via: link
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransactionCompletion
+  to: requestingOrganisationTransactionReference
+  cardinality: has_one
+  via: requestingOrganisationTransactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransactionCompletion
+  to: transactionCompletedDate
+  cardinality: has_one
+  via: completedDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransactionCompletion
+  to: transactionCompletionDate
+  cardinality: has_one
+  via: completionDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransactionCompletion
+  to: transactionReference
+  cardinality: has_one
+  via: transactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransactionRejection
+  to: creditPartyArray
+  cardinality: has_one
+  via: creditParty
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransactionRejection
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransactionRejection
+  to: dateRejected
+  cardinality: has_one
+  via: dateRejected
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransactionRejection
+  to: debitPartyArray
+  cardinality: has_one
+  via: debitParty
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransactionRejection
+  to: rejectionDate
+  cardinality: has_one
+  via: rejectionDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransactionRejection
+  to: rejectionReason
+  cardinality: has_one
+  via: rejectionReason
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransactionRejection
+  to: requestingOrganisationTransactionReference
+  cardinality: has_one
+  via: requestingOrganisationTransactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBatchTransactionRejection
+  to: transactionReference
+  cardinality: has_one
+  via: transactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillCompanies
+  to: companyName
+  cardinality: has_one
+  via: companyName
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillCompanies
+  to: metadata
+  cardinality: has_many
+  via: supplementaryServiceProviderDetails
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillCompanies
+  to: serviceProvider
+  cardinality: has_one
+  via: serviceProvider
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillCompanies
+  to: serviceProviderSubType
+  cardinality: has_one
+  via: serviceProviderSubType
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillCompanies
+  to: serviceProviderType
+  cardinality: has_one
+  via: serviceProviderType
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment
+  to: billPaymentStatus
+  cardinality: has_one
+  via: billPaymentStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment
+  to: creationDate
+  cardinality: has_one
+  via: creationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment
+  to: customerReference
+  cardinality: has_one
+  via: customerReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment
+  to: metadataArray
+  cardinality: has_one
+  via: metadata
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment
+  to: modificationDate
+  cardinality: has_one
+  via: modificationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment
+  to: requestingOrganisationBillPay
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment
+  to: requestingOrganisationTransactionReference
+  cardinality: has_one
+  via: requestingOrganisationTransactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment
+  to: serviceProviderComment
+  cardinality: has_one
+  via: serviceProviderComment
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment
+  to: serviceProviderNotification
+  cardinality: has_one
+  via: serviceProviderNotification
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment
+  to: serviceProviderPaymentReference
+  cardinality: has_one
+  via: serviceProviderPaymentReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment
+  to: supplementaryBillReferenceDetailsArray
+  cardinality: has_one
+  via: supplementaryBillReferenceDetails
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment2
+  to: billPaymentStatus
+  cardinality: has_one
+  via: billPaymentStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment2
+  to: creationDate
+  cardinality: has_one
+  via: creationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment2
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment2
+  to: customerReference
+  cardinality: has_one
+  via: customerReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment2
+  to: metadataArray
+  cardinality: has_one
+  via: metadata
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment2
+  to: modificationDate
+  cardinality: has_one
+  via: modificationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment2
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment2
+  to: requestingOrganisationBillPay
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment2
+  to: requestingOrganisationTransactionReference
+  cardinality: has_one
+  via: requestingOrganisationTransactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment2
+  to: serviceProviderComment
+  cardinality: has_one
+  via: serviceProviderComment
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment2
+  to: serviceProviderNotification
+  cardinality: has_one
+  via: serviceProviderNotification
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBillPayment2
+  to: serviceProviderPaymentReference
+  cardinality: has_one
+  via: serviceProviderPaymentReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBills
+  to: billDescription
+  cardinality: has_one
+  via: billdescription
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBills
+  to: billReference
+  cardinality: has_one
+  via: billReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBills
+  to: creationDate
+  cardinality: has_one
+  via: creationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBills
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBills
+  to: dueDate
+  cardinality: has_one
+  via: dueDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBills
+  to: metadataArray
+  cardinality: has_one
+  via: metadata
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseBills
+  to: modificationDate
+  cardinality: has_one
+  via: modificationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseDebitMandate
+  to: creationDate
+  cardinality: has_one
+  via: creationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseDebitMandate
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseDebitMandate
+  to: dateCreated
+  cardinality: has_one
+  via: dateCreated
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseDebitMandate
+  to: dateModified
+  cardinality: has_one
+  via: dateModified
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseDebitMandate
+  to: endDate
+  cardinality: has_one
+  via: endDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseDebitMandate
+  to: mandateReference
+  cardinality: has_one
+  via: mandateReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseDebitMandate
+  to: modificationDate
+  cardinality: has_one
+  via: modificationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseDebitMandate
+  to: numberOfPayments
+  cardinality: has_one
+  via: numberOfPayments
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseDebitMandate
+  to: payee
+  cardinality: has_one
+  via: payee
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseDebitMandate
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseDebitMandate
+  to: requestingOrganisation
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseDebitMandate
+  to: startDate
+  cardinality: has_one
+  via: startDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseHeartbeat
+  to: delay
+  cardinality: has_one
+  via: delay
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseHeartbeat
+  to: plannedRestorationTime
+  cardinality: has_one
+  via: plannedRestorationTime
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseHeartbeat
+  to: serviceStatus
+  cardinality: has_one
+  via: serviceStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseLink
+  to: creationDate
+  cardinality: has_one
+  via: creationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseLink
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseLink
+  to: debitPartyArray
+  cardinality: has_one
+  via: sourceAccountIdentifiers
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseLink
+  to: linkReference
+  cardinality: has_one
+  via: linkReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseLink
+  to: modificationDate
+  cardinality: has_one
+  via: modificationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseLink
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseLink
+  to: requestingOrganisation
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: creationDate
+  cardinality: has_one
+  via: creationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: creditPartyArray
+  cardinality: has_one
+  via: creditParty
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: dateCreated
+  cardinality: has_one
+  via: dateCreated
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: dateModified
+  cardinality: has_one
+  via: dateModified
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: debitPartyArray
+  cardinality: has_one
+  via: debitParty
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: kyc
+  cardinality: has_one
+  via: recipientKyc
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: metadataArray
+  cardinality: has_one
+  via: metadata
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: modificationDate
+  cardinality: has_one
+  via: modificationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: quotationReference
+  cardinality: has_one
+  via: quotationReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: quotationStatus
+  cardinality: has_one
+  via: quotationStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: quoteArray
+  cardinality: has_one
+  via: quotes
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: recipientBlockingReason
+  cardinality: has_one
+  via: recipientBlockingReason
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: requestingOrganisation
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: senderBlockingReason
+  cardinality: has_one
+  via: senderBlockingReason
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: subType
+  cardinality: has_one
+  via: subType
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseQuotation
+  to: type
+  cardinality: has_one
+  via: type
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseResponse
+  to: link
+  cardinality: has_one
+  via: link
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: creationDate
+  cardinality: has_one
+  via: creationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: dateCreated
+  cardinality: has_one
+  via: dateCreated
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: dateModified
+  cardinality: has_one
+  via: dateModified
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: debitPartyArray
+  cardinality: has_one
+  via: creditParty
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: descriptionText
+  cardinality: has_one
+  via: descriptionText
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: feesArray
+  cardinality: has_one
+  via: fees
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: geoCode
+  cardinality: has_one
+  via: geoCode
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: metadataArray
+  cardinality: has_one
+  via: metadata
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: modificationDate
+  cardinality: has_one
+  via: modificationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: originalTransactionReference
+  cardinality: has_one
+  via: originalTransactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: receivingLei
+  cardinality: has_one
+  via: receivingLei
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: requestingLei
+  cardinality: has_one
+  via: requestingLei
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: requestingOrganisation
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: requestingOrganisationTransactionReference
+  cardinality: has_one
+  via: requestingOrganisationTransactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: servicingIdentity
+  cardinality: has_one
+  via: servicingIdentity
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: subType
+  cardinality: has_one
+  via: subType
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: transactionReceipt
+  cardinality: has_one
+  via: transactionReceipt
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: transactionReference
+  cardinality: has_one
+  via: transactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: transactionStatus
+  cardinality: has_one
+  via: transactionStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseReversal
+  to: typeReversal
+  cardinality: has_one
+  via: type
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseStatementEntries
+  to: creationDate
+  cardinality: has_one
+  via: creationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseStatementEntries
+  to: creditPartyArray
+  cardinality: has_one
+  via: creditParty
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseStatementEntries
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseStatementEntries
+  to: dateCreated
+  cardinality: has_one
+  via: dateCreated
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseStatementEntries
+  to: dateModified
+  cardinality: has_one
+  via: dateModified
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseStatementEntries
+  to: debitPartyArray
+  cardinality: has_one
+  via: debitParty
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseStatementEntries
+  to: descriptionText
+  cardinality: has_one
+  via: descriptionText
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseStatementEntries
+  to: displayType
+  cardinality: has_one
+  via: displayType
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseStatementEntries
+  to: modificationDate
+  cardinality: has_one
+  via: modificationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseStatementEntries
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseStatementEntries
+  to: transactionReceipt
+  cardinality: has_one
+  via: transactionReceipt
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseStatementEntries
+  to: transactionReference
+  cardinality: has_one
+  via: transactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseStatementEntries
+  to: transactionStatus
+  cardinality: has_one
+  via: transactionStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: creationDate
+  cardinality: has_one
+  via: creationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: creditPartyArray
+  cardinality: has_one
+  via: creditParty
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: customDataArray
+  cardinality: has_one
+  via: customData
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: dateCreated
+  cardinality: has_one
+  via: dateCreated
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: dateModified
+  cardinality: has_one
+  via: dateModified
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: debitPartyArray
+  cardinality: has_one
+  via: debitParty
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: descriptionText
+  cardinality: has_one
+  via: descriptionText
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: feesArray
+  cardinality: has_one
+  via: fees
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: geoCode
+  cardinality: has_one
+  via: geoCode
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: internationalTransferInformationResponse
+  cardinality: has_one
+  via: internationalTransferInformation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: kyc
+  cardinality: has_one
+  via: recipientKyc
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: metadataArray
+  cardinality: has_one
+  via: metadata
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: modificationDate
+  cardinality: has_one
+  via: modificationDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: oneTimeCode
+  cardinality: has_one
+  via: oneTimeCode
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: originalTransactionReference
+  cardinality: has_one
+  via: originalTransactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: receivingLei
+  cardinality: has_one
+  via: receivingLei
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: requestDate
+  cardinality: has_one
+  via: requestDate
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: requestingLei
+  cardinality: has_one
+  via: requestingLei
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: requestingOrganisation
+  cardinality: has_one
+  via: requestingOrganisation
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: requestingOrganisationTransactionReference
+  cardinality: has_one
+  via: requestingOrganisationTransactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: servicingIdentity
+  cardinality: has_one
+  via: servicingIdentity
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: subType
+  cardinality: has_one
+  via: subType
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: transactionReceipt
+  cardinality: has_one
+  via: transactionReceipt
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: transactionReference
+  cardinality: has_one
+  via: transactionReference
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: transactionStatus
+  cardinality: has_one
+  via: transactionStatus
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: responseTransaction
+  to: type
+  cardinality: has_one
+  via: type
+  api: Mobile Money API
+  spec: openapi/gsma-mobile-money-api-openapi.yml
+- from: NumberVerificationMatchResponse
+  to: DevicePhoneNumberVerified
+  cardinality: has_one
+  via: devicePhoneNumberVerified
+  api: Number Verification
+  spec: openapi/gsma-open-gateway-number-verification-openapi.yml
+- from: NumberVerificationRequestBody
+  to: PhoneNumber
+  cardinality: has_one
+  via: phoneNumber
+  api: Number Verification
+  spec: openapi/gsma-open-gateway-number-verification-openapi.yml
+- from: NumberVerificationShareResponse
+  to: DevicePhoneNumber
+  cardinality: has_one
+  via: devicePhoneNumber
+  api: Number Verification
+  spec: openapi/gsma-open-gateway-number-verification-openapi.yml
+- from: SendCodeBody
+  to: Message
+  cardinality: has_one
+  via: message
+  api: One Time Password SMS
+  spec: openapi/gsma-open-gateway-otp-validation-openapi.yml
+- from: SendCodeBody
+  to: PhoneNumber
+  cardinality: has_one
+  via: phoneNumber
+  api: One Time Password SMS
+  spec: openapi/gsma-open-gateway-otp-validation-openapi.yml
+- from: SendCodeResponse
+  to: AuthenticationId
+  cardinality: has_one
+  via: authenticationId
+  api: One Time Password SMS
+  spec: openapi/gsma-open-gateway-otp-validation-openapi.yml
+- from: ValidateCodeBody
+  to: AuthenticationId
+  cardinality: has_one
+  via: authenticationId
+  api: One Time Password SMS
+  spec: openapi/gsma-open-gateway-otp-validation-openapi.yml
+- from: ValidateCodeBody
+  to: Code
+  cardinality: has_one
+  via: code
+  api: One Time Password SMS
+  spec: openapi/gsma-open-gateway-otp-validation-openapi.yml
+- from: AcceptedAsyncResponse
+  to: OperationId
+  cardinality: has_one
+  via: operationId
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+- from: Area
+  to: AreaType
+  cardinality: has_one
+  via: areaType
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+- from: Point
+  to: Latitude
+  cardinality: has_one
+  via: latitude
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+- from: Point
+  to: Longitude
+  cardinality: has_one
+  via: longitude
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+- from: PopulationDensityRequest
+  to: Area
+  cardinality: has_one
+  via: area
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+- from: PopulationDensityResponse
+  to: ResponseStatus
+  cardinality: has_one
+  via: status
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+- from: PopulationDensityResponse
+  to: TimedPopulationDensityData
+  cardinality: has_many
+  via: timedPopulationDensityData
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+- from: TimedPopulationDensityData
+  to: CellPopulationDensityDataArray
+  cardinality: has_one
+  via: cellPopulationDensityData
+  api: Population Density Data
+  spec: openapi/gsma-open-gateway-population-density-data-openapi.yml
+- from: ApplicationServer
+  to: ApplicationServerIpv4Address
+  cardinality: has_one
+  via: ipv4Address
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+- from: ApplicationServer
+  to: ApplicationServerIpv6Address
+  cardinality: has_one
+  via: ipv6Address
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+- from: BaseSessionInfo
+  to: ApplicationServer
+  cardinality: has_one
+  via: applicationServer
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+- from: BaseSessionInfo
+  to: Device
+  cardinality: has_one
+  via: device
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+- from: BaseSessionInfo
+  to: QosProfileName
+  cardinality: has_one
+  via: qosProfile
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+- from: Device
+  to: DeviceIpv4Addr
+  cardinality: has_one
+  via: ipv4Address
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+- from: Device
+  to: DeviceIpv6Address
+  cardinality: has_one
+  via: ipv6Address
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+- from: Device
+  to: NetworkAccessIdentifier
+  cardinality: has_one
+  via: networkAccessIdentifier
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+- from: Device
+  to: PhoneNumber
+  cardinality: has_one
+  via: phoneNumber
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+- from: DeviceIpv4Addr
+  to: Port
+  cardinality: has_one
+  via: publicPort
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+- from: DeviceIpv4Addr
+  to: SingleIpv4Addr
+  cardinality: has_one
+  via: publicAddress
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+- from: PortsSpec
+  to: Port
+  cardinality: has_many
+  via: ports
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+- from: RetrieveSessionsInput
+  to: Device
+  cardinality: has_one
+  via: device
+  api: Quality-On-Demand
+  spec: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
+- from: CreateCheckSimSwap
+  to: PhoneNumber
+  cardinality: has_one
+  via: phoneNumber
+  api: SIM Swap
+  spec: openapi/gsma-open-gateway-sim-swap-openapi.yml
+- from: CreateSimSwapDate
+  to: PhoneNumber
+  cardinality: has_one
+  via: phoneNumber
+  api: SIM Swap
+  spec: openapi/gsma-open-gateway-sim-swap-openapi.yml
+- from: EdgeCloudZone
+  to: EdgeCloudProvider
+  cardinality: has_one
+  via: edgeCloudProvider
+  api: Simple Edge Discovery
+  spec: openapi/gsma-open-gateway-simple-edge-discovery-openapi.yml
+- from: EdgeCloudZone
+  to: EdgeCloudZoneId
+  cardinality: has_one
+  via: edgeCloudZoneId
+  api: Simple Edge Discovery
+  spec: openapi/gsma-open-gateway-simple-edge-discovery-openapi.yml
+- from: EdgeCloudZone
+  to: EdgeCloudZoneName
+  cardinality: has_one
+  via: edgeCloudZoneName
+  api: Simple Edge Discovery
+  spec: openapi/gsma-open-gateway-simple-edge-discovery-openapi.yml
