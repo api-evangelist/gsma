@@ -1,0 +1,36 @@
+generated: '2026-07-30'
+method: searched
+source: https://github.com/gsma
+type: Repositories
+organization: gsma
+summary:
+  total: 2
+  archived: 1
+  by_maturity:
+    unclassified: 2
+repositories:
+- name: craft-calltoaction
+  url: https://github.com/GSMA/craft-calltoaction
+  description: Craft CMS Call to Action Plugin
+  maturity: unclassified
+  stars: 0
+  forks: 0
+  open_issues: 0
+  archived: false
+  created: '2022-02-22'
+  updated: '2024-05-09'
+  license: MIT
+  topics: []
+- name: selectnav.js
+  url: https://github.com/GSMA/selectnav.js
+  description: Responsive drop-down menu for mobiles and small screen devices. Lightweight (1.5kb) and
+    library agnostic
+  maturity: unclassified
+  stars: 0
+  forks: 0
+  open_issues: 0
+  archived: true
+  created: '2013-03-22'
+  updated: '2013-03-11'
+  license: MIT
+  topics: []

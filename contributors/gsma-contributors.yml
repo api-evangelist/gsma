@@ -1,0 +1,15 @@
+generated: '2026-07-30'
+method: searched
+source: https://github.com/gsma
+type: Contributors
+organization: gsma
+summary:
+  contributors: 1
+  repositories_checked: 1
+  total_contributions: 2
+contributors:
+- github_id: jamierumbelow
+  contributions: 2
+  repositories:
+  - craft-calltoaction
+  repository_count: 1
