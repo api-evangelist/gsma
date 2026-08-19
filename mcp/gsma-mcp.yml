@@ -2,13 +2,15 @@ generated: '2026-07-25'
 method: derived
 status: candidate
 source: openapi/*.yml
-note: 'No GSMA-published MCP server exists. The GSMA operates no endpoints, so it has nothing to host an MCP server in
-  front of; the tool list below is a CANDIDATE derived one-per-operation from the eighteen harvested specifications,
-  for an implementer (an operator, an aggregator or a developer) who wants to expose these APIs to agents. Design context:
-  the Linux Foundation CAMARA project published a white paper in January 2026, ''Bridging AI Systems and Network Infrastructure
-  through MCP'', describing an MCP server that translates a CAMARA API into MCP tools (https://camaraproject.org/wp-content/uploads/sites/12/2026/01/camara_wp_mcp_011226.pdf).
-  Each candidate tool inherits its real input schema from the referenced operation''s parameters and requestBody, and
-  its authorization requirement from that operation''s CAMARA scope. Nothing here is a GSMA product claim.'
+note: 'No GSMA-published MCP server exists. The GSMA operates no endpoints, so it has nothing to host
+  an MCP server in front of; the tool list below is a CANDIDATE derived one-per-operation from the eighteen
+  harvested specifications, for an implementer (an operator, an aggregator or a developer) who wants to
+  expose these APIs to agents. Design context: the Linux Foundation CAMARA project published a white paper
+  in January 2026, ''Bridging AI Systems and Network Infrastructure through MCP'', describing an MCP server
+  that translates a CAMARA API into MCP tools (https://camaraproject.org/wp-content/uploads/sites/12/2026/01/camara_wp_mcp_011226.pdf).
+  Each candidate tool inherits its real input schema from the referenced operation''s parameters and requestBody,
+  and its authorization requirement from that operation''s CAMARA scope. Nothing here is a GSMA product
+  claim.'
 server:
   name: gsma
   published: false
@@ -521,8 +523,8 @@ tools:
   scopes: null
 - name: retrieve_unconditional_call_forwarding
   api: Call Forwarding Signal
-  description: Retrieve the information about the status of the unconditional call forwarding service on a phone number
-    (PhoneNumber)
+  description: Retrieve the information about the status of the unconditional call forwarding service
+    on a phone number (PhoneNumber)
   source_operation: openapi/gsma-open-gateway-call-forwarding-signal-openapi.yml#retrieveUnconditionalCallForwarding
   method: POST
   path: /unconditional-call-forwardings
@@ -530,7 +532,8 @@ tools:
   - call-forwarding-signal:unconditional-call-forwardings:read
 - name: retrieve_call_forwarding
   api: Call Forwarding Signal
-  description: Retrieve the information about the type of call forwarding service active on a phone number (PhoneNumber)
+  description: Retrieve the information about the type of call forwarding service active on a phone number
+    (PhoneNumber)
   source_operation: openapi/gsma-open-gateway-call-forwarding-signal-openapi.yml#retrieveCallForwarding
   method: POST
   path: /call-forwardings
@@ -699,8 +702,8 @@ tools:
   scopes: null
 - name: k_y_c__match
   api: Know Your Customer Match
-  description: Matching a customer identity by checking a set of attributes related against the account data bound to
-    their phone number.
+  description: Matching a customer identity by checking a set of attributes related against the account
+    data bound to their phone number.
   source_operation: openapi/gsma-open-gateway-know-your-customer-openapi.yml#KYC_Match
   method: POST
   path: /match
@@ -708,8 +711,8 @@ tools:
   - kyc-match:match
 - name: phone_number_verify
   api: Number Verification
-  description: Verifies if the received hashed/plain text phone number matches the phone number associated with the access
-    token
+  description: Verifies if the received hashed/plain text phone number matches the phone number associated
+    with the access token
   source_operation: openapi/gsma-open-gateway-number-verification-openapi.yml#phoneNumberVerify
   method: POST
   path: /verify
@@ -813,3 +816,9 @@ tools:
   path: /edge-cloud-zones
   scopes:
   - simple-edge-discovery:edge-cloud-zones:read
+deployment:
+  mode: none
+  verified: derived
+  tools: 107
+  checked: '2026-08-12'
+  source: catalog MCP census

@@ -1,0 +1,5359 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Mobile Money API",
+    "version": "1.2.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Transactions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/transactions",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provided with a valid object representation, this endpoint allows for a new transaction to be created"
+        },
+        {
+          "info": {
+            "name": "Create a Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/transactions/type/:transactionType",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "transactionType",
+                "value": "",
+                "type": "path",
+                "description": "Identifies the type of transaction that is to be created."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provided with a valid object representation, this endpoint allows for a new transaction to be created for a given transaction type passed via the URL."
+        },
+        {
+          "info": {
+            "name": "View A Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/transactions/:transactionReference",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "transactionReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify the transaction."
+              }
+            ]
+          },
+          "docs": "This endpoint returns the details of a transaction"
+        },
+        {
+          "info": {
+            "name": "Update A Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/transactions/:transactionReference",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "transactionReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify the transaction."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint allows the transactionStatus of a transaction to be updated."
+        },
+        {
+          "info": {
+            "name": "Create A Reversal",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/transactions/:transactionReference/reversals",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "transactionReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify the transaction."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provided with a valid object representation, this endpoint allows for a new reversal to be created"
+        },
+        {
+          "info": {
+            "name": "Create A Transaction Batch",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/batchtransactions",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provided with a valid object representation, this endpoint allows for a new transaction batch to be created"
+        },
+        {
+          "info": {
+            "name": "View A Transaction Batch",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/batchtransactions/:batchId",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "batchId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify the transaction batch."
+              }
+            ]
+          },
+          "docs": "This endpoint returns the current status of a batch transaction"
+        },
+        {
+          "info": {
+            "name": "Update A Transaction Batch",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/batchtransactions/:batchId",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "batchId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify the transaction batch."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint updates a specific transaction batch. Only the batchStatus field can be modified."
+        },
+        {
+          "info": {
+            "name": "View Batch Rejections",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/batchtransactions/:batchId/rejections",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "batchId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify the transaction batch."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the minimum creation date for which records should be returned."
+              },
+              {
+                "name": "toDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the maximum creation date for which records should be returned."
+              }
+            ]
+          },
+          "docs": "This endpoint returns rejected transactions for a specific batch\""
+        },
+        {
+          "info": {
+            "name": "View Batch Completions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/batchtransactions/:batchId/completions",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "batchId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify the transaction batch."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the minimum creation date for which records should be returned."
+              },
+              {
+                "name": "toDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the maximum creation date for which records should be returned."
+              }
+            ]
+          },
+          "docs": "This endpoint returns completed transactions for a specific batch"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Accounts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create an Account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identityType",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identityType",
+                "value": "",
+                "type": "path",
+                "description": "Identifies the type of identity that is associated with the Account."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provided with a valid object representation, this endpoint allows for a new account to be created"
+        },
+        {
+          "info": {
+            "name": "View an Account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              }
+            ]
+          },
+          "docs": "This endpoint returns details for a given account. This API accepts multiple account identifiers"
+        },
+        {
+          "info": {
+            "name": "Update an Account",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint updates an account. Currently, accountStatus and accountSubStatus fields can be updated."
+        },
+        {
+          "info": {
+            "name": "View an Account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              }
+            ]
+          },
+          "docs": "This endpoint returns the details of an account."
+        },
+        {
+          "info": {
+            "name": "Update an Account",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint updates an account. Currently, accountStatus and accountSubStatus fields can be updated."
+        },
+        {
+          "info": {
+            "name": "Update an Account Identity.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/identities/:identityId",
+            "headers": [
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              },
+              {
+                "name": "identityId",
+                "value": "",
+                "type": "path",
+                "description": "A unique id for the identity as assigned by the API Provider."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint updates an account identity. identityStatus, kycVerificationStatus, kycVerificationEntity and kycLevel field updates are permitted."
+        },
+        {
+          "info": {
+            "name": "Update an Account Identity",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/identities/:identityId",
+            "headers": [
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              },
+              {
+                "name": "identityId",
+                "value": "",
+                "type": "path",
+                "description": "A unique id for the identity as assigned by the API Provider."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint updates an account identity. identityStatus, kycVerificationStatus, kycVerificationEntity and kycLevel field updates are permitted."
+        },
+        {
+          "info": {
+            "name": "View Account Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/status",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              }
+            ]
+          },
+          "docs": "This endpoint returns the current status of an account. This API accepts multiple identifiers"
+        },
+        {
+          "info": {
+            "name": "View Account Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/status",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              }
+            ]
+          },
+          "docs": "This endpoint returns the current status of an account."
+        },
+        {
+          "info": {
+            "name": "View Account Name",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/accountname",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              }
+            ]
+          },
+          "docs": "This endpoint returns the status of a given account."
+        },
+        {
+          "info": {
+            "name": "View Account Name",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/accountname",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              }
+            ]
+          },
+          "docs": "This endpoint returns the name of an account holder."
+        },
+        {
+          "info": {
+            "name": "View Account Balance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/balance",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              }
+            ]
+          },
+          "docs": "This endpoint returns the balance of an account"
+        },
+        {
+          "info": {
+            "name": "View Account Balance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/balance",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              }
+            ]
+          },
+          "docs": "This endpoint returns the balance of an account."
+        },
+        {
+          "info": {
+            "name": "View Account Balance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/balance",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "This endpoint returns the balance of an account. As the account is not passed as a parameter, the account is assumed to be that of the calling client."
+        },
+        {
+          "info": {
+            "name": "View Account Specific Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/transactions",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the minimum creation date for which records should be returned."
+              },
+              {
+                "name": "toDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the maximum creation date for which records should be returned."
+              },
+              {
+                "name": "transactionStatus",
+                "value": "",
+                "type": "query",
+                "description": "Query variable to uniquely identify the transaction status."
+              },
+              {
+                "name": "transactionType",
+                "value": "",
+                "type": "query",
+                "description": "Identifies the type of transaction."
+              }
+            ]
+          },
+          "docs": "This endpoint returns transactions linked to a specific account"
+        },
+        {
+          "info": {
+            "name": "View Account Specific Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/transactions",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the minimum creation date for which records should be returned."
+              },
+              {
+                "name": "toDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the maximum creation date for which records should be returned."
+              },
+              {
+                "name": "transactionStatus",
+                "value": "",
+                "type": "query",
+                "description": "Query variable to uniquely identify the transaction status."
+              },
+              {
+                "name": "transactionType",
+                "value": "",
+                "type": "query",
+                "description": "Identifies the type of transaction."
+              }
+            ]
+          },
+          "docs": "This endpoint returns transactions linked to a specific account."
+        },
+        {
+          "info": {
+            "name": "View Account Statements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/statemententries",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the minimum creation date for which records should be returned."
+              },
+              {
+                "name": "toDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the maximum creation date for which records should be returned."
+              },
+              {
+                "name": "transactionStatus",
+                "value": "",
+                "type": "query",
+                "description": "Query variable to uniquely identify the transaction status."
+              },
+              {
+                "name": "displayType",
+                "value": "",
+                "type": "query",
+                "description": "Query parameter to to identify the display type of the statement entries to be returned."
+              }
+            ]
+          },
+          "docs": "The Statement Entries API enables generic representations of transactions to be returned. Typically, the returned representations are used for the purposes of presenting a statement to the account holder. In order to return a statement, an account must be specified."
+        },
+        {
+          "info": {
+            "name": "View Account Statements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/statemententries",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the minimum creation date for which records should be returned."
+              },
+              {
+                "name": "toDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the maximum creation date for which records should be returned."
+              },
+              {
+                "name": "transactionStatus",
+                "value": "",
+                "type": "query",
+                "description": "Query variable to uniquely identify the transaction status."
+              },
+              {
+                "name": "displayType",
+                "value": "",
+                "type": "query",
+                "description": "Query parameter to to identify the display type of the statement entries to be returned."
+              }
+            ]
+          },
+          "docs": "The Statement Entries API enables generic representations of transactions to be returned. Typically, the returned representations are used for the purposes of presenting a statement to the account holder. In order to return a statement, an account must be specified."
+        },
+        {
+          "info": {
+            "name": "View Specific Statement",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/statemententries/:transactionReference",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "transactionReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify the transaction."
+              }
+            ]
+          },
+          "docs": "The Statement Entries API enables generic representations of transactions to be returned. Typically, the returned representations are used for the purposes of presenting a statement to the account holder. In order to return a statement, a transaction reference must be specified."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Bills",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "View Bill Companies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/billcompanies",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              }
+            ]
+          },
+          "docs": "The Bill Companies API is used to return a list of Service Providers that accept Bill Payments."
+        },
+        {
+          "info": {
+            "name": "View a Specific Bill Company",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/billcompanies/:serviceProvider",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "serviceProvider",
+                "value": "",
+                "type": "path",
+                "description": "The identifier for the Bill Payment Service Provider."
+              }
+            ]
+          },
+          "docs": "This Bill Companies API is used to return a information for a specific Service Providers that accepts Bill Payments."
+        },
+        {
+          "info": {
+            "name": "View Bill Companies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/billcompanies",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              }
+            ]
+          },
+          "docs": "This Bill Companies API is used to return a list of Service Providers that accept Bill Payments for a given account."
+        },
+        {
+          "info": {
+            "name": "View Bill Companies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/billcompanies",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              }
+            ]
+          },
+          "docs": "This Bill Companies API is used to return a list of Service Providers that accept Bill Payments for a given account."
+        },
+        {
+          "info": {
+            "name": "View Account Bills",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/bills",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the minimum creation date for which records should be returned."
+              },
+              {
+                "name": "toDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the maximum creation date for which records should be returned."
+              }
+            ]
+          },
+          "docs": "This endpoint returns bills linked to an account"
+        },
+        {
+          "info": {
+            "name": "View Account Bills",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/bills",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the minimum creation date for which records should be returned."
+              },
+              {
+                "name": "toDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the maximum creation date for which records should be returned."
+              }
+            ]
+          },
+          "docs": "This endpoint returns bills linked to an account."
+        },
+        {
+          "info": {
+            "name": "View Payments for a Bill",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/bills/:billReference/payments",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              },
+              {
+                "name": "billReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify a bill."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the minimum creation date for which records should be returned."
+              },
+              {
+                "name": "toDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the maximum creation date for which records should be returned."
+              }
+            ]
+          },
+          "docs": "This endpoint allows for bill payments for a specific account to be returned"
+        },
+        {
+          "info": {
+            "name": "Create A Bill Payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/bills/:billReference/payments",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              },
+              {
+                "name": "billReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify a bill."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provided with a valid object representation, this endpoint allows for a new bill payment to be created for a specific account"
+        },
+        {
+          "info": {
+            "name": "View Payments for a Bill",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/bills/:billReference/payments",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              },
+              {
+                "name": "billReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify a bill."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the minimum creation date for which records should be returned."
+              },
+              {
+                "name": "toDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the maximum creation date for which records should be returned."
+              }
+            ]
+          },
+          "docs": "This endpoint allows for bill payments for a specific account to be returned"
+        },
+        {
+          "info": {
+            "name": "Create A Bill Payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/bills/:billReference/payments",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              },
+              {
+                "name": "billReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify a bill."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provided with a valid object representation, this endpoint allows for a new bill payment to be created for a specific account."
+        },
+        {
+          "info": {
+            "name": "View Payments for a Bill",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/bills/:billReference/payments",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "billReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify a bill."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the minimum creation date for which records should be returned."
+              },
+              {
+                "name": "toDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the maximum creation date for which records should be returned."
+              }
+            ]
+          },
+          "docs": "This endpoint allows for bill payments for a given bill reference to be returned"
+        },
+        {
+          "info": {
+            "name": "Create A Bill Payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/bills/:billReference/payments",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "billReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify a bill."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provided with a valid object representation, this endpoint allows for a new bill payment to be created."
+        },
+        {
+          "info": {
+            "name": "View Payments for a Bill without a Bill Reference",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/bills/payments",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the minimum creation date for which records should be returned."
+              },
+              {
+                "name": "toDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the maximum creation date for which records should be returned."
+              }
+            ]
+          },
+          "docs": "This endpoint allows for bill payments for a specific account to be returned"
+        },
+        {
+          "info": {
+            "name": "Create A Bill Payment without a Bill Reference",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/bills/payments",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provided with a valid object representation, this endpoint allows for a new bill payment to be created for a specific account"
+        },
+        {
+          "info": {
+            "name": "View Payments for a Bill without a Bill Reference",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/bills/payments",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the minimum creation date for which records should be returned."
+              },
+              {
+                "name": "toDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the maximum creation date for which records should be returned."
+              }
+            ]
+          },
+          "docs": "This endpoint allows for bill payments for a specific account to be returned"
+        },
+        {
+          "info": {
+            "name": "Create A Bill Payment without a Bill Reference",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/bills/payments",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provided with a valid object representation, this endpoint allows for a new bill payment to be created for a specific account."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Debit Mandates",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create A Debit Mandate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/debitmandates",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provided with a valid object representation, this endpoint allows for a new debit mandate to be created for a specific account."
+        },
+        {
+          "info": {
+            "name": "Create A Debit Mandate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/debitmandates",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provided with a valid object representation, this endpoint allows for a new debit mandate to be created for a specific account."
+        },
+        {
+          "info": {
+            "name": "View A Debit Mandate",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/debitmandates/:debitMandateReference",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              },
+              {
+                "name": "debitMandateReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify a Debit Mandate Reference."
+              }
+            ]
+          },
+          "docs": "This endpoint returns a specific debit mandate linked to an account"
+        },
+        {
+          "info": {
+            "name": "Update A Debit Mandate",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/debitmandates/:debitMandateReference",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              },
+              {
+                "name": "debitMandateReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify a Debit Mandate Reference."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint updates a specific debit mandate linked to an account. The following fields are modifiable] mandateStatus, startDate, endDate, frequencyType, numberOfPayments."
+        },
+        {
+          "info": {
+            "name": "View A Debit Mandate",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/debitmandates/:debitMandateReference",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              },
+              {
+                "name": "debitMandateReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify a Debit Mandate Reference."
+              }
+            ]
+          },
+          "docs": "This endpoint returns a specific debit mandate linked to an account."
+        },
+        {
+          "info": {
+            "name": "Update A Debit Mandate",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/debitmandates/:debitMandateReference",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              },
+              {
+                "name": "debitMandateReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify a Debit Mandate Reference."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint updates a specific debit mandate linked to an account. The following fields are modifiable] mandateStatus, startDate, endDate, frequencyType, numberOfPayments."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Links",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create A Link",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/links",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provided with a valid object representation, this endpoint allows a new link to be created for a specific account"
+        },
+        {
+          "info": {
+            "name": "Create A Link",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/links",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provided with a valid object representation, this endpoint allows a new link to be created for a specific account."
+        },
+        {
+          "info": {
+            "name": "View A Link",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/links/:linkReference",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              },
+              {
+                "name": "linkReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify a link."
+              }
+            ]
+          },
+          "docs": "This endpoint returns a specific link"
+        },
+        {
+          "info": {
+            "name": "Update A Link",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/links/:linkReference",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              },
+              {
+                "name": "linkReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify a link."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint updates a specific link. mode and status fields are modifiable."
+        },
+        {
+          "info": {
+            "name": "View A Link",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/links/:linkReference",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              },
+              {
+                "name": "linkReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify a link."
+              }
+            ]
+          },
+          "docs": "This endpoint returns a specific link for a given account."
+        },
+        {
+          "info": {
+            "name": "Update A Link",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/links/:linkReference",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              },
+              {
+                "name": "linkReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify a link."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint updates a specific link. mode and status fields are modifiable."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Quotations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create A New Quotation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/quotations",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provided with a valid object representation, this endpoint allows for a new quotation to be created."
+        },
+        {
+          "info": {
+            "name": "View A Quotation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/quotations/:quotationReference",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "quotationReference",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify the quotation."
+              }
+            ]
+          },
+          "docs": "This endpoint returns a specific quotation"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Authorisation Codes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "View Authorisation Codes for a given account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/authorisationcodes",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the minimum creation date for which records should be returned."
+              },
+              {
+                "name": "toDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the maximum creation date for which records should be returned."
+              },
+              {
+                "name": "codeState",
+                "value": "",
+                "type": "query",
+                "description": "Allows returned records to be filtered on state of the authorisation code."
+              }
+            ]
+          },
+          "docs": "This endpoint allows allows a mobile money payer or payee to view authorisation codes for a given account."
+        },
+        {
+          "info": {
+            "name": "Create an Authorisation Code",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/authorisationcodes",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "this endpoint allows allows a mobile money payer or payee to generate a code which when presented to the other party, can be redeemed for an amount set by the payer or payee, depending upon the use case"
+        },
+        {
+          "info": {
+            "name": "View Authorisation Codes for a given account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/authorisationcodes",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the minimum creation date for which records should be returned."
+              },
+              {
+                "name": "toDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Indicates the maximum creation date for which records should be returned."
+              },
+              {
+                "name": "codeState",
+                "value": "",
+                "type": "query",
+                "description": "Allows returned records to be filtered on state of the authorisation code."
+              }
+            ]
+          },
+          "docs": "This endpoint allows allows a mobile money payer or payee to view authorisation codes for a given account."
+        },
+        {
+          "info": {
+            "name": "Create an Authorisation Code via an account identifier.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/authorisationcodes",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint allows allows a mobile money payer or payee to generate a code which when presented to the other party, can be redeemed for an amount set by the payer or payee, depending upon the use case."
+        },
+        {
+          "info": {
+            "name": "View an Authorisation Code",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/authorisationcodes/:authorisationCode",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              },
+              {
+                "name": "authorisationCode",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an authorisation code."
+              }
+            ]
+          },
+          "docs": "This endpoint returns a specific Authorisation Code linked to an account"
+        },
+        {
+          "info": {
+            "name": "Update an Authorisation Code",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:accountId/authorisationcodes/:authorisationCode",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference."
+              },
+              {
+                "name": "authorisationCode",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an authorisation code."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint updates a specific Authorisation Code linked to an account. The only permissable modification is to set codeState to cancelled."
+        },
+        {
+          "info": {
+            "name": "View an Authorisation Code",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/authorisationcodes/:authorisationCode",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              },
+              {
+                "name": "authorisationCode",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an authorisation code."
+              }
+            ]
+          },
+          "docs": "This endpoint returns a specific Authorisation Code linked to an account."
+        },
+        {
+          "info": {
+            "name": "Cancel an Authorisation Code",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/accounts/:identifierType/:identifier/authorisationcodes/:authorisationCode",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-User-Bearer",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier-Type",
+                "value": ""
+              },
+              {
+                "name": "X-Account-Holding-Institution-Identifier",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-Callback-URL",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "identifierType",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to specify the type of the identifier that is used to identify the account."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "Path variable that contains the account identifier."
+              },
+              {
+                "name": "authorisationCode",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify an authorisation code."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint updates a specific Authorisation Code linked to an account. The only permissable modification is to set codeState to cancelled."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Supporting",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Check API availability",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/heartbeat",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "This endpoint returns the current status of the API"
+        },
+        {
+          "info": {
+            "name": "View A Request State",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/requeststates/:serverCorrelationId",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "serverCorrelationId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify a request state. Must be supplied as a UUID."
+              }
+            ]
+          },
+          "docs": "This endpoint returns a specific request state"
+        },
+        {
+          "info": {
+            "name": "Update A Request State",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/requeststates/:serverCorrelationId",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-CorrelationID",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "serverCorrelationId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify a request state. Must be supplied as a UUID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint updates a specific request state. This operation is to be deprecated. Please refer to Callback definitions for the revised approach to implementing asynchronous callbacks."
+        },
+        {
+          "info": {
+            "name": "View A Response",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm/responses/:clientCorrelationId",
+            "headers": [
+              {
+                "name": "X-Date",
+                "value": ""
+              },
+              {
+                "name": "X-API-Key",
+                "value": ""
+              },
+              {
+                "name": "X-Client-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Content-Hash",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-1",
+                "value": ""
+              },
+              {
+                "name": "X-User-Credential-2",
+                "value": ""
+              },
+              {
+                "name": "X-Channel",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "clientCorrelationId",
+                "value": "",
+                "type": "path",
+                "description": "Path variable to uniquely identify a response object. Must be supplied as a UUID."
+              }
+            ]
+          },
+          "docs": "This endpoint returns a specific response."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,60 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "CAMARA Mobile Device Identifier",
+    "version": "0.2.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Get Device Identifiers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get details about the specific device being used by a given mobile subscriber",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/device-identifier/v0.2/retrieve-identifier",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get details about the specific device being used by a given mobile subscriber"
+        },
+        {
+          "info": {
+            "name": "Get details about the type of device being used by a given mobile subscriber",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/device-identifier/v0.2/retrieve-type",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get details about the type of device being used by a given mobile subscriber"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

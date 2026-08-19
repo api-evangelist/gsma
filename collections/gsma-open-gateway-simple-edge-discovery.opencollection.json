@@ -1,0 +1,63 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Simple Edge Discovery",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Discovery",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Returns the name of the Edge Cloud Zone closest to user device\nidentified in the request.\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/simple-edge-discovery/v1/edge-cloud-zones",
+            "headers": [
+              {
+                "name": "IPv4-Address",
+                "value": "84.125.93.10"
+              },
+              {
+                "name": "Public-port",
+                "value": "123"
+              },
+              {
+                "name": "IPv6-Address",
+                "value": "2001:db8:85a3:8d3:1319:8a2e:370:7348"
+              },
+              {
+                "name": "Network-Access-Identifier",
+                "value": ""
+              },
+              {
+                "name": "Phone-Number",
+                "value": "+441234567890"
+              },
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filter the Edge Cloud Zones according to the parameter value.\nFor this API the only supported value is `closest`.\n"
+              }
+            ]
+          },
+          "docs": "On receiving this request, the network will return the name\nof the Edge Cloud Zone with the shortest network path to the end user\ndevice identified in the request.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

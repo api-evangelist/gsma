@@ -1,0 +1,170 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Carrier Billing Refund",
+    "version": "wip"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Refund",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a list of refunds",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/carrier-billing-refund/vwip/payments/:paymentId/refunds",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "paymentId",
+                "value": "",
+                "type": "path",
+                "description": "Payment identifier for which their refunds are queried"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Requested index to indicate the start of the resources to be provided in the response"
+              },
+              {
+                "name": "perPage",
+                "value": "",
+                "type": "query",
+                "description": "Requested number of resources to be provided in response"
+              },
+              {
+                "name": "refundCreationDate.gte",
+                "value": "",
+                "type": "query",
+                "description": "Initial `refundCreationDate` for running the query. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone."
+              },
+              {
+                "name": "refundCreationDate.lte",
+                "value": "",
+                "type": "query",
+                "description": "End `refundCreationDate` for running the query. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Used to return the sorted results in descending (default) or ascending order, based on `refundCreationDate` property"
+              },
+              {
+                "name": "refundStatus",
+                "value": "",
+                "type": "query",
+                "description": "List of refund status to be considered for the query"
+              },
+              {
+                "name": "merchantIdentifier",
+                "value": "",
+                "type": "query",
+                "description": "Merchant identifier to filter the results"
+              }
+            ]
+          },
+          "docs": "Retrieve a list of refunds and their details for a specific payment, identified by its `paymentId`, based on some filtering criteria.\nRegardless the refund criteria provided, response MUST be always limited to refunds performed by the API client (i.e same oAuth credentials) triggering this request.\nThis is to guarantee no API client can check refunds performed by other, therefore avoiding any legal or privacy topic.\n\nWhen Access Token is issued for a given user phone number, the list of refunds "
+        },
+        {
+          "info": {
+            "name": "Create a new Refund",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/carrier-billing-refund/vwip/payments/:paymentId/refunds",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "paymentId",
+                "value": "",
+                "type": "path",
+                "description": "The payment identifier for which the payment refund is requested."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new refund for an existing payment. Refund can be `total` or `partial`. This procedure MUST be always limited to the API client which performed the related payment."
+        },
+        {
+          "info": {
+            "name": "Get refund details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/carrier-billing-refund/vwip/payments/:paymentId/refunds/:refundId",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "paymentId",
+                "value": "",
+                "type": "path",
+                "description": "Payment identifier associated to the `refundId`"
+              },
+              {
+                "name": "refundId",
+                "value": "",
+                "type": "path",
+                "description": "Refund identifier that was obtained from the create refund operation"
+              }
+            ]
+          },
+          "docs": "Retrieve refund details for a given refund.\n\nWhen Access Token is issued for a given user phone number, the refund details would be returned in case the `refundId` is associated to that user phone number and API client, otherwise `404 NOT_FOUND` will be returned. When Access Token is not associated to a user phone number, the refund details are returned in case the API client managed that refund."
+        },
+        {
+          "info": {
+            "name": "Get remaining amount not refunded for a given payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/carrier-billing-refund/vwip/payments/:paymentId/refunds/remaining-amount",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "paymentId",
+                "value": "",
+                "type": "path",
+                "description": "Payment identifier associated to the `refundId`"
+              }
+            ]
+          },
+          "docs": "Retrieve remaining amount not yet refunded for a given payment. This amount refers to the pending amount never requested to be refunded (i.e. a refund not yet consolidated -processing- implies that such an amount is not part of the remaining amount until final status for that procedure is reached). Some cases below to illustrate the behaviour:\n\n**Case_1:** Payment of 80 EUR, with 2 partial `succedeed` Refunds, each of them of 20 EUR\n  - remainingAmount: 40 EUR\n\n**Case_2:** Payment of 80 EUR, wit"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
