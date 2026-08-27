@@ -39,25 +39,45 @@ created: '2026-07-25'
 modified: '2026-07-25'
 specificationVersion: '0.23'
 apis:
-- aid: gsma:gsma-mobile-money-api
-  name: GSMA Mobile Money API
+- aid: gsma:gsma-accounts-api
+  name: GSMA Accounts API
   description: >-
-    The GSMA Mobile Money API is a harmonised REST/JSON specification for mobile money platforms, developed
-    by the GSMA with the mobile money industry and published openly at developer.mobilemoneyapi.io. Version
-    1.2.0 defines 53 paths across Transactions, Quotations, Accounts, Bills, Debit Mandates, Links, and
-    Authorisation Codes, covering merchant payments, disbursements, international transfers, P2P transfers,
-    recurring payments, account linking, bill payments, and agent cash-in/cash-out. The OpenAPI 3.0.0
-    document is downloadable without registration; the simulator sandbox host referenced in the spec did
-    not resolve in DNS on the review date.
+    The **Accounts** APIs are used to support a range of operations on a financial account resource and
+    associated resources.
+
+    Types of accounts include mobile wallets, financial institution accounts and utility accounts (e.g.
+    for electricity).
+
+
+    **Identifying a Target Account**
+
+
+    Two methods are provided for identifying an account, the single identifier method and the multiple
+    identifiers method.
+
+
+    Single Identifier Method:
+
+
+    - In the scenario where one identifier suffices to uniquely identify an account, the following path
+    is to be used: **/accounts/{identifierType}/{identifier}**.
+
+
+    Multiple Identifiers Method:
+
+
+    - Where a single identifier is not sufficient to identify an account, the following path is to be
+    used: &#39; **/accounts/{accountIdentifier1}@{value1}${accountIdentifier2}@{value2}${accountIdentifier3}@{value3}**&#39;.
+    The list of permitted account identifiers supported by the Mobile Money API can be found in the API
+    documentation. As there can be multiple identifiers required to identify the target account, the path
+    uses a &#39;$&#39; delimiter to separate each identifier, up to a limit of three account identifiers.
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
+  baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
-  - Mobile Money
-  - Payments
-  - Financial Inclusion
-  - Specification
+  - Accounts
   properties:
   - type: OpenAPI
-    url: openapi/gsma-mobile-money-api-openapi.yml
+    url: openapi/gsma-accounts-api-openapi.yml
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
@@ -71,8 +91,6 @@ apis:
     url: https://developer.mobilemoneyapi.io/security/
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/guidelines/
-  - type: Overlay
-    url: overlays/gsma-mobile-money-api-overlay.yaml
   - type: Webhooks
     url: asyncapi/gsma-webhooks.yml
   - type: SDKs
@@ -81,144 +99,1030 @@ apis:
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
   - type: Idempotency
     url: conventions/gsma-conventions.yml
-  baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
-- aid: gsma:gsma-open-gateway-call-forwarding-signal-openapi
-  name: GSMA Call Forwarding Signal
-  description: GSMA Call Forwarding Signal from GSMA — 2 path(s) described in OpenAPI.
+- aid: gsma:gsma-authorisation-codes-api
+  name: GSMA Authorisation Codes API
+  description: >-
+    The **Authorisation** Codes APIs allow a payer to generate a payment code which when presented to
+    the payee, can be redeemed for an amount associated with the code.
+
+    Authorisation codes can be set to expire. Note that expiry time can be specified via the API, however
+    the mobile money provider
+
+    may mandate a common expiry period for all codes.
+
+    Authorisation Codes are used widely in the industry across a range of use cases, including:
+
+
+    - ATM Codes for card-less withdrawals. A code is generated in advance by the customer and entered
+    into the ATM to facilitate the withdrawal.
+
+    - Pre-authorised codes for agent withdrawals. A code is generated in advance by the customer and given
+    to the agent to facilitate the withdrawal.
+
+    - Pre-authorised codes for merchant payments. The customer generates a code which can be redeemed
+    at a merchant.
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Authorisation Codes
   properties:
   - type: OpenAPI
-    url: openapi/gsma-open-gateway-call-forwarding-signal-openapi.yml
-- aid: gsma:gsma-open-gateway-carrier-billing-openapi
-  name: GSMA Carrier Billing
-  description: GSMA Carrier Billing from GSMA — 6 path(s) described in OpenAPI.
+    url: openapi/gsma-authorisation-codes-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-bills-api
+  name: GSMA Bills API
+  description: >-
+    The **Bills** APIs allow a mobile money provider to allow customers to retrieve and pay bills. Specific
+    use cases include:
+
+
+    - Retrieving information on service providers (bill companies) that accept bill payments.
+
+    - Retrieving bills at a service provider for a given mobile money customer.
+
+    - Allowing mobile money customers to partially or fully pay bills for a service provider.
+
+    - Retrieving bill payment information from a service provider for a given customer.
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Bills
   properties:
   - type: OpenAPI
-    url: openapi/gsma-open-gateway-carrier-billing-openapi.yml
-- aid: gsma:gsma-open-gateway-carrier-billing-refund-openapi
-  name: GSMA Carrier Billing Refund
-  description: GSMA Carrier Billing Refund from GSMA — 3 path(s) described in OpenAPI.
+    url: openapi/gsma-bills-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-call-forwarding-information-retrieval-api
+  name: GSMA Call Forwarding information retrieval API
+  description: >-
+    Provides information on Call Forwarding settings for the provided phone number (PhoneNumber).
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Call Forwarding information retrieval
   properties:
   - type: OpenAPI
-    url: openapi/gsma-open-gateway-carrier-billing-refund-openapi.yml
-- aid: gsma:gsma-open-gateway-device-identifier-openapi
-  name: GSMA CAMARA Mobile Device Identifier
-  description: GSMA CAMARA Mobile Device Identifier from GSMA — 2 path(s) described in OpenAPI.
+    url: openapi/gsma-call-forwarding-information-retrieval-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-check-device-swap-api
+  name: GSMA Check Device Swap API
+  description: >-
+    Validate if the SIM of the end-user has been installed in a different device during a past period
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Check Device Swap
   properties:
   - type: OpenAPI
-    url: openapi/gsma-open-gateway-device-identifier-openapi.yml
-- aid: gsma:gsma-open-gateway-device-location-retrieval-openapi
-  name: GSMA Device Location Retrieval
-  description: GSMA Device Location Retrieval from GSMA — 1 path(s) described in OpenAPI.
+    url: openapi/gsma-check-device-swap-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-check-sim-swap-api
+  name: GSMA Check SIM Swap API
+  description: operation to perform a sim swap check for a past period
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Check SIM Swap
   properties:
   - type: OpenAPI
-    url: openapi/gsma-open-gateway-device-location-retrieval-openapi.yml
-- aid: gsma:gsma-open-gateway-device-location-verification-openapi
-  name: GSMA Device Location Verification
-  description: GSMA Device Location Verification from GSMA — 1 path(s) described in OpenAPI.
+    url: openapi/gsma-check-sim-swap-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-debit-mandates-api
+  name: GSMA Debit Mandates API
+  description: >-
+    The **Debit Mandates** APIs allow a mobile money customer to provide prior approval for payments to
+    be taken from their account by
+
+    a requesting payee. If the amount limit field is not supplied, the payee will be able to take any
+    amount. Mandates can be open-ended
+
+    or can be constrained by a quantified number of payments for a given frequency.
+
+
+    Mandates can be created, viewed and modified. The request to create a debit mandate will be typically
+    initiated by the
+
+    service provider (payee) but can also be requested by the customer (payer).
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Debit Mandates
   properties:
   - type: OpenAPI
-    url: openapi/gsma-open-gateway-device-location-verification-openapi.yml
-- aid: gsma:gsma-open-gateway-device-reachability-status-openapi
-  name: GSMA Device Reachability Status
-  description: GSMA Device Reachability Status from GSMA — 1 path(s) described in OpenAPI.
+    url: openapi/gsma-debit-mandates-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-device-reachability-status-api
+  name: GSMA Device reachability status API
+  description: Operations to get the current reachability status of a device
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Device reachability status
   properties:
   - type: OpenAPI
-    url: openapi/gsma-open-gateway-device-reachability-status-openapi.yml
-- aid: gsma:gsma-open-gateway-device-roaming-status-openapi
-  name: GSMA Device Roaming Status
-  description: GSMA Device Roaming Status from GSMA — 1 path(s) described in OpenAPI.
+    url: openapi/gsma-device-reachability-status-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-discovery-api
+  name: GSMA Discovery API
+  description: Find the closest Edge Cloud Zone to the user device.
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Discovery
   properties:
   - type: OpenAPI
-    url: openapi/gsma-open-gateway-device-roaming-status-openapi.yml
-- aid: gsma:gsma-open-gateway-device-swap-openapi
-  name: GSMA Device Swap
-  description: GSMA Device Swap from GSMA — 2 path(s) described in OpenAPI.
+    url: openapi/gsma-discovery-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-get-device-identifiers-api
+  name: GSMA Get Device Identifiers API
+  description: Retrieve details about the device being used by a mobile subscriber
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Get Device Identifiers
   properties:
   - type: OpenAPI
-    url: openapi/gsma-open-gateway-device-swap-openapi.yml
-- aid: gsma:gsma-open-gateway-home-devices-quality-on-demand-openapi
-  name: GSMA Home Devices QoD
-  description: GSMA Home Devices QoD from GSMA — 1 path(s) described in OpenAPI.
+    url: openapi/gsma-get-device-identifiers-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-home-devices-qod-api
+  name: GSMA Home Devices QoD API
+  description: QoD control operations for home devices
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Home Devices QoD
   properties:
   - type: OpenAPI
-    url: openapi/gsma-open-gateway-home-devices-quality-on-demand-openapi.yml
-- aid: gsma:gsma-open-gateway-know-your-customer-openapi
-  name: GSMA Know Your Customer Match
-  description: GSMA Know Your Customer Match from GSMA — 1 path(s) described in OpenAPI.
+    url: openapi/gsma-home-devices-qod-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-links-api
+  name: GSMA Links API
+  description: >-
+    The **Links** APIs are used to establish a link between two separate accounts on the client and provider
+    systems. The API can be used for example to link a mobile wallet account to a Microfinance Institution
+    account or a bank account. The link object does not mandate the processes to verify and authenticate
+    a link request - this depends upon the use case. A link needs to be associated with a mode of operation:
+
+
+    - pull. The link can be used by the client to debit the target account held by the provider.
+
+    - push. The link can be used by the client to credit the target account held by the provider.
+
+    - both. The link can be used for Push and Pull requests.
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Links
   properties:
   - type: OpenAPI
-    url: openapi/gsma-open-gateway-know-your-customer-openapi.yml
-- aid: gsma:gsma-open-gateway-number-verification-openapi
-  name: GSMA Number Verification
-  description: GSMA Number Verification from GSMA — 2 path(s) described in OpenAPI.
+    url: openapi/gsma-links-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-location-retrieval-api
+  name: GSMA Location Retrieval API
+  description: Retrieve the location of a device
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Location Retrieval
   properties:
   - type: OpenAPI
-    url: openapi/gsma-open-gateway-number-verification-openapi.yml
-- aid: gsma:gsma-open-gateway-otp-validation-openapi
-  name: GSMA One Time Password SMS
-  description: GSMA One Time Password SMS from GSMA — 2 path(s) described in OpenAPI.
+    url: openapi/gsma-location-retrieval-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-location-verification-api
+  name: GSMA Location Verification API
+  description: Verification of the location of a device
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Location Verification
   properties:
   - type: OpenAPI
-    url: openapi/gsma-open-gateway-otp-validation-openapi.yml
-- aid: gsma:gsma-open-gateway-population-density-data-openapi
-  name: GSMA Population Density Data
-  description: GSMA Population Density Data from GSMA — 1 path(s) described in OpenAPI.
+    url: openapi/gsma-location-verification-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-match-api
+  name: GSMA Match API
+  description: >-
+    Operations to match a customer identity against the account data bound to their phone number.
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Match
   properties:
   - type: OpenAPI
-    url: openapi/gsma-open-gateway-population-density-data-openapi.yml
-- aid: gsma:gsma-open-gateway-quality-on-demand-openapi
-  name: GSMA Quality-On-Demand
-  description: GSMA Quality-On-Demand from GSMA — 4 path(s) described in OpenAPI.
+    url: openapi/gsma-match-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-one-step-payment-api
+  name: GSMA One Step Payment API
+  description: Operations to manage One Step Payment procedure
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - One Step Payment
   properties:
   - type: OpenAPI
-    url: openapi/gsma-open-gateway-quality-on-demand-openapi.yml
-- aid: gsma:gsma-open-gateway-sim-swap-openapi
-  name: GSMA SIM Swap
-  description: GSMA SIM Swap from GSMA — 2 path(s) described in OpenAPI.
+    url: openapi/gsma-one-step-payment-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-otp-management-api
+  name: GSMA OTP Management API
+  description: API operations to manage OTP codes
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - OTP Management
   properties:
   - type: OpenAPI
-    url: openapi/gsma-open-gateway-sim-swap-openapi.yml
-- aid: gsma:gsma-open-gateway-simple-edge-discovery-openapi
-  name: GSMA Simple Edge Discovery
-  description: GSMA Simple Edge Discovery from GSMA — 1 path(s) described in OpenAPI.
+    url: openapi/gsma-otp-management-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-payment-api
+  name: GSMA Payment API
+  description: Operations to obtain information about payments
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Payment
   properties:
   - type: OpenAPI
-    url: openapi/gsma-open-gateway-simple-edge-discovery-openapi.yml
+    url: openapi/gsma-payment-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-phone-number-share-api
+  name: GSMA Phone Number Share API
+  description: API operation to return the phone number associated to the access token.
+  humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
+  baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Phone Number Share
+  properties:
+  - type: OpenAPI
+    url: openapi/gsma-phone-number-share-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-phone-number-verify-api
+  name: GSMA Phone Number Verify API
+  description: >-
+    API operation to verify a phone number received as input. It can be received either in plain text
+    or hashed format.
+  humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
+  baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Phone Number Verify
+  properties:
+  - type: OpenAPI
+    url: openapi/gsma-phone-number-verify-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-population-density-data-api
+  name: GSMA Population Density Data API
+  description: Operations to retrieve population density information.
+  humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
+  baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Population Density Data
+  properties:
+  - type: OpenAPI
+    url: openapi/gsma-population-density-data-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-qos-sessions-api
+  name: GSMA QoS Sessions API
+  description: Manage QoS sessions
+  humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
+  baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - QoS Sessions
+  properties:
+  - type: OpenAPI
+    url: openapi/gsma-qos-sessions-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-quotations-api
+  name: GSMA Quotations API
+  description: >-
+    The **Quotations** APIs are used to obtain one or multiple quotes for a mobile money customer who
+    wishes to
+
+    transfer money. The creation of a quote involves returning any fees that will be levied on the sending
+    customer
+
+    and if the request is international, the forex rate is returned. A request is made for a quotation
+    by the requesting
+
+    Service Provider in response to a customer request. The quotation is calculated and returned. If the
+    customer is
+
+    satisfied with the quotation, then they can confirm and proceed with a transaction request using the
+    **/transactions** API.
+  humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
+  baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Quotations
+  properties:
+  - type: OpenAPI
+    url: openapi/gsma-quotations-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-refund-api
+  name: GSMA Refund API
+  description: Operations to manage Refund procedure
+  humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
+  baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Refund
+  properties:
+  - type: OpenAPI
+    url: openapi/gsma-refund-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-retrieve-device-swap-date-api
+  name: GSMA Retrieve Device Swap Date API
+  description: Receive the last date in which the device of the end-user was swapped
+  humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
+  baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Retrieve Device Swap Date
+  properties:
+  - type: OpenAPI
+    url: openapi/gsma-retrieve-device-swap-date-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-retrieve-sim-swap-date-api
+  name: GSMA Retrieve SIM Swap Date API
+  description: operation to retrieve latest SIM swap change date
+  humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
+  baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Retrieve SIM Swap Date
+  properties:
+  - type: OpenAPI
+    url: openapi/gsma-retrieve-sim-swap-date-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-roaming-status-retrieval-api
+  name: GSMA Roaming status retrieval API
+  description: >-
+    Operation to get device roaming status and country information (if roaming) synchronously
+  humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
+  baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Roaming status retrieval
+  properties:
+  - type: OpenAPI
+    url: openapi/gsma-roaming-status-retrieval-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-supporting-api
+  name: GSMA Supporting API
+  description: >-
+    Supporting APIs consist of the following:
+
+
+    - **Heartbeat API:** Used for monitoring purposes and establishes whether the system of an API provider
+    is in a state that enables a client to submit a request for processing within established SLAs.
+
+    - **Request State API** : Used to determine the state of an asynchronous request.
+
+    - **Responses API** : In some circumstances, the client may not have received the final representation
+    of the resource for which it attempted to create or update. The **Responses** API allows a client
+    to identify and retrieve the final representation of the resource assuming that the resource was created.
+  humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
+  baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Supporting
+  properties:
+  - type: OpenAPI
+    url: openapi/gsma-supporting-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-transactions-api
+  name: GSMA Transactions API
+  description: >-
+    The **Transactions** APIs are used to support mobile money financial transaction use cases.
+
+    Transactions are used for a wide range of use cases including merchant payments, international transfers,
+
+    domestic transfers and agent cash-in/cash-out. Reversals and adjustments are also treated as transactions.
+  humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
+  baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Transactions
+  properties:
+  - type: OpenAPI
+    url: openapi/gsma-transactions-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-two-step-payment-api
+  name: GSMA Two Step Payment API
+  description: Operations to manage Two Step Payment procedure
+  humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
+  baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Two Step Payment
+  properties:
+  - type: OpenAPI
+    url: openapi/gsma-two-step-payment-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
+- aid: gsma:gsma-unconditional-call-forwarding-information-retrieval-api
+  name: GSMA Unconditional Call Forwarding information retrieval API
+  description: >-
+    Provides information on Unconditional Call Forwarding settings for the provided phone number (PhoneNumber)
+  humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
+  baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+  tags:
+  - Unconditional Call Forwarding information retrieval
+  properties:
+  - type: OpenAPI
+    url: openapi/gsma-unconditional-call-forwarding-information-retrieval-api-openapi.yml
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/
+  - type: APIReference
+    url: >-
+      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/sdks/getting-started/introduction.html
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/security/
+  - type: Documentation
+    url: https://developer.mobilemoneyapi.io/guidelines/
+  - type: Webhooks
+    url: asyncapi/gsma-webhooks.yml
+  - type: SDKs
+    url: packages/gsma-packages.yml
+  - type: ChangeLog
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/change-list.html
+  - type: Idempotency
+    url: conventions/gsma-conventions.yml
 common:
+- type: Overlay
+  url: overlays/gsma-mobile-money-api-overlay.yaml
 - type: VulnerabilityDisclosure
   url: security/gsma-vulnerability-disclosure.yml
 - type: DomainSecurity
