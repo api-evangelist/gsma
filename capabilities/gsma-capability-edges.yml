@@ -1,0 +1,73 @@
+slug: gsma
+provider: GSMA
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Telecommunications
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 5
+edges:
+- tag: Refund
+  spec_file: gsma-refund-api-openapi.yml
+  capability_id: BC-2660
+  capability_id_l1: BC-2660
+  capability_name: Telecom Billing & Revenue Management
+  confidence: 0.75
+  evidence: '"perform a refund over a given payment" against "Operator Carrier Billing Systems"; POST
+    /payments/{paymentId}/refunds createRefund; GET .../remaining-amount'
+  reason: 'Refund lifecycle over carrier-billed charges sits squarely in telecom billing and revenue management.
+    Left at L1: the evidence spans charge reversal (charging/rating) and bill adjustment (billing operations)
+    without naming either.'
+- tag: Get Device Identifiers
+  spec_file: gsma-get-device-identifiers-api-openapi.yml
+  capability_id: BC-2640.50
+  capability_id_l1: BC-2640
+  capability_name: Device Identity Management
+  confidence: 0.72
+  evidence: '"returns details of the physical mobile device currently being used by a specified mobile
+    subscriber ... A unique network identifier for the specific device itself (IMEI SV and IMEI) ... (IMEI
+    Type Allocation Code) - Device manufacturer name and model"'
+  reason: Operations retrieve IMEI/TAC and make-model for a subscriber's device, i.e. exposure of the
+    operator's device-identity register. Device Identity Management is the closest fit; confidence moderated
+    because the API only reads (does not register or blacklist) identifiers.
+- tag: Two Step Payment
+  spec_file: gsma-two-step-payment-api-openapi.yml
+  capability_id: BC-2660.20
+  capability_id_l1: BC-2660
+  capability_name: Charging & Rating Management
+  confidence: 0.72
+  evidence: '"allows users to make purchases by charging payments against Telco Operator Billing Systems";
+    "the payment is processed on current account balance or charged on next bill generated for this line";
+    preparePayment / confirmPayment'
+  reason: Carrier billing reserve/confirm/cancel flow charging an amount to a mobile line against the
+    operator's billing system and account balance — this is telecom charging and balance management. Some
+    ambiguity between charging/rating and billing operations, so confidence is moderate on the L2.
+- tag: Check SIM Swap
+  spec_file: gsma-check-sim-swap-api-openapi.yml
+  capability_id: BC-2690.10
+  capability_id_l1: BC-2690
+  capability_name: Telecom Fraud Detection
+  confidence: 0.7
+  evidence: '"The SIM Swap API is useful to prevent fraud by reducing the risk of account takeover fraud
+    by strengthening SIM based authentication processes such as SMS One-time passwords"; operation "Check
+    SIM swap"'
+  reason: SIM-swap checking is explicitly named in the Telecom Fraud Management scope; the single operation
+    returns last SIM-swap event for real-time fraud screening, so Telecom Fraud Detection is the best
+    fit.
+- tag: One Step Payment
+  spec_file: gsma-one-step-payment-api-openapi.yml
+  capability_id: BC-2660.20
+  capability_id_l1: BC-2660
+  capability_name: Charging & Rating Management
+  confidence: 0.7
+  evidence: '"charge an amount on a mobile line"; "the payment is processed on current account balance
+    or charged on next bill generated for this line"; POST /payments createPayment'
+  reason: Carrier billing charges a purchase against the operator's billing/charging system, hitting prepaid
+    balance or the next postpaid bill — online charging and balance management. Sub-capability choice
+    between charging/rating and billing operations carries some ambiguity, hence 0.7.

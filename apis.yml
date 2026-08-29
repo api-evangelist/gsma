@@ -1133,6 +1133,9 @@ apis:
   - type: Idempotency
     url: conventions/gsma-conventions.yml
 common:
+- type: CapabilityMap
+  url: capabilities/gsma-capability-edges.yml
+  name: GSMA Business Capability Map
 - type: Overlay
   url: overlays/gsma-mobile-money-api-overlay.yaml
 - type: VulnerabilityDisclosure
