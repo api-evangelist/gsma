@@ -18,6 +18,18 @@ description: 'The GSMA (GSM Association) is the London-headquartered global trad
   and contract gated with no public documentation. The GSMA runs no production network API endpoints of its
   own — every Open Gateway API is served by an operator or a channel partner such as Infobip, IPification,
   TMT iD, XConnect, or Singtel.'
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
 - Telecommunications
