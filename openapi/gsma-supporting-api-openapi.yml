@@ -1,0 +1,602 @@
+openapi: 3.2.0
+info:
+  description: 'This schema defines the RESTful endpoints provided by the GSMA Mobile Money API.
+
+    You can find out more about what the API can do for your business at [https://developer.mobilemoneyapi.io]
+
+    '
+  version: 1.2.0
+  title: Mobile Money Supporting API
+servers:
+- description: This url points to the GSMA Mobile Money API v1.2 Simulator.
+  url: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+tags:
+- name: Supporting
+  description: 'Supporting APIs consist of the following:
+
+
+    - **Heartbeat API:** Used for monitoring purposes and establishes whether the system of an API provider is in a state that enables a client to submit a request for processing within established SLAs.
+
+    - **Request State API** : Used to determine the state of an asynchronous request.
+
+    - **Responses API** : In some circumstances, the client may not have received the final representation of the resource for which it attempted to create or update. The **Responses** API allows a client to identify and retrieve the final representation of the resource assuming that the resource was created.
+
+    '
+paths:
+  /heartbeat:
+    get:
+      tags:
+      - Supporting
+      summary: Check API availability
+      description: This endpoint returns the current status of the API
+      operationId: heartbeatGET
+      parameters:
+      - $ref: '#/components/parameters/X-Date'
+      - $ref: '#/components/parameters/X-API-Key'
+      - $ref: '#/components/parameters/X-Client-Id'
+      responses:
+        200:
+          description: Represents a Heartbeat response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseHeartbeat'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        400:
+          description: Represents an Error Caused by the Violation of a Business Rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        401:
+          description: Represents an Error Caused by an Authorisation Failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        404:
+          description: Represents an Error Caused by a Failure to Identify the Target Resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        500:
+          description: Represents an Error Caused by a General Server-Side Issue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        503:
+          description: Represents an Error Caused by System Unavailability
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+  /requeststates/{serverCorrelationId}:
+    get:
+      tags:
+      - Supporting
+      summary: View A Request State
+      description: This endpoint returns a specific request state
+      operationId: requeststatesServerCorrelationIdGET
+      parameters:
+      - $ref: '#/components/parameters/serverCorrelationId'
+      - $ref: '#/components/parameters/X-Date'
+      - $ref: '#/components/parameters/X-API-Key'
+      - $ref: '#/components/parameters/X-Client-Id'
+      - $ref: '#/components/parameters/X-Content-Hash'
+      - $ref: '#/components/parameters/X-User-Credential-1'
+      - $ref: '#/components/parameters/X-User-Credential-2'
+      - $ref: '#/components/parameters/X-Channel'
+      responses:
+        200:
+          description: Represents an Asynchronous response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/requestStateObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        400:
+          description: Represents an Error Caused by the Violation of a Business Rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        401:
+          description: Represents an Error Caused by an Authorisation Failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        404:
+          description: Represents an Error Caused by a Failure to Identify the Target Resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        500:
+          description: Represents an Error Caused by a General Server-Side Issue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        503:
+          description: Represents an Error Caused by System Unavailability
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+    patch:
+      deprecated: true
+      tags:
+      - Supporting
+      summary: Update A Request State
+      description: This endpoint updates a specific request state. This operation is to be deprecated. Please refer to Callback definitions for the revised approach to implementing asynchronous callbacks.
+      operationId: requeststatesServerCorrelationIdPATCH
+      parameters:
+      - $ref: '#/components/parameters/serverCorrelationId'
+      - $ref: '#/components/parameters/X-Date'
+      - $ref: '#/components/parameters/X-CorrelationID'
+      - $ref: '#/components/parameters/X-API-Key'
+      - $ref: '#/components/parameters/X-Client-Id'
+      - $ref: '#/components/parameters/X-Content-Hash'
+      - $ref: '#/components/parameters/X-User-Credential-1'
+      - $ref: '#/components/parameters/X-User-Credential-2'
+      - $ref: '#/components/parameters/X-Channel'
+      requestBody:
+        $ref: '#/components/requestBodies/genericPatch'
+      responses:
+        204:
+          description: An empty response is returned for a synchronous successful patch.
+        400:
+          description: Represents an Error Caused by the Violation of a Business Rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        401:
+          description: Represents an Error Caused by an Authorisation Failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        404:
+          description: Represents an Error Caused by a Failure to Identify the Target Resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        500:
+          description: Represents an Error Caused by a General Server-Side Issue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        503:
+          description: Represents an Error Caused by System Unavailability
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+  /responses/{clientCorrelationId}:
+    get:
+      tags:
+      - Supporting
+      summary: View A Response
+      description: This endpoint returns a specific response.
+      operationId: responsesClientCorrelationIdGET
+      parameters:
+      - $ref: '#/components/parameters/clientCorrelationId'
+      - $ref: '#/components/parameters/X-Date'
+      - $ref: '#/components/parameters/X-API-Key'
+      - $ref: '#/components/parameters/X-Client-Id'
+      - $ref: '#/components/parameters/X-Content-Hash'
+      - $ref: '#/components/parameters/X-User-Credential-1'
+      - $ref: '#/components/parameters/X-User-Credential-2'
+      - $ref: '#/components/parameters/X-Channel'
+      responses:
+        200:
+          description: Represents an Response object response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseResponse'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        400:
+          description: Represents an Error Caused by the Violation of a Business Rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        401:
+          description: Represents an Error Caused by an Authorisation Failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        404:
+          description: Represents an Error Caused by a Failure to Identify the Target Resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        500:
+          description: Represents an Error Caused by a General Server-Side Issue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        503:
+          description: Represents an Error Caused by System Unavailability
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+components:
+  parameters:
+    serverCorrelationId:
+      name: serverCorrelationId
+      in: path
+      description: Path variable to uniquely identify a request state. Must be supplied as a UUID.
+      required: true
+      schema:
+        type: string
+        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+    X-Date:
+      name: X-Date
+      in: header
+      description: Header parameter to indicate the date and time that the message was originated. It is used for basic message integrity checks, to ensure the request is not stale. Note that the header was previously referenced as 'Date' in version 1.0 of the Mobile Money API.
+      required: false
+      schema:
+        type: string
+        format: date-time
+    clientCorrelationId:
+      name: clientCorrelationId
+      in: path
+      description: Path variable to uniquely identify a response object. Must be supplied as a UUID.
+      required: true
+      schema:
+        type: string
+        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+    X-API-Key:
+      name: X-API-Key
+      in: header
+      description: Used to pass pre-shared client's API key to the server.
+      required: false
+      schema:
+        type: string
+    X-User-Credential-1:
+      name: X-User-Credential-1
+      in: header
+      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    X-CorrelationID:
+      name: X-CorrelationID
+      in: header
+      description: Header parameter to uniquely identify the request. Must be supplied as a UUID.
+      required: false
+      schema:
+        type: string
+        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+    X-Channel:
+      name: X-Channel
+      in: header
+      description: String containing the channel that was used to originate the request. For example USSD, Web, App.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    X-Client-Id:
+      name: X-Client-Id
+      in: header
+      description: Used to pass pre-shared client's identifier to the server.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    X-User-Credential-2:
+      name: X-User-Credential-2
+      in: header
+      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    X-Content-Hash:
+      name: X-Content-Hash
+      in: header
+      description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
+      required: false
+      schema:
+        type: string
+  requestBodies:
+    genericPatch:
+      required: true
+      description: Represents the request body of a batch of generic Patch operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestGenericPatchArray'
+  schemas:
+    responseResponse:
+      type: object
+      required:
+      - link
+      properties:
+        link:
+          $ref: '#/components/schemas/link'
+    metadata:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Identifies the type of additional field.
+          minLength: 1
+          maxLength: 256
+        value:
+          type: string
+          description: Identifies the value of the additional field.
+          minLength: 1
+          maxLength: 256
+    requestGenericPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          description: Indicates the Patch operation to be performed. 'replace' is used to update a field and 'add' is used to add a new field.
+          type: string
+          enum:
+          - replace
+          - add
+        path:
+          description: Specify the field to be updated or added preceded by '/'.
+          type: string
+          maxLength: 256
+        value:
+          description: Specify the value of the field to be updated or added.
+          type: string
+          maxLength: 256
+    serviceStatus:
+      type: string
+      description: Provides the status of the requested service.
+      enum:
+      - available
+      - unavailable
+      - degraded
+    metadataArray:
+      type: array
+      description: A collection of key/value pairs. These can be used to populate additional properties that describe administrative information regarding the resource.
+      items:
+        $ref: '#/components/schemas/metadata'
+      maxItems: 20
+    delay:
+      type: number
+      format: int64
+      description: The anticipated processing delay in milliseconds.
+    requestGenericPatchArray:
+      type: array
+      description: Collection of updates that are to be processed.
+      items:
+        $ref: '#/components/schemas/requestGenericPatch'
+      minItems: 1
+      maxItems: 10
+    requestStateObject:
+      type: object
+      required:
+      - notificationMethod
+      - serverCorrelationId
+      - status
+      properties:
+        serverCorrelationId:
+          type: string
+          description: A unique identifier issued by the provider to enable the client to identify the RequestState resource on subsequent polling requests. Must be supplied as a UUID.
+          minLength: 1
+          maxLength: 256
+          pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+        objectReference:
+          type: string
+          description: Provides a reference to the subject resource, e.g. transaction reference.
+          minLength: 0
+          maxLength: 256
+        status:
+          type: string
+          enum:
+          - pending
+          - completed
+          - failed
+          description: Indicates the status of the request.
+        notificationMethod:
+          type: string
+          enum:
+          - callback
+          - polling
+          description: Indicates whether a callback will be issued or whether the client will need to poll.
+        pendingReason:
+          type: string
+          description: A textual description that can be provided to describe the reason for a pending status.
+          minLength: 0
+          maxLength: 256
+        expiryTime:
+          type: string
+          format: date-time
+          description: Indicate the time by which the provider will fail the request if completion criteria have not been met. For an example, a debit party failing to authorise within the allowed period.
+        pollLimit:
+          type: number
+          format: int32
+          description: Indicates the number of poll attempts for the given requeststate resource that will be allowed by the provider.
+          exclusiveMinimum: 0
+        error:
+          description: If the asynchronous processing failed, details of the error will be returned here.
+          allOf:
+          - $ref: '#/components/schemas/errorObject'
+    link:
+      type: string
+      description: Provides a URL to the resource.
+      minLength: 1
+      maxLength: 256
+    responseHeartbeat:
+      type: object
+      required:
+      - serviceStatus
+      properties:
+        serviceStatus:
+          $ref: '#/components/schemas/serviceStatus'
+        delay:
+          $ref: '#/components/schemas/delay'
+        plannedRestorationTime:
+          $ref: '#/components/schemas/plannedRestorationTime'
+    errorObject:
+      type: object
+      required:
+      - errorCategory
+      - errorCode
+      properties:
+        errorCategory:
+          type: string
+          description: The category grouping for the error.
+          enum:
+          - businessRule
+          - validation
+          - authorisation
+          - identification
+          - internal
+          - serviceUnavailable
+        errorCode:
+          type: string
+          description: The harmonised error code identifying the reason for error.
+          enum:
+          - genericError
+          - dailyVolumeLimitExceeded
+          - dailyValueLimitExceeded
+          - weeklyVolumeLimitExceeded
+          - weeklyValueLimitExceeded
+          - monthlyVolumeLimitExceeded
+          - monthlyValueLimitExceeded
+          - accountMaxTotalVolumeExceeded
+          - accountMaxTotalValueExceeded
+          - lessThanTransactionMinValue
+          - greaterThanTransactionMaxValue
+          - maxBalanceExceeded
+          - samePartiesError
+          - duplicateRequest
+          - insufficientFunds
+          - incorrectState
+          - underPaymentNotAllowed
+          - overPaymentNotAllowed
+          - rateLimitError
+          - transactionTypeError
+          - noMandateAuthority
+          - linkViolation
+          - countryofOriginNotPermitted
+          - nationalityNotPermitted
+          - idDocumentNotSupported
+          - issuingCountryNotSupported
+          - quoteHasExpired
+          - identifierError
+          - lengthError
+          - formatError
+          - negativeValue
+          - currencyNotSupported
+          - mandatoryValueNotSupplied
+          - invalidOffset
+          - clientAuthorisationError
+          - requestDeclined
+          - servicingPartyAuthorisationError
+          - requestingPartyAuthorisationError
+        errordescription:
+          type: string
+          description: A textual description of the error.
+          minLength: 0
+          maxLength: 256
+        errorDateTime:
+          type: string
+          format: date-time
+          description: The timestamp indicating when the error occurred.
+        errorParameters:
+          description: Diagnostic information in the form of key/value pairs relating to the error.
+          allOf:
+          - $ref: '#/components/schemas/metadataArray'
+    plannedRestorationTime:
+      type: string
+      format: date-time
+      description: Where the planned restoration time is known (e.g. scheduled maintenance), it can be provided in this field.
+  headers:
+    X-Date:
+      required: false
+      description: The date and time that the response message was sent.
+      schema:
+        type: string
+        format: date-time

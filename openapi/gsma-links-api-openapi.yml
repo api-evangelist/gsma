@@ -1,0 +1,1235 @@
+openapi: 3.2.0
+info:
+  description: 'This schema defines the RESTful endpoints provided by the GSMA Mobile Money API.
+
+    You can find out more about what the API can do for your business at [https://developer.mobilemoneyapi.io]
+
+    '
+  version: 1.2.0
+  title: Mobile Money Links API
+servers:
+- description: This url points to the GSMA Mobile Money API v1.2 Simulator.
+  url: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+tags:
+- name: Links
+  description: 'The **Links** APIs are used to establish a link between two separate accounts on the client and provider systems. The API can be used for example to link a mobile wallet account to a Microfinance Institution account or a bank account. The link object does not mandate the processes to verify and authenticate a link request - this depends upon the use case. A link needs to be associated with a mode of operation:
+
+
+    - pull. The link can be used by the client to debit the target account held by the provider.
+
+    - push. The link can be used by the client to credit the target account held by the provider.
+
+    - both. The link can be used for Push and Pull requests.
+
+    '
+paths:
+  /accounts/{accountId}/links:
+    post:
+      tags:
+      - Links
+      summary: Create A Link
+      description: Provided with a valid object representation, this endpoint allows a new link to be created for a specific account
+      operationId: accountsAccountIdLinksPOST
+      parameters:
+      - $ref: '#/components/parameters/accountId'
+      - $ref: '#/components/parameters/X-Date'
+      - $ref: '#/components/parameters/X-CorrelationID'
+      - $ref: '#/components/parameters/X-API-Key'
+      - $ref: '#/components/parameters/X-User-Bearer'
+      - $ref: '#/components/parameters/X-Client-Id'
+      - $ref: '#/components/parameters/X-Content-Hash'
+      - $ref: '#/components/parameters/X-User-Credential-1'
+      - $ref: '#/components/parameters/X-User-Credential-2'
+      - $ref: '#/components/parameters/X-Channel'
+      - $ref: '#/components/parameters/X-Callback-URL'
+      - $ref: '#/components/parameters/X-Account-Holding-Institution-Identifier-Type'
+      - $ref: '#/components/parameters/X-Account-Holding-Institution-Identifier'
+      requestBody:
+        $ref: '#/components/requestBodies/requestLink'
+      callbacks:
+        linksSuccessEvent:
+          '{$request.header.X-Callback-URL}':
+            put:
+              summary: Links Success Callback
+              description: This callback communicates the final representation of the Account Link requested by the client. The client endpoint is identified from the X-Callback-URL supplied in the POST request header.
+              operationId: linksAccountIdSuccessPUT
+              parameters:
+              - $ref: '#/components/parameters/X-Date'
+              - $ref: '#/components/parameters/X-CorrelationID'
+              - $ref: '#/components/parameters/X-Content-Hash'
+              - $ref: '#/components/parameters/X-API-Key'
+              - $ref: '#/components/parameters/X-User-Bearer'
+              - $ref: '#/components/parameters/X-Client-Id'
+              requestBody:
+                $ref: '#/components/requestBodies/updateLink'
+              responses:
+                204:
+                  description: Your server returns this code if it accepts the callback
+                400:
+                  description: Your server returns this code if it rejects the callback due to a violation of a business rule
+                401:
+                  description: Your server returns this code if it rejects the callback due to an authorisation failure
+                404:
+                  description: Your server returns this code if it rejects the callback due to a failure to identify the target resource
+                500:
+                  description: Your server returns this code if it rejects the callback due to general server-side issue
+                503:
+                  description: Your server returns this code if it rejects the callback due to systems unavailability
+        linksFailureEvent:
+          '{$request.header.X-Callback-URL}':
+            put:
+              summary: Links Failure Callback
+              description: This callback communicates the information regarding a failure to receive an account link in the form of an error object. The client endpoint is identified from the X-Callback-URL supplied in the POST request header.
+              operationId: linksAccountIdFailurePUT
+              parameters:
+              - $ref: '#/components/parameters/X-Date'
+              - $ref: '#/components/parameters/X-CorrelationID'
+              - $ref: '#/components/parameters/X-Content-Hash'
+              - $ref: '#/components/parameters/X-API-Key'
+              - $ref: '#/components/parameters/X-User-Bearer'
+              - $ref: '#/components/parameters/X-Client-Id'
+              requestBody:
+                $ref: '#/components/requestBodies/updateError'
+              responses:
+                204:
+                  description: Your server returns this code if it accepts the callback
+                400:
+                  description: Your server returns this code if it rejects the callback due to a violation of a business rule
+                401:
+                  description: Your server returns this code if it rejects the callback due to an authorisation failure
+                404:
+                  description: Your server returns this code if it rejects the callback due to a failure to identify the target resource
+                500:
+                  description: Your server returns this code if it rejects the callback due to general server-side issue
+                503:
+                  description: Your server returns this code if it rejects the callback due to systems unavailability
+      responses:
+        201:
+          description: Represents a Link response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseLink'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        202:
+          description: Represents an Asynchronous response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/requestStateObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        400:
+          description: Represents an Error Caused by the Violation of a Business Rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        401:
+          description: Represents an Error Caused by an Authorisation Failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        404:
+          description: Represents an Error Caused by a Failure to Identify the Target Resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        500:
+          description: Represents an Error Caused by a General Server-Side Issue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        503:
+          description: Represents an Error Caused by System Unavailability
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+  /accounts/{identifierType}/{identifier}/links:
+    post:
+      tags:
+      - Links
+      summary: Create A Link
+      description: Provided with a valid object representation, this endpoint allows a new link to be created for a specific account.
+      operationId: accountsIdentifierTypeIdentifierLinksPOST
+      parameters:
+      - $ref: '#/components/parameters/identifierType'
+      - $ref: '#/components/parameters/identifier'
+      - $ref: '#/components/parameters/X-Date'
+      - $ref: '#/components/parameters/X-CorrelationID'
+      - $ref: '#/components/parameters/X-API-Key'
+      - $ref: '#/components/parameters/X-User-Bearer'
+      - $ref: '#/components/parameters/X-Client-Id'
+      - $ref: '#/components/parameters/X-Content-Hash'
+      - $ref: '#/components/parameters/X-User-Credential-1'
+      - $ref: '#/components/parameters/X-User-Credential-2'
+      - $ref: '#/components/parameters/X-Channel'
+      - $ref: '#/components/parameters/X-Callback-URL'
+      - $ref: '#/components/parameters/X-Account-Holding-Institution-Identifier-Type'
+      - $ref: '#/components/parameters/X-Account-Holding-Institution-Identifier'
+      requestBody:
+        $ref: '#/components/requestBodies/requestLink'
+      callbacks:
+        linksSuccessEvent:
+          '{$request.header.X-Callback-URL}':
+            put:
+              summary: Links Success Callback
+              description: This callback communicates the final representation of the Account Link requested by the client. The client endpoint is identified from the X-Callback-URL supplied in the POST request header.
+              operationId: linksIdentifierTypeIdentifierSuccessPUT
+              parameters:
+              - $ref: '#/components/parameters/X-Date'
+              - $ref: '#/components/parameters/X-CorrelationID'
+              - $ref: '#/components/parameters/X-Content-Hash'
+              - $ref: '#/components/parameters/X-API-Key'
+              - $ref: '#/components/parameters/X-User-Bearer'
+              - $ref: '#/components/parameters/X-Client-Id'
+              requestBody:
+                $ref: '#/components/requestBodies/updateLink'
+              responses:
+                204:
+                  description: Your server returns this code if it accepts the callback
+                400:
+                  description: Your server returns this code if it rejects the callback due to a violation of a business rule
+                401:
+                  description: Your server returns this code if it rejects the callback due to an authorisation failure
+                404:
+                  description: Your server returns this code if it rejects the callback due to a failure to identify the target resource
+                500:
+                  description: Your server returns this code if it rejects the callback due to general server-side issue
+                503:
+                  description: Your server returns this code if it rejects the callback due to systems unavailability
+        linksFailureEvent:
+          '{$request.header.X-Callback-URL}':
+            put:
+              summary: Links Failure Callback
+              description: This callback communicates the information regarding a failure to receive an account link in the form of an error object. The client endpoint is identified from the X-Callback-URL supplied in the POST request header.
+              operationId: linksIdentifierTypeIdentifierFailurePUT
+              parameters:
+              - $ref: '#/components/parameters/X-Date'
+              - $ref: '#/components/parameters/X-CorrelationID'
+              - $ref: '#/components/parameters/X-Content-Hash'
+              - $ref: '#/components/parameters/X-API-Key'
+              - $ref: '#/components/parameters/X-User-Bearer'
+              - $ref: '#/components/parameters/X-Client-Id'
+              requestBody:
+                $ref: '#/components/requestBodies/updateError'
+              responses:
+                204:
+                  description: Your server returns this code if it accepts the callback
+                400:
+                  description: Your server returns this code if it rejects the callback due to a violation of a business rule
+                401:
+                  description: Your server returns this code if it rejects the callback due to an authorisation failure
+                404:
+                  description: Your server returns this code if it rejects the callback due to a failure to identify the target resource
+                500:
+                  description: Your server returns this code if it rejects the callback due to general server-side issue
+                503:
+                  description: Your server returns this code if it rejects the callback due to systems unavailability
+      responses:
+        201:
+          description: Represents a Link response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseLink'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        202:
+          description: Represents an Asynchronous response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/requestStateObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        400:
+          description: Represents an Error Caused by the Violation of a Business Rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        401:
+          description: Represents an Error Caused by an Authorisation Failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        404:
+          description: Represents an Error Caused by a Failure to Identify the Target Resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        500:
+          description: Represents an Error Caused by a General Server-Side Issue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        503:
+          description: Represents an Error Caused by System Unavailability
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+  /accounts/{accountId}/links/{linkReference}:
+    parameters:
+    - $ref: '#/components/parameters/accountId'
+    - $ref: '#/components/parameters/linkReference'
+    - $ref: '#/components/parameters/X-Date'
+    - $ref: '#/components/parameters/X-API-Key'
+    - $ref: '#/components/parameters/X-User-Bearer'
+    - $ref: '#/components/parameters/X-Client-Id'
+    - $ref: '#/components/parameters/X-Content-Hash'
+    - $ref: '#/components/parameters/X-User-Credential-1'
+    - $ref: '#/components/parameters/X-User-Credential-2'
+    - $ref: '#/components/parameters/X-Channel'
+    - $ref: '#/components/parameters/X-Account-Holding-Institution-Identifier-Type'
+    - $ref: '#/components/parameters/X-Account-Holding-Institution-Identifier'
+    get:
+      tags:
+      - Links
+      summary: View A Link
+      description: This endpoint returns a specific link
+      operationId: accountsAccountIdLinksLinkReferenceGET
+      responses:
+        200:
+          description: Represents a Link response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseLink'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        400:
+          description: Represents an Error Caused by the Violation of a Business Rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        401:
+          description: Represents an Error Caused by an Authorisation Failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        404:
+          description: Represents an Error Caused by a Failure to Identify the Target Resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        500:
+          description: Represents an Error Caused by a General Server-Side Issue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        503:
+          description: Represents an Error Caused by System Unavailability
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+    patch:
+      tags:
+      - Links
+      summary: Update A Link
+      description: This endpoint updates a specific link. mode and status fields are modifiable.
+      operationId: accountsAccountIdLinksLinkReferencePATCH
+      parameters:
+      - $ref: '#/components/parameters/X-CorrelationID'
+      - $ref: '#/components/parameters/X-Callback-URL'
+      requestBody:
+        $ref: '#/components/requestBodies/genericPatch'
+      callbacks:
+        linksUpdateSuccessEvent:
+          '{$request.header.X-Callback-URL}':
+            put:
+              summary: Account Link Update Success Callback
+              description: This callback communicates a simple message to communicate that the Account Link update completed successfully.
+              operationId: linkUpdateAccountIdSuccessPUT
+              parameters:
+              - $ref: '#/components/parameters/X-Date'
+              - $ref: '#/components/parameters/X-CorrelationID'
+              - $ref: '#/components/parameters/X-Content-Hash'
+              - $ref: '#/components/parameters/X-API-Key'
+              - $ref: '#/components/parameters/X-User-Bearer'
+              - $ref: '#/components/parameters/X-Client-Id'
+              requestBody:
+                $ref: '#/components/requestBodies/genericUpdateSuccess'
+              responses:
+                204:
+                  description: Your server returns this code if it accepts the callback
+                400:
+                  description: Your server returns this code if it rejects the callback due to a violation of a business rule
+                401:
+                  description: Your server returns this code if it rejects the callback due to an authorisation failure
+                404:
+                  description: Your server returns this code if it rejects the callback due to a failure to identify the target resource
+                500:
+                  description: Your server returns this code if it rejects the callback due to general server-side issue
+                503:
+                  description: Your server returns this code if it rejects the callback due to systems unavailability
+        linkUpdateFailureEvent:
+          '{$request.header.X-Callback-URL}':
+            put:
+              summary: Account Link Update Failure Callback
+              description: This callback communicates the information regarding a failure to update an account link in the form of an error object. The client endpoint is identified from the X-Callback-URL supplied in the POST request header.
+              operationId: linkUpdateAccountIdFailurePUT
+              parameters:
+              - $ref: '#/components/parameters/X-Date'
+              - $ref: '#/components/parameters/X-CorrelationID'
+              - $ref: '#/components/parameters/X-Content-Hash'
+              - $ref: '#/components/parameters/X-API-Key'
+              - $ref: '#/components/parameters/X-User-Bearer'
+              - $ref: '#/components/parameters/X-Client-Id'
+              requestBody:
+                $ref: '#/components/requestBodies/updateError'
+              responses:
+                204:
+                  description: Your server returns this code if it accepts the callback
+                400:
+                  description: Your server returns this code if it rejects the callback due to a violation of a business rule
+                401:
+                  description: Your server returns this code if it rejects the callback due to an authorisation failure
+                404:
+                  description: Your server returns this code if it rejects the callback due to a failure to identify the target resource
+                500:
+                  description: Your server returns this code if it rejects the callback due to general server-side issue
+                503:
+                  description: Your server returns this code if it rejects the callback due to systems unavailability
+      responses:
+        202:
+          description: Represents an Asynchronous response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/requestStateObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        204:
+          description: An empty response is returned for a synchronous successful patch.
+        400:
+          description: Represents an Error Caused by the Violation of a Business Rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        401:
+          description: Represents an Error Caused by an Authorisation Failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        404:
+          description: Represents an Error Caused by a Failure to Identify the Target Resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        500:
+          description: Represents an Error Caused by a General Server-Side Issue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        503:
+          description: Represents an Error Caused by System Unavailability
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+  /accounts/{identifierType}/{identifier}/links/{linkReference}:
+    parameters:
+    - $ref: '#/components/parameters/identifierType'
+    - $ref: '#/components/parameters/identifier'
+    - $ref: '#/components/parameters/linkReference'
+    - $ref: '#/components/parameters/X-Date'
+    - $ref: '#/components/parameters/X-API-Key'
+    - $ref: '#/components/parameters/X-User-Bearer'
+    - $ref: '#/components/parameters/X-Client-Id'
+    - $ref: '#/components/parameters/X-Content-Hash'
+    - $ref: '#/components/parameters/X-User-Credential-1'
+    - $ref: '#/components/parameters/X-User-Credential-2'
+    - $ref: '#/components/parameters/X-Channel'
+    - $ref: '#/components/parameters/X-Account-Holding-Institution-Identifier-Type'
+    - $ref: '#/components/parameters/X-Account-Holding-Institution-Identifier'
+    get:
+      tags:
+      - Links
+      summary: View A Link
+      description: This endpoint returns a specific link for a given account.
+      operationId: accountsIdentifierTypeIdentifierLinksLinkReferenceGET
+      responses:
+        200:
+          description: Represents a Link response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseLink'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        400:
+          description: Represents an Error Caused by the Violation of a Business Rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        401:
+          description: Represents an Error Caused by an Authorisation Failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        404:
+          description: Represents an Error Caused by a Failure to Identify the Target Resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        500:
+          description: Represents an Error Caused by a General Server-Side Issue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        503:
+          description: Represents an Error Caused by System Unavailability
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+    patch:
+      tags:
+      - Links
+      summary: Update A Link
+      description: This endpoint updates a specific link. mode and status fields are modifiable.
+      operationId: accountsIdentifierTypeIdentifierLinksLinkReferencePATCH
+      parameters:
+      - $ref: '#/components/parameters/X-CorrelationID'
+      - $ref: '#/components/parameters/X-Callback-URL'
+      requestBody:
+        $ref: '#/components/requestBodies/genericPatch'
+      callbacks:
+        linksUpdateSuccessEvent:
+          '{$request.header.X-Callback-URL}':
+            put:
+              summary: Account Link Update Success Callback
+              description: This callback communicates a simple message to communicate that the Account Link update completed successfully.
+              operationId: linkUpdateIdentifierTypeIdentifierSuccessPUT
+              parameters:
+              - $ref: '#/components/parameters/X-Date'
+              - $ref: '#/components/parameters/X-CorrelationID'
+              - $ref: '#/components/parameters/X-Content-Hash'
+              - $ref: '#/components/parameters/X-API-Key'
+              - $ref: '#/components/parameters/X-User-Bearer'
+              - $ref: '#/components/parameters/X-Client-Id'
+              requestBody:
+                $ref: '#/components/requestBodies/genericUpdateSuccess'
+              responses:
+                204:
+                  description: Your server returns this code if it accepts the callback
+                400:
+                  description: Your server returns this code if it rejects the callback due to a violation of a business rule
+                401:
+                  description: Your server returns this code if it rejects the callback due to an authorisation failure
+                404:
+                  description: Your server returns this code if it rejects the callback due to a failure to identify the target resource
+                500:
+                  description: Your server returns this code if it rejects the callback due to general server-side issue
+                503:
+                  description: Your server returns this code if it rejects the callback due to systems unavailability
+        linkUpdateFailureEvent:
+          '{$request.header.X-Callback-URL}':
+            put:
+              summary: Account Link Update Failure Callback
+              description: This callback communicates the information regarding a failure to update an account link in the form of an error object. The client endpoint is identified from the X-Callback-URL supplied in the POST request header.
+              operationId: linkUpdateIdentifierTypeIdentifierFailurePUT
+              parameters:
+              - $ref: '#/components/parameters/X-Date'
+              - $ref: '#/components/parameters/X-CorrelationID'
+              - $ref: '#/components/parameters/X-Content-Hash'
+              - $ref: '#/components/parameters/X-API-Key'
+              - $ref: '#/components/parameters/X-User-Bearer'
+              - $ref: '#/components/parameters/X-Client-Id'
+              requestBody:
+                $ref: '#/components/requestBodies/updateError'
+              responses:
+                204:
+                  description: Your server returns this code if it accepts the callback
+                400:
+                  description: Your server returns this code if it rejects the callback due to a violation of a business rule
+                401:
+                  description: Your server returns this code if it rejects the callback due to an authorisation failure
+                404:
+                  description: Your server returns this code if it rejects the callback due to a failure to identify the target resource
+                500:
+                  description: Your server returns this code if it rejects the callback due to general server-side issue
+                503:
+                  description: Your server returns this code if it rejects the callback due to systems unavailability
+      responses:
+        202:
+          description: Represents an Asynchronous response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/requestStateObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        204:
+          description: An empty response is returned for a synchronous successful patch.
+        400:
+          description: Represents an Error Caused by the Violation of a Business Rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        401:
+          description: Represents an Error Caused by an Authorisation Failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        404:
+          description: Represents an Error Caused by a Failure to Identify the Target Resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        500:
+          description: Represents an Error Caused by a General Server-Side Issue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        503:
+          description: Represents an Error Caused by System Unavailability
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+components:
+  requestBodies:
+    genericPatch:
+      required: true
+      description: Represents the request body of a batch of generic Patch operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestGenericPatchArray'
+    updateLink:
+      required: true
+      description: Represents the request body of a Link Callback.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseLink'
+    updateError:
+      required: true
+      description: Represents the request body of error callback.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorObject'
+    genericUpdateSuccess:
+      required: true
+      description: Represents the request body of a success message callback to an update event.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericUpdateSuccess'
+    requestLink:
+      required: true
+      description: Represents the request body of a Link.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestLink'
+  schemas:
+    metadata:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Identifies the type of additional field.
+          minLength: 1
+          maxLength: 256
+        value:
+          type: string
+          description: Identifies the value of the additional field.
+          minLength: 1
+          maxLength: 256
+    requestGenericPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          description: Indicates the Patch operation to be performed. 'replace' is used to update a field and 'add' is used to add a new field.
+          type: string
+          enum:
+          - replace
+          - add
+        path:
+          description: Specify the field to be updated or added preceded by '/'.
+          type: string
+          maxLength: 256
+        value:
+          description: Specify the value of the field to be updated or added.
+          type: string
+          maxLength: 256
+    genericUpdateSuccess:
+      type: object
+      required:
+      - result
+      properties:
+        result:
+          type: string
+          description: The success message provided in a callback to communicate the success of an update operation.
+          enum:
+          - success
+    metadataArray:
+      type: array
+      description: A collection of key/value pairs. These can be used to populate additional properties that describe administrative information regarding the resource.
+      items:
+        $ref: '#/components/schemas/metadata'
+      maxItems: 20
+    mode:
+      type: string
+      enum:
+      - push
+      - pull
+      - both
+    linkReference:
+      type: string
+      description: Indicates the Link reference. This enables a linked account to be uniquely identified.
+      minLength: 1
+      maxLength: 256
+    requestingOrganisation:
+      type: object
+      description: An object that details the originating organisation of the request.
+      required:
+      - requestingOrganisationIdentifierType
+      - requestingOrganisationIdentifier
+      properties:
+        requestingOrganisationIdentifierType:
+          type: string
+          description: Identifies the identifier type of the requesting organisation.
+          enum:
+          - lei
+          - swiftbic
+          - organisationid
+        requestingOrganisationIdentifier:
+          type: string
+          description: Contains the requesting organisation identifier.
+          minLength: 1
+          maxLength: 256
+    requestGenericPatchArray:
+      type: array
+      description: Collection of updates that are to be processed.
+      items:
+        $ref: '#/components/schemas/requestGenericPatch'
+      minItems: 1
+      maxItems: 10
+    modificationDate:
+      type: string
+      format: date-time
+      description: Date and time when the object was modified by the API Provider.
+    requestLink:
+      type: object
+      required:
+      - sourceAccountIdentifiers
+      - mode
+      - status
+      properties:
+        sourceAccountIdentifiers:
+          $ref: '#/components/schemas/debitPartyArray'
+        mode:
+          description: Indicates the mode of operation for the Link.
+          allOf:
+          - $ref: '#/components/schemas/mode'
+        status:
+          description: Indicates the status of the Link.
+          allOf:
+          - $ref: '#/components/schemas/status'
+        requestingOrganisation:
+          $ref: '#/components/schemas/requestingOrganisation'
+        requestDate:
+          $ref: '#/components/schemas/requestDate'
+        customData:
+          $ref: '#/components/schemas/customDataArray'
+    responseLink:
+      type: object
+      required:
+      - linkReference
+      - sourceAccountIdentifiers
+      - status
+      - mode
+      properties:
+        linkReference:
+          $ref: '#/components/schemas/linkReference'
+        sourceAccountIdentifiers:
+          $ref: '#/components/schemas/debitPartyArray'
+        mode:
+          description: Indicates the Link mode of operation. This can be set to 'pull' (The link can be used by the client to debit the target account held by the provider), 'push' (The link can be used by the client to credit the target account held by the provider) or 'both'.
+          allOf:
+          - $ref: '#/components/schemas/mode'
+        status:
+          description: Indicates the status of the Link.
+          allOf:
+          - $ref: '#/components/schemas/status'
+        requestingOrganisation:
+          $ref: '#/components/schemas/requestingOrganisation'
+        creationDate:
+          $ref: '#/components/schemas/creationDate'
+        modificationDate:
+          $ref: '#/components/schemas/modificationDate'
+        requestDate:
+          $ref: '#/components/schemas/requestDate'
+        customData:
+          $ref: '#/components/schemas/customDataArray'
+    customDataArray:
+      type: array
+      description: A collection of key/value pairs. These can be used to populate provider specific fields.
+      items:
+        $ref: '#/components/schemas/customData'
+      maxItems: 20
+    status:
+      type: string
+      enum:
+      - active
+      - inactive
+    requestStateObject:
+      type: object
+      required:
+      - notificationMethod
+      - serverCorrelationId
+      - status
+      properties:
+        serverCorrelationId:
+          type: string
+          description: A unique identifier issued by the provider to enable the client to identify the RequestState resource on subsequent polling requests. Must be supplied as a UUID.
+          minLength: 1
+          maxLength: 256
+          pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+        objectReference:
+          type: string
+          description: Provides a reference to the subject resource, e.g. transaction reference.
+          minLength: 0
+          maxLength: 256
+        status:
+          type: string
+          enum:
+          - pending
+          - completed
+          - failed
+          description: Indicates the status of the request.
+        notificationMethod:
+          type: string
+          enum:
+          - callback
+          - polling
+          description: Indicates whether a callback will be issued or whether the client will need to poll.
+        pendingReason:
+          type: string
+          description: A textual description that can be provided to describe the reason for a pending status.
+          minLength: 0
+          maxLength: 256
+        expiryTime:
+          type: string
+          format: date-time
+          description: Indicate the time by which the provider will fail the request if completion criteria have not been met. For an example, a debit party failing to authorise within the allowed period.
+        pollLimit:
+          type: number
+          format: int32
+          description: Indicates the number of poll attempts for the given requeststate resource that will be allowed by the provider.
+          exclusiveMinimum: 0
+        error:
+          description: If the asynchronous processing failed, details of the error will be returned here.
+          allOf:
+          - $ref: '#/components/schemas/errorObject'
+    debitPartyArray:
+      type: array
+      description: A collection of key/value pairs that enable the party to be identified. Keys include MSISDN and Wallet Identifier.
+      items:
+        $ref: '#/components/schemas/party'
+      maxItems: 10
+      minItems: 1
+    creationDate:
+      type: string
+      format: date-time
+      description: Date and time when the object was created by the API Provider.
+    requestDate:
+      type: string
+      format: date-time
+      description: The date and time of the request as supplied by the client.
+    party:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Provides the account identifier type.
+          minLength: 1
+          maxLength: 256
+          example: msisdn
+        value:
+          type: string
+          description: Provides the account identifier type value.
+          minLength: 1
+          maxLength: 256
+          example: '+33555123456'
+    errorObject:
+      type: object
+      required:
+      - errorCategory
+      - errorCode
+      properties:
+        errorCategory:
+          type: string
+          description: The category grouping for the error.
+          enum:
+          - businessRule
+          - validation
+          - authorisation
+          - identification
+          - internal
+          - serviceUnavailable
+        errorCode:
+          type: string
+          description: The harmonised error code identifying the reason for error.
+          enum:
+          - genericError
+          - dailyVolumeLimitExceeded
+          - dailyValueLimitExceeded
+          - weeklyVolumeLimitExceeded
+          - weeklyValueLimitExceeded
+          - monthlyVolumeLimitExceeded
+          - monthlyValueLimitExceeded
+          - accountMaxTotalVolumeExceeded
+          - accountMaxTotalValueExceeded
+          - lessThanTransactionMinValue
+          - greaterThanTransactionMaxValue
+          - maxBalanceExceeded
+          - samePartiesError
+          - duplicateRequest
+          - insufficientFunds
+          - incorrectState
+          - underPaymentNotAllowed
+          - overPaymentNotAllowed
+          - rateLimitError
+          - transactionTypeError
+          - noMandateAuthority
+          - linkViolation
+          - countryofOriginNotPermitted
+          - nationalityNotPermitted
+          - idDocumentNotSupported
+          - issuingCountryNotSupported
+          - quoteHasExpired
+          - identifierError
+          - lengthError
+          - formatError
+          - negativeValue
+          - currencyNotSupported
+          - mandatoryValueNotSupplied
+          - invalidOffset
+          - clientAuthorisationError
+          - requestDeclined
+          - servicingPartyAuthorisationError
+          - requestingPartyAuthorisationError
+        errordescription:
+          type: string
+          description: A textual description of the error.
+          minLength: 0
+          maxLength: 256
+        errorDateTime:
+          type: string
+          format: date-time
+          description: The timestamp indicating when the error occurred.
+        errorParameters:
+          description: Diagnostic information in the form of key/value pairs relating to the error.
+          allOf:
+          - $ref: '#/components/schemas/metadataArray'
+    customData:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Identifies the type of additional field.
+          minLength: 1
+          maxLength: 256
+        value:
+          type: string
+          description: Identifies the value of the additional field.
+          minLength: 1
+          maxLength: 256
+  parameters:
+    X-Date:
+      name: X-Date
+      in: header
+      description: Header parameter to indicate the date and time that the message was originated. It is used for basic message integrity checks, to ensure the request is not stale. Note that the header was previously referenced as 'Date' in version 1.0 of the Mobile Money API.
+      required: false
+      schema:
+        type: string
+        format: date-time
+    X-Account-Holding-Institution-Identifier-Type:
+      name: X-Account-Holding-Institution-Identifier-Type
+      in: header
+      description: A header variable that identifies the type of the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier header.
+      required: false
+      schema:
+        type: string
+        enum:
+        - lei
+        - swiftbic
+        - organisationid
+    X-API-Key:
+      name: X-API-Key
+      in: header
+      description: Used to pass pre-shared client's API key to the server.
+      required: false
+      schema:
+        type: string
+    identifier:
+      name: identifier
+      in: path
+      description: Path variable that contains the account identifier.
+      required: true
+      schema:
+        type: string
+        maxLength: 256
+        minLength: 1
+    identifierType:
+      name: identifierType
+      in: path
+      required: true
+      description: Path variable to specify the type of the identifier that is used to identify the account.
+      schema:
+        type: string
+        enum:
+        - accountid
+        - msisdn
+        - walletid
+        - linkref
+        - consumerno
+        - serviceprovider
+        - storeid
+        - accountcategory
+        - bankaccountno
+        - accountrank
+        - identityalias
+        - iban
+        - swiftbic
+        - sortcode
+        - organisationid
+        - bankname
+        - bankaccounttitle
+        - username
+        - emailaddress
+        - mandatereference
+    X-Callback-URL:
+      name: X-Callback-URL
+      in: header
+      description: The URL supplied by the client that will be used to return the callback in the form of a HTTP PUT.
+      required: false
+      schema:
+        type: string
+        format: uri
+    X-CorrelationID:
+      name: X-CorrelationID
+      in: header
+      description: Header parameter to uniquely identify the request. Must be supplied as a UUID.
+      required: false
+      schema:
+        type: string
+        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+    X-User-Credential-1:
+      name: X-User-Credential-1
+      in: header
+      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    X-Channel:
+      name: X-Channel
+      in: header
+      description: String containing the channel that was used to originate the request. For example USSD, Web, App.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    accountId:
+      name: accountId
+      in: path
+      description: 'Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference.'
+      required: true
+      schema:
+        type: string
+        pattern: ^((accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+))(\$(accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+)){0,2}$
+    X-Account-Holding-Institution-Identifier:
+      name: X-Account-Holding-Institution-Identifier
+      in: header
+      description: A header variable that identifies the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier-Type header.
+      required: false
+      schema:
+        type: string
+    X-User-Bearer:
+      name: X-User-Bearer
+      in: header
+      description: Used to pass user’s access token when OAuth 2.0/OIDC authorisation framework is used for end-user authentication.
+      required: false
+      schema:
+        type: string
+    X-User-Credential-2:
+      name: X-User-Credential-2
+      in: header
+      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    X-Client-Id:
+      name: X-Client-Id
+      in: header
+      description: Used to pass pre-shared client's identifier to the server.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    linkReference:
+      name: linkReference
+      in: path
+      description: Path variable to uniquely identify a link.
+      required: true
+      schema:
+        type: string
+        maxLength: 256
+        minLength: 1
+    X-Content-Hash:
+      name: X-Content-Hash
+      in: header
+      description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
+      required: false
+      schema:
+        type: string
+  headers:
+    X-Date:
+      required: false
+      description: The date and time that the response message was sent.
+      schema:
+        type: string
+        format: date-time

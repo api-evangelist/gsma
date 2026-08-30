@@ -1,0 +1,1525 @@
+openapi: 3.2.0
+info:
+  description: 'This schema defines the RESTful endpoints provided by the GSMA Mobile Money API.
+
+    You can find out more about what the API can do for your business at [https://developer.mobilemoneyapi.io]
+
+    '
+  version: 1.2.0
+  title: Mobile Money Quotations API
+servers:
+- description: This url points to the GSMA Mobile Money API v1.2 Simulator.
+  url: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
+tags:
+- name: Quotations
+  description: 'The **Quotations** APIs are used to obtain one or multiple quotes for a mobile money customer who wishes to
+
+    transfer money. The creation of a quote involves returning any fees that will be levied on the sending customer
+
+    and if the request is international, the forex rate is returned. A request is made for a quotation by the requesting
+
+    Service Provider in response to a customer request. The quotation is calculated and returned. If the customer is
+
+    satisfied with the quotation, then they can confirm and proceed with a transaction request using the **/transactions** API.
+
+    '
+paths:
+  /quotations:
+    post:
+      tags:
+      - Quotations
+      summary: Create A New Quotation
+      description: Provided with a valid object representation, this endpoint allows for a new quotation to be created.
+      operationId: quotationsPOST
+      parameters:
+      - $ref: '#/components/parameters/X-Date'
+      - $ref: '#/components/parameters/X-CorrelationID'
+      - $ref: '#/components/parameters/X-API-Key'
+      - $ref: '#/components/parameters/X-User-Bearer'
+      - $ref: '#/components/parameters/X-Client-Id'
+      - $ref: '#/components/parameters/X-Content-Hash'
+      - $ref: '#/components/parameters/X-User-Credential-1'
+      - $ref: '#/components/parameters/X-User-Credential-2'
+      - $ref: '#/components/parameters/X-Channel'
+      - $ref: '#/components/parameters/X-Callback-URL'
+      - $ref: '#/components/parameters/X-Account-Holding-Institution-Identifier-Type'
+      - $ref: '#/components/parameters/X-Account-Holding-Institution-Identifier'
+      requestBody:
+        $ref: '#/components/requestBodies/requestQuotation'
+      callbacks:
+        quotationsSuccessEvent:
+          '{$request.header.X-Callback-URL}':
+            put:
+              summary: Quotations Success Callback
+              description: This callback communicates the final representation of the Quotation requested by the client. The client endpoint is identified from the X-Callback-URL supplied in the POST request header.
+              operationId: quotationsSuccessPUT
+              parameters:
+              - $ref: '#/components/parameters/X-Date'
+              - $ref: '#/components/parameters/X-CorrelationID'
+              - $ref: '#/components/parameters/X-Content-Hash'
+              - $ref: '#/components/parameters/X-API-Key'
+              - $ref: '#/components/parameters/X-User-Bearer'
+              - $ref: '#/components/parameters/X-Client-Id'
+              requestBody:
+                $ref: '#/components/requestBodies/updateQuotation'
+              responses:
+                204:
+                  description: Your server returns this code if it accepts the callback
+                400:
+                  description: Your server returns this code if it rejects the callback due to a violation of a business rule
+                401:
+                  description: Your server returns this code if it rejects the callback due to an authorisation failure
+                404:
+                  description: Your server returns this code if it rejects the callback due to a failure to identify the target resource
+                500:
+                  description: Your server returns this code if it rejects the callback due to general server-side issue
+                503:
+                  description: Your server returns this code if it rejects the callback due to systems unavailability
+        quotationsFailureEvent:
+          '{$request.header.X-Callback-URL}':
+            put:
+              summary: Quotations Failure Callback
+              description: This callback communicates the information regarding a failure to receive a quotation in the form of an error object. The client endpoint is identified from the X-Callback-URL supplied in the POST request header.
+              operationId: quotationsFailurePUT
+              parameters:
+              - $ref: '#/components/parameters/X-Date'
+              - $ref: '#/components/parameters/X-CorrelationID'
+              - $ref: '#/components/parameters/X-Content-Hash'
+              - $ref: '#/components/parameters/X-API-Key'
+              - $ref: '#/components/parameters/X-User-Bearer'
+              - $ref: '#/components/parameters/X-Client-Id'
+              requestBody:
+                $ref: '#/components/requestBodies/updateError'
+              responses:
+                204:
+                  description: Your server returns this code if it accepts the callback
+                400:
+                  description: Your server returns this code if it rejects the callback due to a violation of a business rule
+                401:
+                  description: Your server returns this code if it rejects the callback due to an authorisation failure
+                404:
+                  description: Your server returns this code if it rejects the callback due to a failure to identify the target resource
+                500:
+                  description: Your server returns this code if it rejects the callback due to general server-side issue
+                503:
+                  description: Your server returns this code if it rejects the callback due to systems unavailability
+      responses:
+        201:
+          description: Represents a Quotation response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseQuotation'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        202:
+          description: Represents an Asynchronous response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/requestStateObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        400:
+          description: Represents an Error Caused by the Violation of a Business Rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        401:
+          description: Represents an Error Caused by an Authorisation Failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        404:
+          description: Represents an Error Caused by a Failure to Identify the Target Resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        500:
+          description: Represents an Error Caused by a General Server-Side Issue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        503:
+          description: Represents an Error Caused by System Unavailability
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+  /quotations/{quotationReference}:
+    get:
+      tags:
+      - Quotations
+      summary: View A Quotation
+      description: This endpoint returns a specific quotation
+      operationId: quotationsQuotationReferenceGET
+      parameters:
+      - $ref: '#/components/parameters/quotationReference'
+      - $ref: '#/components/parameters/X-Date'
+      - $ref: '#/components/parameters/X-API-Key'
+      - $ref: '#/components/parameters/X-User-Bearer'
+      - $ref: '#/components/parameters/X-Client-Id'
+      - $ref: '#/components/parameters/X-Content-Hash'
+      - $ref: '#/components/parameters/X-User-Credential-1'
+      - $ref: '#/components/parameters/X-User-Credential-2'
+      - $ref: '#/components/parameters/X-Channel'
+      - $ref: '#/components/parameters/X-Account-Holding-Institution-Identifier-Type'
+      - $ref: '#/components/parameters/X-Account-Holding-Institution-Identifier'
+      responses:
+        200:
+          description: Represents a Quotation response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseQuotation'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        400:
+          description: Represents an Error Caused by the Violation of a Business Rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        401:
+          description: Represents an Error Caused by an Authorisation Failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        404:
+          description: Represents an Error Caused by a Failure to Identify the Target Resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        500:
+          description: Represents an Error Caused by a General Server-Side Issue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        503:
+          description: Represents an Error Caused by System Unavailability
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+          headers:
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+components:
+  schemas:
+    quotationStatus:
+      description: Indicates the creation state of the Quotation.
+      type: string
+      enum:
+      - pending
+      - rejected
+      - completed
+    responseQuotation:
+      type: object
+      required:
+      - quotationReference
+      - creditParty
+      - debitParty
+      - requestAmount
+      - requestCurrency
+      properties:
+        quotationReference:
+          $ref: '#/components/schemas/quotationReference'
+        creditParty:
+          $ref: '#/components/schemas/creditPartyArray'
+        debitParty:
+          $ref: '#/components/schemas/debitPartyArray'
+        type:
+          $ref: '#/components/schemas/type'
+        subType:
+          $ref: '#/components/schemas/subType'
+        quotationStatus:
+          $ref: '#/components/schemas/quotationStatus'
+        requestAmount:
+          description: The requested quotation amount.
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          example: '15.00'
+        requestCurrency:
+          description: Currency of the requested quotation amount
+          allOf:
+          - $ref: '#/components/schemas/currency'
+        availableDeliveryMethod:
+          description: Delivery Method that is possible for the intended recipient.
+          allOf:
+          - $ref: '#/components/schemas/deliveryMethod'
+        chosenDeliveryMethod:
+          description: The delivery method chosen by the sending end user as the specific delivery method to be used in the quotes received.
+          allOf:
+          - $ref: '#/components/schemas/deliveryMethod'
+        originCountry:
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+          description: The originating country of the quotation request, i.e. the country where the request was initiated.
+        receivingCountry:
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+          description: Destination country of the quotation request, i.e. the country that the sender wishes to send to.
+        quotes:
+          $ref: '#/components/schemas/quoteArray'
+        recipientKyc:
+          $ref: '#/components/schemas/kyc'
+        senderKyc:
+          $ref: '#/components/schemas/kyc'
+        recipientBlockingReason:
+          $ref: '#/components/schemas/recipientBlockingReason'
+        senderBlockingReason:
+          $ref: '#/components/schemas/senderBlockingReason'
+        requestingOrganisation:
+          $ref: '#/components/schemas/requestingOrganisation'
+        sendingServiceProviderCountry:
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+          description: The country of the sending service provider that holds the account of the sender.
+        creationDate:
+          $ref: '#/components/schemas/creationDate'
+        modificationDate:
+          $ref: '#/components/schemas/modificationDate'
+        requestDate:
+          $ref: '#/components/schemas/requestDate'
+        dateCreated:
+          $ref: '#/components/schemas/dateCreated'
+        dateModified:
+          $ref: '#/components/schemas/dateModified'
+        customData:
+          $ref: '#/components/schemas/customDataArray'
+        metadata:
+          $ref: '#/components/schemas/metadataArray'
+    postalAddress:
+      type: object
+      required:
+      - country
+      properties:
+        addressLine1:
+          type: string
+          description: First line of the address.
+          minLength: 0
+          maxLength: 256
+        addressLine2:
+          type: string
+          description: Second line of the address.
+          minLength: 0
+          maxLength: 256
+        addressLine3:
+          type: string
+          description: Third line of the address.
+          minLength: 0
+          maxLength: 256
+        city:
+          type: string
+          description: City/Town
+          minLength: 0
+          maxLength: 256
+        stateProvince:
+          type: string
+          description: State or Province
+          minLength: 0
+          maxLength: 256
+        postalCode:
+          type: string
+          description: Postal Code
+          minLength: 0
+          maxLength: 256
+        country:
+          description: Country"
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+    metadata:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Identifies the type of additional field.
+          minLength: 1
+          maxLength: 256
+        value:
+          type: string
+          description: Identifies the value of the additional field.
+          minLength: 1
+          maxLength: 256
+    quoteId:
+      type: string
+      description: The specific quote associated with the quotation.
+      minLength: 1
+      maxLength: 256
+    feesArray:
+      type: array
+      description: Returns all fees that are applicable to the object.
+      items:
+        $ref: '#/components/schemas/fees'
+      maxItems: 20
+      minItems: 1
+    contactPhone:
+      type: string
+      description: Contact phone number (mobile or landline) of the KYC subject.
+      minLength: 0
+      maxLength: 256
+    metadataArray:
+      type: array
+      description: A collection of key/value pairs. These can be used to populate additional properties that describe administrative information regarding the resource.
+      items:
+        $ref: '#/components/schemas/metadata'
+      maxItems: 20
+    quoteExpiryTime:
+      type: string
+      format: date-time
+      description: The timestamp when the quote will expire.
+    recipientBlockingReason:
+      type: string
+      description: The reason for blocking the quotation, based on AML checks on the recipient.
+      minLength: 0
+      maxLength: 256
+    requestingOrganisation:
+      type: object
+      description: An object that details the originating organisation of the request.
+      required:
+      - requestingOrganisationIdentifierType
+      - requestingOrganisationIdentifier
+      properties:
+        requestingOrganisationIdentifierType:
+          type: string
+          description: Identifies the identifier type of the requesting organisation.
+          enum:
+          - lei
+          - swiftbic
+          - organisationid
+        requestingOrganisationIdentifier:
+          type: string
+          description: Contains the requesting organisation identifier.
+          minLength: 1
+          maxLength: 256
+    gender:
+      type: string
+      enum:
+      - m
+      - f
+      - u
+      description: Gender of the KYC subject.
+    quotes:
+      type: object
+      required:
+      - quoteId
+      - receivingAmount
+      - receivingCurrency
+      - sendingAmount
+      - sendingCurrency
+      properties:
+        quoteId:
+          $ref: '#/components/schemas/quoteId'
+        receivingAmount:
+          description: The total amount as it will be received by the receiving end-user.
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          example: '15.00'
+        receivingCurrency:
+          description: The currency of the quote.
+          allOf:
+          - $ref: '#/components/schemas/currency'
+        sendingAmount:
+          description: The requested quotation amount as supplied by the sender.
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          example: '15.00'
+        sendingCurrency:
+          description: Currency of the requested quotation amount.
+          allOf:
+          - $ref: '#/components/schemas/currency'
+        deliveryMethod:
+          description: The delivery method that is applicable to the quotation.
+          allOf:
+          - $ref: '#/components/schemas/deliveryMethod'
+        fees:
+          $ref: '#/components/schemas/feesArray'
+        fxRate:
+          $ref: '#/components/schemas/fxRate'
+        quoteExpiryTime:
+          $ref: '#/components/schemas/quoteExpiryTime'
+        receivingServiceProvider:
+          $ref: '#/components/schemas/receivingServiceProvider'
+    deliveryMethod:
+      type: string
+      enum:
+      - directtoaccount
+      - agent
+      - personaldelivery
+    dateCreated:
+      type: string
+      format: date-time
+      deprecated: true
+      description: Date and time when the object was created by the API Provider.
+    emailAddress:
+      type: string
+      description: Email address of the KYC subject.
+      minLength: 0
+      maxLength: 256
+    quotationReference:
+      type: string
+      description: Reference for the quotation that was provided to the sender.
+      minLength: 1
+      maxLength: 256
+    modificationDate:
+      type: string
+      format: date-time
+      description: Date and time when the object was modified by the API Provider.
+    idDocumentArray:
+      type: array
+      description: An array of properties containing the forms of identification that are associated with the subject.
+      items:
+        $ref: '#/components/schemas/idDocument'
+      maxItems: 10
+      minItems: 0
+    requestQuotation:
+      type: object
+      required:
+      - creditParty
+      - debitParty
+      - requestAmount
+      - requestCurrency
+      properties:
+        creditParty:
+          $ref: '#/components/schemas/creditPartyArray'
+        debitParty:
+          $ref: '#/components/schemas/debitPartyArray'
+        type:
+          $ref: '#/components/schemas/type'
+        subType:
+          $ref: '#/components/schemas/subType'
+        requestAmount:
+          description: The requested quotation amount.
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          example: '15.00'
+        requestCurrency:
+          description: Currency of the requested quotation amount
+          allOf:
+          - $ref: '#/components/schemas/currency'
+        chosenDeliveryMethod:
+          description: The delivery method chosen by the sending end user as the specific delivery method to be used in the quotes received.
+          allOf:
+          - $ref: '#/components/schemas/deliveryMethod'
+        originCountry:
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+          description: The originating country of the quotation request, i.e. the country where the request was initiated.
+        receivingCountry:
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+          description: Destination country of the quotation request, i.e. the country that the sender wishes to send to.
+        recipientKyc:
+          $ref: '#/components/schemas/kyc'
+        senderKyc:
+          $ref: '#/components/schemas/kyc'
+        requestingOrganisation:
+          $ref: '#/components/schemas/requestingOrganisation'
+        sendingServiceProviderCountry:
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+          description: The country of the sending service provider that holds the account of the sender.
+        requestDate:
+          $ref: '#/components/schemas/requestDate'
+        customData:
+          $ref: '#/components/schemas/customDataArray'
+        metadata:
+          $ref: '#/components/schemas/metadataArray'
+    currency:
+      type: string
+      enum:
+      - AED
+      - AFN
+      - ALL
+      - AMD
+      - ANG
+      - AOA
+      - ARS
+      - AUD
+      - AWG
+      - AZN
+      - BAM
+      - BBD
+      - BDT
+      - BGN
+      - BHD
+      - BIF
+      - BMD
+      - BND
+      - BOB
+      - BOV
+      - BRL
+      - BSD
+      - BTN
+      - BWP
+      - BYN
+      - BZD
+      - CAD
+      - CDF
+      - CHE
+      - CHF
+      - CHW
+      - CLF
+      - CLP
+      - CNY
+      - COP
+      - COU
+      - CRC
+      - CUC
+      - CUP
+      - CVE
+      - CZK
+      - DJF
+      - DKK
+      - DOP
+      - DZD
+      - EGP
+      - ERN
+      - ETB
+      - EUR
+      - FJD
+      - FKP
+      - GBP
+      - GEL
+      - GHS
+      - GIP
+      - GMD
+      - GNF
+      - GTQ
+      - GYD
+      - HKD
+      - HNL
+      - HRK
+      - HTG
+      - HUF
+      - IDR
+      - ILS
+      - INR
+      - IQD
+      - IRR
+      - ISK
+      - JMD
+      - JOD
+      - JPY
+      - KES
+      - KGS
+      - KHR
+      - KMF
+      - KPW
+      - KRW
+      - KWD
+      - KYD
+      - KZT
+      - LAK
+      - LBP
+      - LKR
+      - LRD
+      - LSL
+      - LYD
+      - MAD
+      - MDL
+      - MGA
+      - MKD
+      - MMK
+      - MNT
+      - MOP
+      - MRO
+      - MUR
+      - MVR
+      - MWK
+      - MXN
+      - MXV
+      - MYR
+      - MZN
+      - NAD
+      - NGN
+      - NIO
+      - NOK
+      - NPR
+      - NZD
+      - OMR
+      - PAB
+      - PEN
+      - PGK
+      - PHP
+      - PKR
+      - PLN
+      - PYG
+      - QAR
+      - RON
+      - RSD
+      - RUB
+      - RWF
+      - SAR
+      - SBD
+      - SCR
+      - SDG
+      - SEK
+      - SGD
+      - SHP
+      - SLL
+      - SOS
+      - SRD
+      - SSP
+      - STD
+      - SVC
+      - SYP
+      - SZL
+      - THB
+      - TJS
+      - TMT
+      - TND
+      - TOP
+      - TRY
+      - TTD
+      - TWD
+      - TZS
+      - UAH
+      - UGX
+      - USD
+      - USN
+      - UYI
+      - UYU
+      - UZS
+      - VEF
+      - VND
+      - VUV
+      - WST
+      - XAF
+      - XAG
+      - XAU
+      - XBA
+      - XBB
+      - XBC
+      - XBD
+      - XCD
+      - XDR
+      - XOF
+      - XPD
+      - XPF
+      - XPT
+      - XSU
+      - XTS
+      - XUA
+      - XXX
+      - YER
+      - ZAR
+      - ZMW
+      - ZWL
+    customDataArray:
+      type: array
+      description: A collection of key/value pairs. These can be used to populate provider specific fields.
+      items:
+        $ref: '#/components/schemas/customData'
+      maxItems: 20
+    employerName:
+      type: string
+      description: Employer name of the KYC subject.
+      minLength: 0
+      maxLength: 256
+    dateModified:
+      type: string
+      format: date-time
+      deprecated: true
+      description: Date and time when the object was modified by the API Provider.
+    requestStateObject:
+      type: object
+      required:
+      - notificationMethod
+      - serverCorrelationId
+      - status
+      properties:
+        serverCorrelationId:
+          type: string
+          description: A unique identifier issued by the provider to enable the client to identify the RequestState resource on subsequent polling requests. Must be supplied as a UUID.
+          minLength: 1
+          maxLength: 256
+          pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+        objectReference:
+          type: string
+          description: Provides a reference to the subject resource, e.g. transaction reference.
+          minLength: 0
+          maxLength: 256
+        status:
+          type: string
+          enum:
+          - pending
+          - completed
+          - failed
+          description: Indicates the status of the request.
+        notificationMethod:
+          type: string
+          enum:
+          - callback
+          - polling
+          description: Indicates whether a callback will be issued or whether the client will need to poll.
+        pendingReason:
+          type: string
+          description: A textual description that can be provided to describe the reason for a pending status.
+          minLength: 0
+          maxLength: 256
+        expiryTime:
+          type: string
+          format: date-time
+          description: Indicate the time by which the provider will fail the request if completion criteria have not been met. For an example, a debit party failing to authorise within the allowed period.
+        pollLimit:
+          type: number
+          format: int32
+          description: Indicates the number of poll attempts for the given requeststate resource that will be allowed by the provider.
+          exclusiveMinimum: 0
+        error:
+          description: If the asynchronous processing failed, details of the error will be returned here.
+          allOf:
+          - $ref: '#/components/schemas/errorObject'
+    debitPartyArray:
+      type: array
+      description: A collection of key/value pairs that enable the party to be identified. Keys include MSISDN and Wallet Identifier.
+      items:
+        $ref: '#/components/schemas/party'
+      maxItems: 10
+      minItems: 1
+    fees:
+      type: object
+      required:
+      - feeType
+      - feeCurrency
+      - feeAmount
+      properties:
+        feeType:
+          type: string
+          description: Defines the type of fee.
+          minLength: 1
+          maxLength: 256
+        feeAmount:
+          description: Defines the amount of the fee.
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          example: '5.46'
+        feeCurrency:
+          description: Defines the currency for the given fee.
+          allOf:
+          - $ref: '#/components/schemas/currency'
+    fxRate:
+      type: string
+      description: The conversion rate applicable between the sending and the receiving currency for the requested transaction.
+      minLength: 4
+      maxLength: 256
+      pattern: ^([0]|([1-9][0-9]{0,17}))([.][0-9]{0,10}[1-9])?$
+      example: '1.3436'
+    type:
+      type: string
+      description: The harmonised Transaction Type.
+      enum:
+      - billpay
+      - deposit
+      - disbursement
+      - transfer
+      - merchantpay
+      - inttransfer
+      - adjustment
+      - reversal
+      - withdrawal
+    receivingServiceProvider:
+      type: string
+      description: The name of the receiving service provider, i.e. the provider that the quote is associated with.
+      minLength: 0
+      maxLength: 256
+    idDocument:
+      type: object
+      required:
+      - idType
+      properties:
+        idType:
+          type: string
+          enum:
+          - passport
+          - nationalregistration
+          - otherId
+          - drivinglicence
+          - socialsecurity
+          - alienregistration
+          - nationalidcard
+          - employer
+          - taxid
+          - seniorcitizenscard
+          - marriagecertificate
+          - birthcertificate
+          - healthcard
+          - votersid
+          - villageelderLetter
+          - pancard
+          - officialletter
+          description: Indicates the type of identification for the KYC subject, e.g. passport, driving licence etc.
+        idNumber:
+          type: string
+          description: Reference pertaining to the type of identification for the KYC subject.
+          minLength: 0
+          maxLength: 256
+        issueDate:
+          type: string
+          format: date
+          description: Date of issue for the identification document.
+          example: '2018-11-20'
+        expiryDate:
+          type: string
+          format: date
+          description: Date of expiry for the identification document.
+          example: '2018-11-20'
+        issuer:
+          type: string
+          description: Indicates the organisation/government entity that issued the ID document.
+          minLength: 0
+          maxLength: 256
+        issuerPlace:
+          type: string
+          description: Place of issue for the identification type.
+          minLength: 0
+          maxLength: 256
+        issuerCountry:
+          description: Country where the identification type was issued.
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+        otherIddescription:
+          type: string
+          description: Where an ID Type of otherid is specified, a description of the type of identification can be provided in this field.
+          minLength: 0
+          maxLength: 256
+    quoteArray:
+      type: array
+      description: A collection of quotes. A quote can be received from a single financial service provider or from multiple providers.
+      items:
+        $ref: '#/components/schemas/quotes'
+      maxItems: 10
+      minItems: 1
+    creationDate:
+      type: string
+      format: date-time
+      description: Date and time when the object was created by the API Provider.
+    kyc:
+      type: object
+      properties:
+        birthCountry:
+          description: The country of birth of the KYC subject.
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+        contactPhone:
+          $ref: '#/components/schemas/contactPhone'
+        dateOfBirth:
+          $ref: '#/components/schemas/dateOfBirth'
+        emailAddress:
+          $ref: '#/components/schemas/emailAddress'
+        employerName:
+          $ref: '#/components/schemas/employerName'
+        gender:
+          $ref: '#/components/schemas/gender'
+        idDocument:
+          $ref: '#/components/schemas/idDocumentArray'
+        nationality:
+          description: Nationality of the KYC subject.
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+        occupation:
+          $ref: '#/components/schemas/occupation'
+        postalAddress:
+          $ref: '#/components/schemas/postalAddress'
+        subjectName:
+          $ref: '#/components/schemas/subjectName'
+    subType:
+      type: string
+      description: A non-harmonised sub-classification of the type of transaction. Values are not fixed, and usage will vary according to Provider.
+      minLength: 0
+      maxLength: 256
+    subjectName:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The given title of the KYC subject, e.g. Mr, Mrs, Dr.
+          minLength: 0
+          maxLength: 256
+        firstName:
+          type: string
+          description: First name (also referred to as given name) of the KYC subject.
+          minLength: 0
+          maxLength: 256
+        middleName:
+          type: string
+          description: Middle Name of the KYC subject.
+          minLength: 0
+          maxLength: 256
+        lastName:
+          type: string
+          description: Surname (also referred to as last or family name) of the KYC subject.
+          minLength: 0
+          maxLength: 256
+        fullName:
+          type: string
+          description: The full name of the KYC subject.
+          minLength: 0
+          maxLength: 256
+        nativeName:
+          type: string
+          description: The full name expressed as in the native language.
+          minLength: 0
+          maxLength: 256
+    dateOfBirth:
+      type: string
+      format: date
+      description: Birth date of the KYC subject.
+      example: '2000-11-20'
+    senderBlockingReason:
+      type: string
+      description: The reason for blocking the quotation, based on AML checks on the sender.
+      minLength: 0
+      maxLength: 256
+    party:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Provides the account identifier type.
+          minLength: 1
+          maxLength: 256
+          example: msisdn
+        value:
+          type: string
+          description: Provides the account identifier type value.
+          minLength: 1
+          maxLength: 256
+          example: '+33555123456'
+    requestDate:
+      type: string
+      format: date-time
+      description: The date and time of the request as supplied by the client.
+    errorObject:
+      type: object
+      required:
+      - errorCategory
+      - errorCode
+      properties:
+        errorCategory:
+          type: string
+          description: The category grouping for the error.
+          enum:
+          - businessRule
+          - validation
+          - authorisation
+          - identification
+          - internal
+          - serviceUnavailable
+        errorCode:
+          type: string
+          description: The harmonised error code identifying the reason for error.
+          enum:
+          - genericError
+          - dailyVolumeLimitExceeded
+          - dailyValueLimitExceeded
+          - weeklyVolumeLimitExceeded
+          - weeklyValueLimitExceeded
+          - monthlyVolumeLimitExceeded
+          - monthlyValueLimitExceeded
+          - accountMaxTotalVolumeExceeded
+          - accountMaxTotalValueExceeded
+          - lessThanTransactionMinValue
+          - greaterThanTransactionMaxValue
+          - maxBalanceExceeded
+          - samePartiesError
+          - duplicateRequest
+          - insufficientFunds
+          - incorrectState
+          - underPaymentNotAllowed
+          - overPaymentNotAllowed
+          - rateLimitError
+          - transactionTypeError
+          - noMandateAuthority
+          - linkViolation
+          - countryofOriginNotPermitted
+          - nationalityNotPermitted
+          - idDocumentNotSupported
+          - issuingCountryNotSupported
+          - quoteHasExpired
+          - identifierError
+          - lengthError
+          - formatError
+          - negativeValue
+          - currencyNotSupported
+          - mandatoryValueNotSupplied
+          - invalidOffset
+          - clientAuthorisationError
+          - requestDeclined
+          - servicingPartyAuthorisationError
+          - requestingPartyAuthorisationError
+        errordescription:
+          type: string
+          description: A textual description of the error.
+          minLength: 0
+          maxLength: 256
+        errorDateTime:
+          type: string
+          format: date-time
+          description: The timestamp indicating when the error occurred.
+        errorParameters:
+          description: Diagnostic information in the form of key/value pairs relating to the error.
+          allOf:
+          - $ref: '#/components/schemas/metadataArray'
+    occupation:
+      type: string
+      description: Occupation of the KYC subject.
+      minLength: 0
+      maxLength: 256
+    nationality:
+      type: string
+      enum:
+      - AD
+      - AE
+      - AF
+      - AG
+      - AI
+      - AL
+      - AM
+      - AO
+      - AQ
+      - AR
+      - AS
+      - AT
+      - AU
+      - AW
+      - AX
+      - AZ
+      - BA
+      - BB
+      - BD
+      - BE
+      - BF
+      - BG
+      - BH
+      - BI
+      - BJ
+      - BL
+      - BM
+      - BN
+      - BO
+      - BQ
+      - BR
+      - BS
+      - BT
+      - BV
+      - BW
+      - BY
+      - BZ
+      - CA
+      - CC
+      - CD
+      - CF
+      - CG
+      - CH
+      - CI
+      - CK
+      - CL
+      - CM
+      - CN
+      - CO
+      - CR
+      - CU
+      - CV
+      - CW
+      - CX
+      - CY
+      - CZ
+      - DE
+      - DJ
+      - DK
+      - DM
+      - DO
+      - DZ
+      - EC
+      - EE
+      - EG
+      - EH
+      - ER
+      - ES
+      - ET
+      - FI
+      - FJ
+      - FK
+      - FM
+      - FO
+      - FR
+      - GA
+      - GB
+      - GD
+      - GE
+      - GF
+      - GG
+      - GH
+      - GI
+      - GL
+      - GM
+      - GN
+      - GP
+      - GQ
+      - GR
+      - GS
+      - GT
+      - GU
+      - GW
+      - GY
+      - HK
+      - HM
+      - HN
+      - HR
+      - HT
+      - HU
+      - ID
+      - IE
+      - IL
+      - IM
+      - IN
+      - IO
+      - IQ
+      - IR
+      - IS
+      - IT
+      - JE
+      - JM
+      - JO
+      - JP
+      - KE
+      - KG
+      - KH
+      - KI
+      - KM
+      - KN
+      - KP
+      - KR
+      - KW
+      - KY
+      - KZ
+      - LA
+      - LB
+      - LC
+      - LI
+      - LK
+      - LR
+      - LS
+      - LT
+      - LU
+      - LV
+      - LY
+      - MA
+      - MC
+      - MD
+      - ME
+      - MF
+      - MG
+      - MH
+      - MK
+      - ML
+      - MM
+      - MN
+      - MO
+      - MP
+      - MQ
+      - MR
+      - MS
+      - MT
+      - MU
+      - MV
+      - MW
+      - MX
+      - MY
+      - MZ
+      - NA
+      - NC
+      - NE
+      - NF
+      - NG
+      - NI
+      - NL
+      - 'NO'
+      - NP
+      - NR
+      - NU
+      - NZ
+      - OM
+      - PA
+      - PE
+      - PF
+      - PG
+      - PH
+      - PK
+      - PL
+      - PM
+      - PN
+      - PR
+      - PS
+      - PT
+      - PW
+      - PY
+      - QA
+      - RE
+      - RO
+      - RS
+      - RU
+      - RW
+      - SA
+      - SB
+      - SC
+      - SD
+      - SE
+      - SG
+      - SH
+      - SI
+      - SJ
+      - SK
+      - SL
+      - SM
+      - SN
+      - SO
+      - SR
+      - SS
+      - ST
+      - SV
+      - SX
+      - SY
+      - SZ
+      - TC
+      - TD
+      - TF
+      - TG
+      - TH
+      - TJ
+      - TK
+      - TL
+      - TM
+      - TN
+      - TO
+      - TR
+      - TT
+      - TV
+      - TW
+      - TZ
+      - UA
+      - UG
+      - UM
+      - US
+      - UY
+      - UZ
+      - VA
+      - VC
+      - VE
+      - VG
+      - VI
+      - VN
+      - VU
+      - WF
+      - WS
+      - YE
+      - YT
+      - ZA
+      - ZM
+      - ZW
+    amount:
+      type: string
+      minLength: 1
+      maxLength: 23
+      pattern: ^([0]|([1-9][0-9]{0,17}))([.][0-9]{0,3}[0-9])?$
+      example: '15.21'
+    customData:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Identifies the type of additional field.
+          minLength: 1
+          maxLength: 256
+        value:
+          type: string
+          description: Identifies the value of the additional field.
+          minLength: 1
+          maxLength: 256
+    creditPartyArray:
+      type: array
+      description: A collection of key/value pairs that enable the party to be identified. Keys include MSISDN and Wallet Identifier.
+      items:
+        $ref: '#/components/schemas/party'
+      maxItems: 10
+      minItems: 1
+  parameters:
+    X-Date:
+      name: X-Date
+      in: header
+      description: Header parameter to indicate the date and time that the message was originated. It is used for basic message integrity checks, to ensure the request is not stale. Note that the header was previously referenced as 'Date' in version 1.0 of the Mobile Money API.
+      required: false
+      schema:
+        type: string
+        format: date-time
+    X-Account-Holding-Institution-Identifier-Type:
+      name: X-Account-Holding-Institution-Identifier-Type
+      in: header
+      description: A header variable that identifies the type of the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier header.
+      required: false
+      schema:
+        type: string
+        enum:
+        - lei
+        - swiftbic
+        - organisationid
+    X-API-Key:
+      name: X-API-Key
+      in: header
+      description: Used to pass pre-shared client's API key to the server.
+      required: false
+      schema:
+        type: string
+    X-CorrelationID:
+      name: X-CorrelationID
+      in: header
+      description: Header parameter to uniquely identify the request. Must be supplied as a UUID.
+      required: false
+      schema:
+        type: string
+        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+    X-User-Credential-1:
+      name: X-User-Credential-1
+      in: header
+      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    X-Channel:
+      name: X-Channel
+      in: header
+      description: String containing the channel that was used to originate the request. For example USSD, Web, App.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    X-Callback-URL:
+      name: X-Callback-URL
+      in: header
+      description: The URL supplied by the client that will be used to return the callback in the form of a HTTP PUT.
+      required: false
+      schema:
+        type: string
+        format: uri
+    X-User-Bearer:
+      name: X-User-Bearer
+      in: header
+      description: Used to pass user’s access token when OAuth 2.0/OIDC authorisation framework is used for end-user authentication.
+      required: false
+      schema:
+        type: string
+    X-Account-Holding-Institution-Identifier:
+      name: X-Account-Holding-Institution-Identifier
+      in: header
+      description: A header variable that identifies the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier-Type header.
+      required: false
+      schema:
+        type: string
+    quotationReference:
+      name: quotationReference
+      in: path
+      description: Path variable to uniquely identify the quotation.
+      required: true
+      schema:
+        type: string
+        maxLength: 256
+        minLength: 1
+    X-User-Credential-2:
+      name: X-User-Credential-2
+      in: header
+      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    X-Client-Id:
+      name: X-Client-Id
+      in: header
+      description: Used to pass pre-shared client's identifier to the server.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    X-Content-Hash:
+      name: X-Content-Hash
+      in: header
+      description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
+      required: false
+      schema:
+        type: string
+  requestBodies:
+    updateError:
+      required: true
+      description: Represents the request body of error callback.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorObject'
+    requestQuotation:
+      required: true
+      description: Represents the request body of a Quotation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestQuotation'
+    updateQuotation:
+      required: true
+      description: Represents the request body of a Quotation Callback.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseQuotation'
+  headers:
+    X-Date:
+      required: false
+      description: The date and time that the response message was sent.
+      schema:
+        type: string
+        format: date-time
