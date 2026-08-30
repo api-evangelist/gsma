@@ -86,6 +86,8 @@ apis:
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
+  - Account
+  tags_raw:
   - Accounts
   properties:
   - type: OpenAPI
@@ -210,6 +212,8 @@ apis:
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
+  - Call Forwarding Information Retrieval
+  tags_raw:
   - Call Forwarding information retrieval
   properties:
   - type: OpenAPI
@@ -273,6 +277,8 @@ apis:
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
+  - Check SIM swap
+  tags_raw:
   - Check SIM Swap
   properties:
   - type: OpenAPI
@@ -514,6 +520,8 @@ apis:
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
+  - Location retrieval
+  tags_raw:
   - Location Retrieval
   properties:
   - type: OpenAPI
@@ -701,6 +709,8 @@ apis:
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
+  - Phone number share
+  tags_raw:
   - Phone Number Share
   properties:
   - type: OpenAPI
@@ -734,6 +744,8 @@ apis:
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
+  - Phone number verify
+  tags_raw:
   - Phone Number Verify
   properties:
   - type: OpenAPI
@@ -934,6 +946,8 @@ apis:
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
+  - Retrieve SIM swap date
+  tags_raw:
   - Retrieve SIM Swap Date
   properties:
   - type: OpenAPI
@@ -1044,6 +1058,8 @@ apis:
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
+  - Transaction
+  tags_raw:
   - Transactions
   properties:
   - type: OpenAPI
@@ -1107,6 +1123,8 @@ apis:
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
+  - Unconditional Call Forwarding Information Retrieval
+  tags_raw:
   - Unconditional Call Forwarding information retrieval
   properties:
   - type: OpenAPI
