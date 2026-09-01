@@ -212,7 +212,7 @@ apis:
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
-  - Call Forwarding Information Retrieval
+  - Call Forwarding information retrieval
   tags_raw:
   - Call Forwarding information retrieval
   properties:
@@ -1123,7 +1123,7 @@ apis:
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
-  - Unconditional Call Forwarding Information Retrieval
+  - Unconditional Call Forwarding information retrieval
   tags_raw:
   - Unconditional Call Forwarding information retrieval
   properties:
