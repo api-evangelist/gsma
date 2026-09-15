@@ -2,22 +2,23 @@ aid: gsma
 url: https://raw.githubusercontent.com/api-evangelist/gsma/refs/heads/main/apis.yml
 name: GSMA
 kind: company
-description: 'The GSMA (GSM Association) is the London-headquartered global trade body for the mobile industry,
-  representing roughly 750 mobile network operators and around 400 companies in the wider mobile ecosystem,
-  and the organiser of MWC Barcelona. In telecom''s API value chain the GSMA is not a network operator and
-  not an aggregator; it is the standards and commitment layer. Its GSMA Open Gateway initiative is the memorandum
-  of understanding under which 69 operator groups, representing 78% of global mobile connections, commit to
-  exposing a common set of network APIs, while the API specifications themselves are authored in the Linux
-  Foundation''s CAMARA project. The GSMA''s API posture is unusually open for a standards body: its Open Gateway
-  developer portal at open-gateway.gsma.com publishes 17 CAMARA OpenAPI 3.0.3 documents in full, without login,
-  alongside a live public deployment map covering 607 launched API instances across 80 operators and 65 countries,
-  and it runs a separate, fully open Mobile Money API developer portal with a downloadable OpenAPI 3.0.0 specification,
-  SDKs, and use-case guides. The gates are real but narrow: the API sandbox requires a GitHub sign-in, the
-  anti-fraud Scam Signal API is held in a private GSMA repository rather than in public CAMARA, and the commercial
-  GSMA Services products (Device Check, IMEI Database, PathFinder, Disposable Number Check) are membership
-  and contract gated with no public documentation. The GSMA runs no production network API endpoints of its
-  own — every Open Gateway API is served by an operator or a channel partner such as Infobip, IPification,
-  TMT iD, XConnect, or Singtel.'
+description: 'The GSMA (GSM Association) is the London-headquartered global trade body for the mobile
+  industry, representing roughly 750 mobile network operators and around 400 companies in the wider mobile
+  ecosystem, and the organiser of MWC Barcelona. In telecom''s API value chain the GSMA is not a network
+  operator and not an aggregator; it is the standards and commitment layer. Its GSMA Open Gateway initiative
+  is the memorandum of understanding under which 69 operator groups, representing 78% of global mobile
+  connections, commit to exposing a common set of network APIs, while the API specifications themselves
+  are authored in the Linux Foundation''s CAMARA project. The GSMA''s API posture is unusually open for
+  a standards body: its Open Gateway developer portal at open-gateway.gsma.com publishes 17 CAMARA OpenAPI
+  3.0.3 documents in full, without login, alongside a live public deployment map covering 607 launched
+  API instances across 80 operators and 65 countries, and it runs a separate, fully open Mobile Money
+  API developer portal with a downloadable OpenAPI 3.0.0 specification, SDKs, and use-case guides. The
+  gates are real but narrow: the API sandbox requires a GitHub sign-in, the anti-fraud Scam Signal API
+  is held in a private GSMA repository rather than in public CAMARA, and the commercial GSMA Services
+  products (Device Check, IMEI Database, PathFinder, Disposable Number Check) are membership and contract
+  gated with no public documentation. The GSMA runs no production network API endpoints of its own — every
+  Open Gateway API is served by an operator or a channel partner such as Infobip, IPification, TMT iD,
+  XConnect, or Singtel.'
 deliveryModel:
   model: saas
   open_source: false
@@ -67,9 +68,8 @@ specificationVersion: '0.23'
 apis:
 - aid: gsma:gsma-accounts-api
   name: GSMA Accounts API
-  description: >-
-    The **Accounts** APIs are used to support a range of operations on a financial account resource and
-    associated resources.
+  description: 'The **Accounts** APIs are used to support a range of operations on a financial account
+    resource and associated resources.
 
     Types of accounts include mobile wallets, financial institution accounts and utility accounts (e.g.
     for electricity).
@@ -93,10 +93,10 @@ apis:
 
 
     - Where a single identifier is not sufficient to identify an account, the following path is to be
-    used: &#39; **/accounts/{accountIdentifier1}@{value1}${accountIdentifier2}@{value2}${accountIdentifier3}@{value3}**&#39;.
+    used: '' **/accounts/{accountIdentifier1}@{value1}${accountIdentifier2}@{value2}${accountIdentifier3}@{value3}**''.
     The list of permitted account identifiers supported by the Mobile Money API can be found in the API
     documentation. As there can be multiple identifiers required to identify the target account, the path
-    uses a &#39;$&#39; delimiter to separate each identifier, up to a limit of three account identifiers.
+    uses a ''$'' delimiter to separate each identifier, up to a limit of three account identifiers.'
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
@@ -109,8 +109,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -129,9 +128,8 @@ apis:
     url: conventions/gsma-conventions.yml
 - aid: gsma:gsma-authorisation-codes-api
   name: GSMA Authorisation Codes API
-  description: >-
-    The **Authorisation** Codes APIs allow a payer to generate a payment code which when presented to
-    the payee, can be redeemed for an amount associated with the code.
+  description: 'The **Authorisation** Codes APIs allow a payer to generate a payment code which when presented
+    to the payee, can be redeemed for an amount associated with the code.
 
     Authorisation codes can be set to expire. Note that expiry time can be specified via the API, however
     the mobile money provider
@@ -148,7 +146,7 @@ apis:
     to the agent to facilitate the withdrawal.
 
     - Pre-authorised codes for merchant payments. The customer generates a code which can be redeemed
-    at a merchant.
+    at a merchant.'
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
@@ -159,8 +157,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -179,9 +176,8 @@ apis:
     url: conventions/gsma-conventions.yml
 - aid: gsma:gsma-bills-api
   name: GSMA Bills API
-  description: >-
-    The **Bills** APIs allow a mobile money provider to allow customers to retrieve and pay bills. Specific
-    use cases include:
+  description: 'The **Bills** APIs allow a mobile money provider to allow customers to retrieve and pay
+    bills. Specific use cases include:
 
 
     - Retrieving information on service providers (bill companies) that accept bill payments.
@@ -190,7 +186,7 @@ apis:
 
     - Allowing mobile money customers to partially or fully pay bills for a service provider.
 
-    - Retrieving bill payment information from a service provider for a given customer.
+    - Retrieving bill payment information from a service provider for a given customer.'
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
@@ -201,8 +197,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -221,8 +216,7 @@ apis:
     url: conventions/gsma-conventions.yml
 - aid: gsma:gsma-call-forwarding-information-retrieval-api
   name: GSMA Call Forwarding information retrieval API
-  description: >-
-    Provides information on Call Forwarding settings for the provided phone number (PhoneNumber).
+  description: Provides information on Call Forwarding settings for the provided phone number (PhoneNumber).
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
@@ -235,8 +229,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -255,8 +248,8 @@ apis:
     url: conventions/gsma-conventions.yml
 - aid: gsma:gsma-check-device-swap-api
   name: GSMA Check Device Swap API
-  description: >-
-    Validate if the SIM of the end-user has been installed in a different device during a past period
+  description: Validate if the SIM of the end-user has been installed in a different device during a past
+    period
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
@@ -267,8 +260,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -300,8 +292,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -320,9 +311,8 @@ apis:
     url: conventions/gsma-conventions.yml
 - aid: gsma:gsma-debit-mandates-api
   name: GSMA Debit Mandates API
-  description: >-
-    The **Debit Mandates** APIs allow a mobile money customer to provide prior approval for payments to
-    be taken from their account by
+  description: 'The **Debit Mandates** APIs allow a mobile money customer to provide prior approval for
+    payments to be taken from their account by
 
     a requesting payee. If the amount limit field is not supplied, the payee will be able to take any
     amount. Mandates can be open-ended
@@ -333,7 +323,7 @@ apis:
     Mandates can be created, viewed and modified. The request to create a debit mandate will be typically
     initiated by the
 
-    service provider (payee) but can also be requested by the customer (payer).
+    service provider (payee) but can also be requested by the customer (payer).'
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
@@ -344,8 +334,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -375,8 +364,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -406,8 +394,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -437,8 +424,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -468,8 +454,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -488,18 +473,18 @@ apis:
     url: conventions/gsma-conventions.yml
 - aid: gsma:gsma-links-api
   name: GSMA Links API
-  description: >-
-    The **Links** APIs are used to establish a link between two separate accounts on the client and provider
-    systems. The API can be used for example to link a mobile wallet account to a Microfinance Institution
-    account or a bank account. The link object does not mandate the processes to verify and authenticate
-    a link request - this depends upon the use case. A link needs to be associated with a mode of operation:
+  description: 'The **Links** APIs are used to establish a link between two separate accounts on the client
+    and provider systems. The API can be used for example to link a mobile wallet account to a Microfinance
+    Institution account or a bank account. The link object does not mandate the processes to verify and
+    authenticate a link request - this depends upon the use case. A link needs to be associated with a
+    mode of operation:
 
 
     - pull. The link can be used by the client to debit the target account held by the provider.
 
     - push. The link can be used by the client to credit the target account held by the provider.
 
-    - both. The link can be used for Push and Pull requests.
+    - both. The link can be used for Push and Pull requests.'
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
@@ -510,8 +495,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -543,8 +527,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -574,8 +557,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -594,8 +576,7 @@ apis:
     url: conventions/gsma-conventions.yml
 - aid: gsma:gsma-match-api
   name: GSMA Match API
-  description: >-
-    Operations to match a customer identity against the account data bound to their phone number.
+  description: Operations to match a customer identity against the account data bound to their phone number.
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
@@ -606,8 +587,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -637,8 +617,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -668,8 +647,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -699,8 +677,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -732,8 +709,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -752,9 +728,8 @@ apis:
     url: conventions/gsma-conventions.yml
 - aid: gsma:gsma-phone-number-verify-api
   name: GSMA Phone Number Verify API
-  description: >-
-    API operation to verify a phone number received as input. It can be received either in plain text
-    or hashed format.
+  description: API operation to verify a phone number received as input. It can be received either in
+    plain text or hashed format.
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
@@ -767,8 +742,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -798,8 +772,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -829,8 +802,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -849,9 +821,8 @@ apis:
     url: conventions/gsma-conventions.yml
 - aid: gsma:gsma-quotations-api
   name: GSMA Quotations API
-  description: >-
-    The **Quotations** APIs are used to obtain one or multiple quotes for a mobile money customer who
-    wishes to
+  description: 'The **Quotations** APIs are used to obtain one or multiple quotes for a mobile money customer
+    who wishes to
 
     transfer money. The creation of a quote involves returning any fees that will be levied on the sending
     customer
@@ -863,7 +834,7 @@ apis:
     customer is
 
     satisfied with the quotation, then they can confirm and proceed with a transaction request using the
-    **/transactions** API.
+    **/transactions** API.'
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
@@ -874,8 +845,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -905,8 +875,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -936,8 +905,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -969,8 +937,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -989,8 +956,7 @@ apis:
     url: conventions/gsma-conventions.yml
 - aid: gsma:gsma-roaming-status-retrieval-api
   name: GSMA Roaming status retrieval API
-  description: >-
-    Operation to get device roaming status and country information (if roaming) synchronously
+  description: Operation to get device roaming status and country information (if roaming) synchronously
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
@@ -1001,8 +967,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -1021,8 +986,7 @@ apis:
     url: conventions/gsma-conventions.yml
 - aid: gsma:gsma-supporting-api
   name: GSMA Supporting API
-  description: >-
-    Supporting APIs consist of the following:
+  description: 'Supporting APIs consist of the following:
 
 
     - **Heartbeat API:** Used for monitoring purposes and establishes whether the system of an API provider
@@ -1032,7 +996,7 @@ apis:
 
     - **Responses API** : In some circumstances, the client may not have received the final representation
     of the resource for which it attempted to create or update. The **Responses** API allows a client
-    to identify and retrieve the final representation of the resource assuming that the resource was created.
+    to identify and retrieve the final representation of the resource assuming that the resource was created.'
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
@@ -1043,8 +1007,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -1063,12 +1026,11 @@ apis:
     url: conventions/gsma-conventions.yml
 - aid: gsma:gsma-transactions-api
   name: GSMA Transactions API
-  description: >-
-    The **Transactions** APIs are used to support mobile money financial transaction use cases.
+  description: 'The **Transactions** APIs are used to support mobile money financial transaction use cases.
 
     Transactions are used for a wide range of use cases including merchant payments, international transfers,
 
-    domestic transfers and agent cash-in/cash-out. Reversals and adjustments are also treated as transactions.
+    domestic transfers and agent cash-in/cash-out. Reversals and adjustments are also treated as transactions.'
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
@@ -1081,8 +1043,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -1112,8 +1073,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -1132,8 +1092,8 @@ apis:
     url: conventions/gsma-conventions.yml
 - aid: gsma:gsma-unconditional-call-forwarding-information-retrieval-api
   name: GSMA Unconditional Call Forwarding information retrieval API
-  description: >-
-    Provides information on Unconditional Call Forwarding settings for the provided phone number (PhoneNumber)
+  description: Provides information on Unconditional Call Forwarding settings for the provided phone number
+    (PhoneNumber)
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
@@ -1146,8 +1106,7 @@ apis:
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/
   - type: APIReference
-    url: >-
-      https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
+    url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/api-service-definition.html
   - type: Documentation
     url: https://developer.mobilemoneyapi.io/api-versions-1.2/resources/open-oas3-ui.html
   - type: Documentation
@@ -1252,7 +1211,10 @@ common:
   url: data-model/gsma-data-model.yml
 - type: X-MCPServerCandidate
   url: mcp/gsma-mcp.yml
-  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate — a tool list derived from the published API contracts, not an existing server. The scorer already read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type surfaces with a server that does not exist.'
+  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate
+    — a tool list derived from the published API contracts, not an existing server. The scorer already
+    read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type
+    surfaces with a server that does not exist.'
 - type: AgentSkill
   url: skills/_index.yml
 - type: Webhooks
