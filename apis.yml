@@ -599,6 +599,8 @@ apis:
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
+  - Payments
+  tags_raw:
   - Payment
   properties:
   - type: OpenAPI
