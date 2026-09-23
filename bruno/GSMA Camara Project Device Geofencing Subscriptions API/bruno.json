@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "GSMA Camara Project Device Geofencing Subscriptions API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

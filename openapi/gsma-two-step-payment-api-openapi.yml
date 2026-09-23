@@ -1,6 +1,12 @@
 openapi: 3.2.0
 info:
-  description: "Service Enabling Payments against Operator Carrier Billing Systems\n\n# Introduction\n\nThe Carrier Billing API provides programmable interface for developers and other users (capabilities consumers) to charge an amount on a mobile line.\nIt can be easily integrated and allows end-users to buy digital content in an easy & secured way. The API provides management of a payment entity and its associated lifecycle.\n\n# Relevant terms and definitions\n\n- **Carrier Billing**:\nAn online payment process which allows users to make purchases by charging payments against Telco Operator Billing Systems, accordingly to the user's configuration in the Telco Operator. In a common usage in the industry, the payment is processed on current account balance or charged on next bill generated for this line.\n\n- **Payment**:\nThe process of paying for a (set of) good(s)/service(s).\n\n- **1-STEP Payment**:\nPayment process performed in one phase (i.e. one action), that involves all the Telco Operator Carrier Billing Systems checking and trigger the charging request against Billing Systems.\n\n- **2-STEP Payment**:\nPayment process performed in two phases (i.e. two actions). First action deals with payment preparation request to guarantee the reservation of the involved amount. Second action is an explicit confirmation or cancellation of the payment by the user. Any payment not confirmed/cancelled by a given user is discarded after some time in order to avoid inconsistency in the billing systems.\n\n# API Functionality\n\nThis API allows to third party clients to request the payment of a (set of) digital good(s)/service(s), as well as to retrieve information about a specific payment or a list of payments.\n\nIn the scope of **version v0.5rc1, only one-off payments are covered**. Recurrent payments (a.k.a. payment subscriptions) are not covered so far.\n\nThe API provides several endpoints/operations:\n- An endpoint to request a 1-STEP Payment, named `createPayment`.\n- A set of endpoints to request a 2-STEP Payment:\n  - One endpoint to setup the payment reservation, named `preparePayment`.\n  - A couple of endpoints to confirm/cancel such payment reservation, named `confirmPayment` and `cancelPayment` respectively.\n- A set of endpoints to retrieve information about a list of payments or a specific payment (identified by its specific `paymentId`), named `retrievePayments` and `retrievePayment` respectively.\n- A callback endpoint where API Server can send notifications about a payment procedure, as defined within `createPayment` and `preparePayment` operations, towards the `sink` when provided by API client.\n\nThe usage of the API is based on Payment resource, which can be created (in 1-STEP or 2-STEP Payment process), confirmed/cancelled (for 2-STEP Payment process), and queried/retrieved (list of payments or a specific payment).\n\nBefore starting to use the API, the developer needs to know about the below specified details:\n- **Payment service endpoint**: The URL pointing to the RESTful resource of the payment API. As 1-STEP and 2-STEP processes are managed, 2 separate tags _`One Step Payment`_ and _`Two Step Payment`_ have been defined to explicitly distinguish them in the API specification. A third tag _`Payment`_ is defined for common operations in both processes (query/retrieve list of payments or a specific payment).\n- **1-STEP & 2-STEP Payment**:\n  - **1-STEP Payment**: The request intent is to charge an amount to the mobile line. When the server receives the request, it will check the user account associated with this line and, if nothing prevents it, the amount is charged and will be either bill in next invoice or removed from current line credit/balance.\n  - **2-STEP Payment**: The first call is to request a payment preparation, which implies an amount reservation. The amount is not charged and the server has to be ready to get a confirmation or a cancellation to perform the payment. Only when the confirmation is done, payment is charged. Depending on business rules of the Telco operator, a `prepared` payment could expire after a defined delay.\n- **Notification URL**: Developers may provide a callback URL (`sink` param) on which status change notifications, regarding the payment, can be received from the Telco Operator. This is an optional parameter.\n\nFollowing diagram shows the API resources operation sequencing:\n![PaymentSequence](https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/documentation/API_documentation/resources/Carrier_Billing_sequence_diagram.png)\n\nFollow picture provides information about the payment state engine (state description & transition):\n![Payment State Engine](https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/documentation/API_documentation/resources/Carrier_Billing_State_Engine.JPG)\n\nState transitions:\n\n**1-STEP Payment**\n\nIf `createPayment` is a **SYNC** process:\n- Response contains `paymentId` and paymentStatus=`succeeded`.\n- In case of any error scenario `paymentId` is not created.\n\nIf `createPayment` is an **ASYNC** process:\n- Response contains `paymentId` and paymentStatus=`processing`. After completion:\n  - When payment is successfully completed then paymentStatus=`succeeded`.\n  - When payment is not successfully performed then paymentStatus=`denied`.\n- In case of any error scenario `paymentId` is not created.\n\n**2-STEP Payment**\n\nFIRST STEP\n\nIf `preparePayment` is a **SYNC** process:\n- **Case A** - `validationInfo` is NOT provided in response.\n  - Response contains `paymentId` and paymentStatus=`reserved`.\n- **Case B** - `validationInfo` is provided in response.\n  - Response contains `paymentId` and paymentStatus=`pending_validation`.\n- In case of any error scenario `paymentId` is not created.\n\nIf `preparePayment` is an **ASYNC** process:\n- **Case A** - `validationInfo` is NOT provided in response.\n  - Response contains `paymentId` and paymentStatus=`processing`. After completion:\n    - When payment preparation is successfully completed then paymentStatus=`reserved`.\n    - When payment preparation is not successfully performed then paymentStatus=`denied`.\n- **Case B** - `validationInfo` is provided in response.\n  - Response contains `paymentId` and paymentStatus=`processing`. After completion:\n    - When payment preparation is successfully completed then paymentStatus=`pending_validation`. [1]\n    - When payment preparation is not successfully performed then paymentStatus=`denied`.\n- In case of any error scenario `paymentId` is not created.\n\n[OPTIONAL] VALIDATE STEP [1]\n\nAfter `validatePayment`, paymentStatus=`reserved` OR `denied`, depending whether it was successful or not.\n\nSECOND STEP\n\nAfter `confirmPayment`, paymentStatus=`succeeded` OR `denied`, depending whether it was successful or not.\n\nAfter `cancelPayment`, paymentStatus=`cancelled`.\n\n# Generic Clarification about optional parameters\n\nRegarding optional parameters, they can be conditionally mandatory for a Telco Operator to implement them based on business scenarios or applicable regulations in a given market.\n\nNOTE: Within a given market, in a multi Telco Operator ecosystem, the set of optional parameters to be implemented MUST be aligned among involved Telco Operators.\n\n# Authorization and authentication\n\nThe \"Camara Security and Interoperability Profile\" provides details of how an API consumer requests an access token. Please refer to Identity and Consent Management (https://github.com/camaraproject/IdentityAndConsentManagement/) for the released version of the profile.\n\nThe specific authorization flows to be used will be agreed upon during the onboarding process, happening between the API consumer and the API provider, taking into account the declared purpose for accessing the API, whilst also being subject to the prevailing legal framework dictated by local legislation.\n\nIn cases where personal data is processed by the API and users can exercise their rights through mechanisms such as opt-in and/or opt-out, the use of three-legged access tokens is mandatory. This ensures that the API remains in compliance with privacy regulations, upholding the principles of transparency and user-centric privacy-by-design.\n\n# Identifying the phone number from the access token\n\nThis API requires the API consumer to identify a phone number as the subject of the API as follows:\n- When the API is invoked using a two-legged access token, the subject will be identified from the optional `phoneNumber` field, which therefore MUST be provided.\n- When a three-legged access token is used however, this optional identifier MUST NOT be provided, as the subject will be uniquely identified from the access token.\n\nThis approach simplifies API usage for API consumers using a three-legged access token to invoke the API by relying on the information that is associated with the access token and was identified during the authentication process.\n\n## Error handling:\n\n- If the subject cannot be identified from the access token and the optional `phoneNumber` field is not included in the request, then the server will return an error with the `422 MISSING_IDENTIFIER` error code.\n\n- If the subject can be identified from the access token and the optional `phoneNumber` field is also included in the request, then the server will return an error with the `422 UNNECESSARY_IDENTIFIER` error code. This will be the case even if the same phone number is identified by these two methods, as the server is unable to make this comparison.\n\n# Additional CAMARA error responses\n\nThe list of error codes in this API specification is not exhaustive. Therefore the API specification may not document some non-mandatory error statuses as indicated in `CAMARA API Design Guide`.\n\nPlease refer to the `CAMARA_common.yaml` of the Commonalities Release associated to this API version for a complete list of error responses. The applicable Commonalities Release can be identified in the `API Readiness Checklist` document associated to this API version.\n\nAs a specific rule, error `501 - NOT_IMPLEMENTED` can be only a possible error response if it is explicitly documented in the API.\n\n# Further info and support\n\n(FAQs will be added in a later version of the documentation)"
+  description: 'Service Enabling Payments against Operator Carrier Billing Systems
+
+
+    # Introduction
+
+
+    The Carrier Billing API provides programmable interface for developers and other users (capabilities consumers) to charge an amount on a mobile line.'
   version: wip
   title: Carrier Billing Two Step Payment API
   license:
@@ -284,68 +290,12 @@ paths:
           $ref: '#/components/responses/Generic429'
 components:
   schemas:
-    ErrorInfo:
-      type: object
-      required:
-      - status
-      - code
-      - message
-      properties:
-        status:
-          type: integer
-          description: HTTP response status code
-        code:
-          type: string
-          description: A human-readable code to describe the error
-        message:
-          type: string
-          description: A human-readable description of what the event represents
-    BodyAmountReservationTransactionForReserveInput:
-      required:
-      - amountTransaction
-      type: object
-      properties:
-        amountTransaction:
-          $ref: '#/components/schemas/AmountReservationTransactionForReserveInput'
-        sink:
-          type: string
-          format: uri
-          pattern: ^https:\/\/.+$
-          description: The address to which events shall be delivered, using the HTTP protocol.
-          example: https://endpoint.example.com/sink
-        sinkCredential:
-          allOf:
-          - description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
-          - $ref: '#/components/schemas/SinkCredential'
-    SinkCredential:
-      type: object
-      properties:
-        credentialType:
-          type: string
-          enum:
-          - PLAIN
-          - ACCESSTOKEN
-          - REFRESHTOKEN
-          description: The type of the credential. Only `ACCESSTOKEN` is supported so far.
-      discriminator:
-        propertyName: credentialType
-        mapping:
-          PLAIN: '#/components/schemas/PlainCredential'
-          ACCESSTOKEN: '#/components/schemas/AccessTokenCredential'
-          REFRESHTOKEN: '#/components/schemas/RefreshTokenCredential'
-      required:
-      - credentialType
-    PaymentAmountForReserve:
-      type: object
-      required:
-      - chargingInformation
-      properties:
-        chargingInformation:
-          $ref: '#/components/schemas/ChargingInformation'
-        chargingMetaData:
-          $ref: '#/components/schemas/ChargingMetaData'
-        paymentDetails:
-          $ref: '#/components/schemas/PaymentDetails'
+    Source:
+      type: string
+      format: uri-reference
+      minLength: 1
+      description: "Identifies the context in which an event happened - be a non-empty `URI-reference` like:\n- URI with a DNS authority:\n  * https://github.com/cloudevents\n  * mailto:cncf-wg-serverless@lists.cncf.io\n- Universally-unique URN with a UUID:\n  * urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66\n- Application-specific identifier:\n  * /cloudevents/spec/pull/123\n  * 1-555-123-4567"
+      example: https://notificationSendServer12.supertelco.com
     CloudEvent:
       description: The notification format
       required:
@@ -389,8 +339,11 @@ components:
           org.camaraproject.carrier-billing.v0.payment-completed: '#/components/schemas/EventPaymentCompleted'
           org.camaraproject.carrier-billing.v0.payment-cancelled: '#/components/schemas/EventPaymentCancelled'
           org.camaraproject.carrier-billing.v0.payment-denied: '#/components/schemas/EventPaymentDenied'
-    PhoneNumber:
+    AmountReservationTransactionForReserveInput:
       type: object
+      required:
+      - paymentAmount
+      - referenceCode
       properties:
         phoneNumber:
           type: string
@@ -405,15 +358,16 @@ components:
             - Take a look to section `# Identifying the phone number from the access token` regarding the use of this field.'
           pattern: ^\+[1-9][0-9]{4,14}$
           example: '+34671999000'
-    XCorrelator:
-      type: string
-      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
-      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
-    DateTime:
-      type: string
-      format: date-time
-      description: Timestamp when the occurrence happened. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-      example: '2023-11-03T12:27:10Z'
+        clientCorrelator:
+          type: string
+          description: Uniquely identifies this create payment request. If there is a communication failure during the payment request, using the same clientCorrelator when retrying the request allows the operator to avoid applying the same charge twice. This field SHOULD be present.
+          example: req-12f2pgh448gh2hvrfrv
+        paymentAmount:
+          $ref: '#/components/schemas/PaymentAmountForReserve'
+        referenceCode:
+          type: string
+          description: Merchant generated payment reference to uniquely identify the request, for instance, in the case of disputes.
+          example: ref-pay-834tfr2rA3v8r8vr3rv
     ValidatePayment:
       type: object
       required:
@@ -428,99 +382,54 @@ components:
           type: string
           description: Code received via SMS to validate and authorize a specific payment, only needed when business case requires it. Sending of this code is outside this specification.
           example: '352673'
-    ChargingMetaData:
-      type: object
-      properties:
-        merchantName:
-          type: string
-          description: Indicates the merchant name. Allows aggregators/partners to specify the actual merchant name
-          example: EA Sports
-        merchantIdentifier:
-          type: string
-          description: Indicates the merchant identifier. Allows aggregators/partners to specify the actual merchant identifier
-          example: eas-12345
-        fee:
-          type: number
-          format: float
-          multipleOf: 0.01
-          description: Percentage of the amount to be received by the requester
-          example: 10
-        purchaseCategoryCode:
-          type: string
-          description: A category defining the type of service, product or media being purchased
-          example: games
-        channel:
-          type: string
-          description: The channel over which the requester is interacting with the merchant (e.g. WAP, Web, SMS...)
-          example: web
-        serviceId:
-          type: string
-          description: The identifier of the partner/merchant service being purchased
-          example: games-online
-        productId:
-          type: string
-          description: The product identifier to be combined with the `serviceId` to uniquely identify the product being purchased. For example if the `serviceId` relates to a VOD service, the `productId` can specify the movie rented
-          example: '138235321'
-    ChargingInformation:
+    ErrorInfo:
       type: object
       required:
-      - amount
-      - currency
-      - description
+      - status
+      - code
+      - message
       properties:
-        amount:
-          type: number
-          format: float
-          multipleOf: 0.001
-          minimum: 0.001
-          description: Amount to be charged or reserved.
-          example: 100
-        currency:
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
           type: string
-          description: Currency code in which amount is expressed as defined in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html).
-          example: EUR
-        description:
+          description: A human-readable code to describe the error
+        message:
           type: string
-          description: Description text to be used for information and billing text
-          example: FIFA EA Sports 24
-        isTaxIncluded:
-          type: boolean
-          default: false
-          description: If true, the `amount` is tax included, if false the `amount` is provided without tax. In both cases, `taxAmount` could be indicated to provide tax amount.
-        taxAmount:
-          type: number
-          format: float
-          multipleOf: 0.001
-          minimum: 0
-          description: 'The tax amount charged by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
-
-            '
-          example: 21
-    Source:
-      type: string
-      format: uri-reference
-      minLength: 1
-      description: "Identifies the context in which an event happened - be a non-empty `URI-reference` like:\n- URI with a DNS authority:\n  * https://github.com/cloudevents\n  * mailto:cncf-wg-serverless@lists.cncf.io\n- Universally-unique URN with a UUID:\n  * urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66\n- Application-specific identifier:\n  * /cloudevents/spec/pull/123\n  * 1-555-123-4567"
-      example: https://notificationSendServer12.supertelco.com
-    ValidationInfo:
-      type: object
+          description: A human-readable description of what the event represents
+    BodyAmountReservationTransactionForReserve:
       required:
-      - action
+      - amountTransaction
+      - paymentId
+      - paymentStatus
+      - paymentCreationDate
+      type: object
       properties:
-        action:
+        paymentId:
           type: string
-          enum:
-          - open
-          - validate
-          description: Action to be done regarding otp validation.
-      discriminator:
-        propertyName: action
-        mapping:
-          open: '#/components/schemas/Open'
-          validate: '#/components/schemas/Validate'
-      example:
-        action: validate
-        authorizationId: Fn34o8g239v3wrb3t
+          description: Unique Identifier of the payment
+          example: AK234rfweSBuWGFUEWFGWEVWRV
+        amountTransaction:
+          $ref: '#/components/schemas/AmountReservationTransactionForReserve'
+        paymentStatus:
+          type: string
+          description: Specifies the payment status (`processing`, `pending_validation`, `denied`, `reserved`, `succeeded`, `cancelled`).
+          example: processing
+        paymentCreationDate:
+          type: string
+          format: date-time
+          description: Date time when the payment is created in server database. This is a technical information. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+        validationInfo:
+          allOf:
+          - $ref: '#/components/schemas/ValidationInfo'
+          - description: Information to perform otp validation. Only needed when business case requires it. Sending of OTP is outside the scope of this specification.
+        sink:
+          type: string
+          format: uri
+          pattern: ^https:\/\/.+$
+          description: The address to which events shall be delivered, using the HTTP protocol.
+          example: https://endpoint.example.com/sink
     PaymentItem:
       type: object
       required:
@@ -561,17 +470,60 @@ components:
 
             '
           example: 21
-    PaymentDetails:
-      type: array
-      description: Detailed description of the concepts/items considered within a specific payment procedure.
-      minItems: 1
-      items:
-        $ref: '#/components/schemas/PaymentItem'
-    AmountReservationTransactionForReserveInput:
+    BodyAmountReservationTransactionForReserveInput:
+      required:
+      - amountTransaction
+      type: object
+      properties:
+        amountTransaction:
+          $ref: '#/components/schemas/AmountReservationTransactionForReserveInput'
+        sink:
+          type: string
+          format: uri
+          pattern: ^https:\/\/.+$
+          description: The address to which events shall be delivered, using the HTTP protocol.
+          example: https://endpoint.example.com/sink
+        sinkCredential:
+          allOf:
+          - description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
+          - $ref: '#/components/schemas/SinkCredential'
+    ChargingInformation:
       type: object
       required:
-      - paymentAmount
-      - referenceCode
+      - amount
+      - currency
+      - description
+      properties:
+        amount:
+          type: number
+          format: float
+          multipleOf: 0.001
+          minimum: 0.001
+          description: Amount to be charged or reserved.
+          example: 100
+        currency:
+          type: string
+          description: Currency code in which amount is expressed as defined in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html).
+          example: EUR
+        description:
+          type: string
+          description: Description text to be used for information and billing text
+          example: FIFA EA Sports 24
+        isTaxIncluded:
+          type: boolean
+          default: false
+          description: If true, the `amount` is tax included, if false the `amount` is provided without tax. In both cases, `taxAmount` could be indicated to provide tax amount.
+        taxAmount:
+          type: number
+          format: float
+          multipleOf: 0.001
+          minimum: 0
+          description: 'The tax amount charged by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
+
+            '
+          example: 21
+    PhoneNumber:
+      type: object
       properties:
         phoneNumber:
           type: string
@@ -586,48 +538,6 @@ components:
             - Take a look to section `# Identifying the phone number from the access token` regarding the use of this field.'
           pattern: ^\+[1-9][0-9]{4,14}$
           example: '+34671999000'
-        clientCorrelator:
-          type: string
-          description: Uniquely identifies this create payment request. If there is a communication failure during the payment request, using the same clientCorrelator when retrying the request allows the operator to avoid applying the same charge twice. This field SHOULD be present.
-          example: req-12f2pgh448gh2hvrfrv
-        paymentAmount:
-          $ref: '#/components/schemas/PaymentAmountForReserve'
-        referenceCode:
-          type: string
-          description: Merchant generated payment reference to uniquely identify the request, for instance, in the case of disputes.
-          example: ref-pay-834tfr2rA3v8r8vr3rv
-    BodyAmountReservationTransactionForReserve:
-      required:
-      - amountTransaction
-      - paymentId
-      - paymentStatus
-      - paymentCreationDate
-      type: object
-      properties:
-        paymentId:
-          type: string
-          description: Unique Identifier of the payment
-          example: AK234rfweSBuWGFUEWFGWEVWRV
-        amountTransaction:
-          $ref: '#/components/schemas/AmountReservationTransactionForReserve'
-        paymentStatus:
-          type: string
-          description: Specifies the payment status (`processing`, `pending_validation`, `denied`, `reserved`, `succeeded`, `cancelled`).
-          example: processing
-        paymentCreationDate:
-          type: string
-          format: date-time
-          description: Date time when the payment is created in server database. This is a technical information. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-        validationInfo:
-          allOf:
-          - $ref: '#/components/schemas/ValidationInfo'
-          - description: Information to perform otp validation. Only needed when business case requires it. Sending of OTP is outside the scope of this specification.
-        sink:
-          type: string
-          format: uri
-          pattern: ^https:\/\/.+$
-          description: The address to which events shall be delivered, using the HTTP protocol.
-          example: https://endpoint.example.com/sink
     AmountReservationTransactionForReserve:
       required:
       - phoneNumber
@@ -661,184 +571,103 @@ components:
           type: string
           description: Reference to the charge or refund, provided by the server, and meaningful to the server’s backend system for the purpose of reconciliation.
           example: ref-pay-834tfr2rA3v8r8vr3rv-serv
+    ChargingMetaData:
+      type: object
+      properties:
+        merchantName:
+          type: string
+          description: Indicates the merchant name. Allows aggregators/partners to specify the actual merchant name
+          example: EA Sports
+        merchantIdentifier:
+          type: string
+          description: Indicates the merchant identifier. Allows aggregators/partners to specify the actual merchant identifier
+          example: eas-12345
+        fee:
+          type: number
+          format: float
+          multipleOf: 0.01
+          description: Percentage of the amount to be received by the requester
+          example: 10
+        purchaseCategoryCode:
+          type: string
+          description: A category defining the type of service, product or media being purchased
+          example: games
+        channel:
+          type: string
+          description: The channel over which the requester is interacting with the merchant (e.g. WAP, Web, SMS...)
+          example: web
+        serviceId:
+          type: string
+          description: The identifier of the partner/merchant service being purchased
+          example: games-online
+        productId:
+          type: string
+          description: The product identifier to be combined with the `serviceId` to uniquely identify the product being purchased. For example if the `serviceId` relates to a VOD service, the `productId` can specify the movie rented
+          example: '138235321'
+    DateTime:
+      type: string
+      format: date-time
+      description: Timestamp when the occurrence happened. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+      example: '2023-11-03T12:27:10Z'
+    PaymentAmountForReserve:
+      type: object
+      required:
+      - chargingInformation
+      properties:
+        chargingInformation:
+          $ref: '#/components/schemas/ChargingInformation'
+        chargingMetaData:
+          $ref: '#/components/schemas/ChargingMetaData'
+        paymentDetails:
+          $ref: '#/components/schemas/PaymentDetails'
+    PaymentDetails:
+      type: array
+      description: Detailed description of the concepts/items considered within a specific payment procedure.
+      minItems: 1
+      items:
+        $ref: '#/components/schemas/PaymentItem'
+    ValidationInfo:
+      type: object
+      required:
+      - action
+      properties:
+        action:
+          type: string
+          enum:
+          - open
+          - validate
+          description: Action to be done regarding otp validation.
+      discriminator:
+        propertyName: action
+        mapping:
+          open: '#/components/schemas/Open'
+          validate: '#/components/schemas/Validate'
+      example:
+        action: validate
+        authorizationId: Fn34o8g239v3wrb3t
+    SinkCredential:
+      type: object
+      properties:
+        credentialType:
+          type: string
+          enum:
+          - PLAIN
+          - ACCESSTOKEN
+          - REFRESHTOKEN
+          description: The type of the credential. Only `ACCESSTOKEN` is supported so far.
+      discriminator:
+        propertyName: credentialType
+        mapping:
+          PLAIN: '#/components/schemas/PlainCredential'
+          ACCESSTOKEN: '#/components/schemas/AccessTokenCredential'
+          REFRESHTOKEN: '#/components/schemas/RefreshTokenCredential'
+      required:
+      - credentialType
+    XCorrelator:
+      type: string
+      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
+      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
   responses:
-    Generic403:
-      description: Forbidden
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 403
-                code:
-                  enum:
-                  - PERMISSION_DENIED
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
-    Generic404:
-      description: Resource Not Found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 404
-                code:
-                  enum:
-                  - NOT_FOUND
-          examples:
-            GENERIC_404_NOT_FOUND:
-              summary: Generic Not Found
-              description: Resource is not found
-              value:
-                status: 404
-                code: NOT_FOUND
-                message: The specified resource is not found.
-    Generic410:
-      description: Gone
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 410
-                code:
-                  enum:
-                  - GONE
-          examples:
-            GENERIC_410_GONE:
-              summary: Generic Gone
-              description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
-              value:
-                status: 410
-                code: GONE
-                message: Access to the target resource is no longer available.
-    PaymentCancelPermissionDenied403:
-      description: Client does not have sufficient permission.
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 403
-                code:
-                  enum:
-                  - PERMISSION_DENIED
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
-    PaymentPermissionDenied403:
-      description: "Client does not have sufficient permission.\nIn addition to regular PERMISSION_DENIED scenario other scenarios may exist:\n  - Payment denied by business (\"code\": \"CARRIER_BILLING.PAYMENT_DENIED\",\"message\": \"Payment denied by business.\")."
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 403
-                code:
-                  enum:
-                  - PERMISSION_DENIED
-                  - CARRIER_BILLING.PAYMENT_DENIED
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
-            GENERIC_403_PAYMENT_DENIED:
-              summary: Generic Payment Denied
-              description: Payment denied by business
-              value:
-                status: 403
-                code: CARRIER_BILLING.PAYMENT_DENIED
-                message: Payment denied by business.
-    PaymentConfirmConflict409:
-      description: "Conflict. In addition of regular ALREADY_EXISTS scenario other scenarios may exist:\n  - paymentId is already confirmed (\"code\": \"CARRIER_BILLING.PAYMENT_CONFIRMED\",\"message\": \"Payment has been confirmed.\").\n  - paymentId is already cancelled (\"code\": \"CARRIER_BILLING.PAYMENT_CANCELLED\",\"message\": \"Payment has been cancelled.\")."
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 409
-                code:
-                  enum:
-                  - ALREADY_EXISTS
-                  - CARRIER_BILLING.PAYMENT_CONFIRMED
-                  - CARRIER_BILLING.PAYMENT_CANCELLED
-          examples:
-            GENERIC_409_ALREADY_EXISTS:
-              summary: Generic Already Exists
-              description: Trying to create an existing resource
-              value:
-                status: 409
-                code: ALREADY_EXISTS
-                message: The resource that a client tried to create already exists.
-            GENERIC_409_ALREADY_CONFIRMED:
-              summary: Generic Already Confirmed
-              description: paymentId is already confirmed
-              value:
-                code: CARRIER_BILLING.PAYMENT_CONFIRMED
-                status: 409
-                message: Payment has been confirmed.
-            GENERIC_409_ALREADY_CANCELLED:
-              summary: Generic Already Cancelled
-              description: paymentId is already cancelled
-              value:
-                code: CARRIER_BILLING.PAYMENT_CANCELLED
-                status: 409
-                message: Payment has been cancelled.
     IdentifierNotFound404:
       description: Phone Number Not Found
       headers:
@@ -890,8 +719,8 @@ components:
                 status: 429
                 code: TOO_MANY_REQUESTS
                 message: Rate limit reached.
-    Payment2StepPrepareInvalid400:
-      description: "Invalid input.\nCommon INVALID_ARGUMENT scenarios usually are:\n  - Schema validation failed (\"code\": \"INVALID_ARGUMENT\",\"message\": \"Client specified an invalid argument, request body or query param.\").\n  - paymentId is required (\"code\": \"INVALID_ARGUMENT\",\"message\": \"Expected property is missing: paymentId.\").\n\nIn addition to regular INVALID_ARGUMENT scenario other scenarios may exist:\n  - Invalid sink credential (\"code\": \"INVALID_CREDENTIAL\",\"message\": \"Only Access token is supported\").\n  - Invalid sink credential access token (\"code\": \"INVALID_TOKEN\",\"message\": \"Only bearer token is supported\").\n  - Invalid sink (\"code\": \"INVALID_SINK\",\"message\": \"sink not valid for the specified protocol\")."
+    PaymentConfirmPermissionDenied403:
+      description: "Client does not have sufficient permission.\nIn addition to regular PERMISSION_DENIED scenario other scenarios may exist:\n  - Payment denied by business (\"code\": \"CARRIER_BILLING.PAYMENT_DENIED\",\"message\": \"Payment denied by business.\")."
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -904,51 +733,27 @@ components:
               properties:
                 status:
                   enum:
-                  - 400
+                  - 403
                 code:
                   enum:
-                  - INVALID_ARGUMENT
-                  - INVALID_CREDENTIAL
-                  - INVALID_TOKEN
-                  - INVALID_SINK
+                  - PERMISSION_DENIED
+                  - CARRIER_BILLING.PAYMENT_DENIED
           examples:
-            GENERIC_400_INVALID_ARGUMENT:
-              summary: Generic Invalid Argument
-              description: Invalid Argument. Generic Syntax Exception
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
               value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param.
-            GENERIC_400_PAYMENT_ID_REQUIRED:
-              summary: Generic PaymentId required
-              description: paymentId is required
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+            GENERIC_403_PAYMENT_DENIED:
+              summary: Generic Payment Denied
+              description: Payment denied by business
               value:
-                code: INVALID_ARGUMENT
-                status: 400
-                message: 'Expected property is missing: paymentId.'
-            GENERIC_400_INVALID_CREDENTIAL:
-              summary: Generic Invalid Credential
-              description: Invalid sink credential
-              value:
-                status: 400
-                code: INVALID_CREDENTIAL
-                message: Only Access token is supported
-            GENERIC_400_INVALID_TOKEN:
-              summary: Generic Invalid Token
-              description: Invalid sink credential access token
-              value:
-                status: 400
-                code: INVALID_TOKEN
-                message: Only bearer token is supported
-            GENERIC_400_INVALID_SINK:
-              summary: Generic Invalid Sink
-              description: Invalid sink value
-              value:
-                status: 400
-                code: INVALID_SINK
-                message: sink not valid for the specified protocol
-    Payment2StepInvalid400:
-      description: "Invalid input.\nCommon INVALID_ARGUMENT scenarios usually are:\n  - Schema validation failed (\"code\": \"INVALID_ARGUMENT\",\"message\": \"Client specified an invalid argument, request body or query param.\").\n  - paymentId is required (\"code\": \"INVALID_ARGUMENT\",\"message\": \"Expected property is missing: paymentId.\")."
+                status: 403
+                code: CARRIER_BILLING.PAYMENT_DENIED
+                message: Payment denied by business.
+    Identifier2StepNotFound404:
+      description: "Resource Not Found.\nIn addition to regular NOT_FOUND scenario other scenarios may exist:\n  - Phone Number not found (\"code\": \"IDENTIFIER_NOT_FOUND\",\"message\": \"phoneNumber not found.\")."
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -961,25 +766,49 @@ components:
               properties:
                 status:
                   enum:
-                  - 400
+                  - 404
                 code:
                   enum:
-                  - INVALID_ARGUMENT
+                  - NOT_FOUND
+                  - IDENTIFIER_NOT_FOUND
           examples:
-            GENERIC_400_INVALID_ARGUMENT:
-              summary: Generic Invalid Argument
-              description: Invalid Argument. Generic Syntax Exception
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
               value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param.
-            GENERIC_400_PAYMENT_ID_REQUIRED:
-              summary: Generic PaymentId required
-              description: paymentId is required
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              description: Some identifier cannot be matched to a device. In this API it refers to a phoneNumber.
               value:
-                code: INVALID_ARGUMENT
-                status: 400
-                message: 'Expected property is missing: paymentId.'
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: phoneNumber not found.
+    Generic403:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 403
+                code:
+                  enum:
+                  - PERMISSION_DENIED
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
     PaymentSecondStepUnprocessable422:
       description: "Client indicates content that is understable by the Server but unable to be processed.\nScenarios that may exist:\n  - Service not applicable for the provided identifier (\"code\": \"SERVICE_NOT_APPLICABLE\",\"message\": \"The service is not available for the provided identifier.\")\n  - An identifier is not included in the request and the device or phone number identification cannot be derived from the 3-legged access token (\"code\": \"MISSING_IDENTIFIER\",\"message\": \"The phone number cannot be identified.\")\n  - An explicit identifier is provided when a device or phone number has already been identified from the access token (\"code\": \"UNNECESSARY_IDENTIFIER\",\"message\": \"The phone number is already identified by the access token.\")"
       headers:
@@ -1019,48 +848,6 @@ components:
                 status: 422
                 code: UNNECESSARY_IDENTIFIER
                 message: The phone number is already identified by the access token.
-    PaymentCancelConflict409:
-      description: "Conflict. In addition of regular ALREADY_EXISTS scenario other scenarios may exist:\n  - paymentId is already confirmed (\"code\": \"CARRIER_BILLING.PAYMENT_CONFIRMED\",\"message\": \"Payment has been confirmed.\").\n  - paymentId is already cancelled (\"code\": \"CARRIER_BILLING.PAYMENT_CANCELLED\",\"message\": \"Payment has been cancelled.\")."
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 409
-                code:
-                  enum:
-                  - ALREADY_EXISTS
-                  - CARRIER_BILLING.PAYMENT_CONFIRMED
-                  - CARRIER_BILLING.PAYMENT_CANCELLED
-          examples:
-            GENERIC_409_ALREADY_EXISTS:
-              summary: Generic Already Exists
-              description: Trying to create an existing resource
-              value:
-                status: 409
-                code: ALREADY_EXISTS
-                message: The resource that a client tried to create already exists.
-            GENERIC_409_ALREADY_CONFIRMED:
-              summary: Generic Already Confirmed
-              description: paymentId is already confirmed
-              value:
-                code: CARRIER_BILLING.PAYMENT_CONFIRMED
-                status: 409
-                message: Payment has been confirmed.
-            GENERIC_409_ALREADY_CANCELLED:
-              summary: Generic Already Cancelled
-              description: paymentId is already cancelled
-              value:
-                code: CARRIER_BILLING.PAYMENT_CANCELLED
-                status: 409
-                message: Payment has been cancelled.
     ValidatePaymentInvalid400:
       description: "Invalid input.\nIn addition to regular INVALID_ARGUMENT scenario other scenarios may exist:\n  - authorizationId is not valid (\"code\": \"CARRIER_BILLING.INVALID_AUTHORIZATION_ID\",\"message\": \"Invalid authorizationId.\").\n  - code is not valid (\"code\": \"CARRIER_BILLING.INVALID_CODE\",\"message\": \"Invalid code.\").\n  - validation failed (\"code\": \"CARRIER_BILLING.VALIDATION_FAILED\",\"message\": \"the maximum number of attempts have been consumed for this validation.\")."
       headers:
@@ -1125,8 +912,242 @@ components:
                 code: CARRIER_BILLING.VALIDATION_FAILED
                 status: 400
                 message: the maximum number of attempts have been consumed for this validation.
-    Identifier2StepNotFound404:
-      description: "Resource Not Found.\nIn addition to regular NOT_FOUND scenario other scenarios may exist:\n  - Phone Number not found (\"code\": \"IDENTIFIER_NOT_FOUND\",\"message\": \"phoneNumber not found.\")."
+    Generic401:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 401
+                code:
+                  enum:
+                  - UNAUTHENTICATED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated and a new authentication is required
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
+    Payment2StepPrepareInvalid400:
+      description: "Invalid input.\nCommon INVALID_ARGUMENT scenarios usually are:\n  - Schema validation failed (\"code\": \"INVALID_ARGUMENT\",\"message\": \"Client specified an invalid argument, request body or query param.\").\n  - paymentId is required (\"code\": \"INVALID_ARGUMENT\",\"message\": \"Expected property is missing: paymentId.\").\n\nIn addition to regular INVALID_ARGUMENT scenario other scenarios may exist:\n  - Invalid sink credential (\"code\": \"INVALID_CREDENTIAL\",\"message\": \"Only Access token is supported\").\n  - Invalid sink credential access token (\"code\": \"INVALID_TOKEN\",\"message\": \"Only bearer token is supported\").\n  - Invalid sink (\"code\": \"INVALID_SINK\",\"message\": \"sink not valid for the specified protocol\")."
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+                  - INVALID_CREDENTIAL
+                  - INVALID_TOKEN
+                  - INVALID_SINK
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              summary: Generic Invalid Argument
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+            GENERIC_400_PAYMENT_ID_REQUIRED:
+              summary: Generic PaymentId required
+              description: paymentId is required
+              value:
+                code: INVALID_ARGUMENT
+                status: 400
+                message: 'Expected property is missing: paymentId.'
+            GENERIC_400_INVALID_CREDENTIAL:
+              summary: Generic Invalid Credential
+              description: Invalid sink credential
+              value:
+                status: 400
+                code: INVALID_CREDENTIAL
+                message: Only Access token is supported
+            GENERIC_400_INVALID_TOKEN:
+              summary: Generic Invalid Token
+              description: Invalid sink credential access token
+              value:
+                status: 400
+                code: INVALID_TOKEN
+                message: Only bearer token is supported
+            GENERIC_400_INVALID_SINK:
+              summary: Generic Invalid Sink
+              description: Invalid sink value
+              value:
+                status: 400
+                code: INVALID_SINK
+                message: sink not valid for the specified protocol
+    PaymentCancelPermissionDenied403:
+      description: Client does not have sufficient permission.
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 403
+                code:
+                  enum:
+                  - PERMISSION_DENIED
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+    Payment2StepInvalid400:
+      description: "Invalid input.\nCommon INVALID_ARGUMENT scenarios usually are:\n  - Schema validation failed (\"code\": \"INVALID_ARGUMENT\",\"message\": \"Client specified an invalid argument, request body or query param.\").\n  - paymentId is required (\"code\": \"INVALID_ARGUMENT\",\"message\": \"Expected property is missing: paymentId.\")."
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              summary: Generic Invalid Argument
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+            GENERIC_400_PAYMENT_ID_REQUIRED:
+              summary: Generic PaymentId required
+              description: paymentId is required
+              value:
+                code: INVALID_ARGUMENT
+                status: 400
+                message: 'Expected property is missing: paymentId.'
+    PaymentConfirmConflict409:
+      description: "Conflict. In addition of regular ALREADY_EXISTS scenario other scenarios may exist:\n  - paymentId is already confirmed (\"code\": \"CARRIER_BILLING.PAYMENT_CONFIRMED\",\"message\": \"Payment has been confirmed.\").\n  - paymentId is already cancelled (\"code\": \"CARRIER_BILLING.PAYMENT_CANCELLED\",\"message\": \"Payment has been cancelled.\")."
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 409
+                code:
+                  enum:
+                  - ALREADY_EXISTS
+                  - CARRIER_BILLING.PAYMENT_CONFIRMED
+                  - CARRIER_BILLING.PAYMENT_CANCELLED
+          examples:
+            GENERIC_409_ALREADY_EXISTS:
+              summary: Generic Already Exists
+              description: Trying to create an existing resource
+              value:
+                status: 409
+                code: ALREADY_EXISTS
+                message: The resource that a client tried to create already exists.
+            GENERIC_409_ALREADY_CONFIRMED:
+              summary: Generic Already Confirmed
+              description: paymentId is already confirmed
+              value:
+                code: CARRIER_BILLING.PAYMENT_CONFIRMED
+                status: 409
+                message: Payment has been confirmed.
+            GENERIC_409_ALREADY_CANCELLED:
+              summary: Generic Already Cancelled
+              description: paymentId is already cancelled
+              value:
+                code: CARRIER_BILLING.PAYMENT_CANCELLED
+                status: 409
+                message: Payment has been cancelled.
+    Generic410:
+      description: Gone
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 410
+                code:
+                  enum:
+                  - GONE
+          examples:
+            GENERIC_410_GONE:
+              summary: Generic Gone
+              description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
+              value:
+                status: 410
+                code: GONE
+                message: Access to the target resource is no longer available.
+    Generic400:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              summary: Generic Invalid Argument
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+    Generic404:
+      description: Resource Not Found
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -1143,20 +1164,14 @@ components:
                 code:
                   enum:
                   - NOT_FOUND
-                  - IDENTIFIER_NOT_FOUND
           examples:
             GENERIC_404_NOT_FOUND:
+              summary: Generic Not Found
               description: Resource is not found
               value:
                 status: 404
                 code: NOT_FOUND
                 message: The specified resource is not found.
-            GENERIC_404_IDENTIFIER_NOT_FOUND:
-              description: Some identifier cannot be matched to a device. In this API it refers to a phoneNumber.
-              value:
-                status: 404
-                code: IDENTIFIER_NOT_FOUND
-                message: phoneNumber not found.
     PaymentUnprocessable422:
       description: "Client indicates content that is understable by the Server but unable to be processed.\nScenarios that may exist:\n  - Service not applicable for the provided identifier (\"code\": \"SERVICE_NOT_APPLICABLE\",\"message\": \"The service is not available for the provided identifier.\")\n  - An identifier is not included in the request and the device or phone number identification cannot be derived from the 3-legged access token (\"code\": \"MISSING_IDENTIFIER\",\"message\": \"The phone number cannot be identified.\")\n  - An explicit identifier is provided when a device or phone number has already been identified from the access token (\"code\": \"UNNECESSARY_IDENTIFIER\",\"message\": \"The phone number is already identified by the access token.\")\n  - Unauthorized amount requested (\"code\": \"CARRIER_BILLING.UNAUTHORIZED_AMOUNT\",\"message\": \"Unauthorized amount requested.\").\n  - Accumulated threshold amount for the user's mobile account overpassed (\"code\": \"CARRIER_BILLING.USER_AMOUNT_THRESHOLD_OVERPASSED\",\"message\": \"Unauthorized payment request. Accumulated user mobile payments overpass account amount threshold.\")."
       headers:
@@ -1212,8 +1227,8 @@ components:
                 status: 422
                 code: CARRIER_BILLING.USER_AMOUNT_THRESHOLD_OVERPASSED
                 message: Unauthorized payment request. Accumulated user mobile payments overpass account amount threshold.
-    Generic400:
-      description: Bad Request
+    PaymentCancelConflict409:
+      description: "Conflict. In addition of regular ALREADY_EXISTS scenario other scenarios may exist:\n  - paymentId is already confirmed (\"code\": \"CARRIER_BILLING.PAYMENT_CONFIRMED\",\"message\": \"Payment has been confirmed.\").\n  - paymentId is already cancelled (\"code\": \"CARRIER_BILLING.PAYMENT_CANCELLED\",\"message\": \"Payment has been cancelled.\")."
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -1226,19 +1241,35 @@ components:
               properties:
                 status:
                   enum:
-                  - 400
+                  - 409
                 code:
                   enum:
-                  - INVALID_ARGUMENT
+                  - ALREADY_EXISTS
+                  - CARRIER_BILLING.PAYMENT_CONFIRMED
+                  - CARRIER_BILLING.PAYMENT_CANCELLED
           examples:
-            GENERIC_400_INVALID_ARGUMENT:
-              summary: Generic Invalid Argument
-              description: Invalid Argument. Generic Syntax Exception
+            GENERIC_409_ALREADY_EXISTS:
+              summary: Generic Already Exists
+              description: Trying to create an existing resource
               value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param.
-    PaymentConfirmPermissionDenied403:
+                status: 409
+                code: ALREADY_EXISTS
+                message: The resource that a client tried to create already exists.
+            GENERIC_409_ALREADY_CONFIRMED:
+              summary: Generic Already Confirmed
+              description: paymentId is already confirmed
+              value:
+                code: CARRIER_BILLING.PAYMENT_CONFIRMED
+                status: 409
+                message: Payment has been confirmed.
+            GENERIC_409_ALREADY_CANCELLED:
+              summary: Generic Already Cancelled
+              description: paymentId is already cancelled
+              value:
+                code: CARRIER_BILLING.PAYMENT_CANCELLED
+                status: 409
+                message: Payment has been cancelled.
+    PaymentPermissionDenied403:
       description: "Client does not have sufficient permission.\nIn addition to regular PERMISSION_DENIED scenario other scenarios may exist:\n  - Payment denied by business (\"code\": \"CARRIER_BILLING.PAYMENT_DENIED\",\"message\": \"Payment denied by business.\")."
       headers:
         x-correlator:
@@ -1271,31 +1302,6 @@ components:
                 status: 403
                 code: CARRIER_BILLING.PAYMENT_DENIED
                 message: Payment denied by business.
-    Generic401:
-      description: Unauthorized
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 401
-                code:
-                  enum:
-                  - UNAUTHENTICATED
-          examples:
-            GENERIC_401_UNAUTHENTICATED:
-              description: Request cannot be authenticated and a new authentication is required
-              value:
-                status: 401
-                code: UNAUTHENTICATED
-                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
   parameters:
     x-correlator:
       name: x-correlator

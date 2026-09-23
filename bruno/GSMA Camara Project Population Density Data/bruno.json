@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "GSMA Camara Project Population Density Data",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

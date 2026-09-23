@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "GSMA Camara Project Carrier Billing",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "GSMA Camara Project Know Your Customer Match",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

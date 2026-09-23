@@ -1,0 +1,408 @@
+openapi: 3.2.0
+info:
+  title: Global System for Mobile Communications GSMA Camara Project…
+  version: wip
+  description: The Traffic Influence API provides the capability to establish the optimal routing, in terms of latency, in a specific geographical area, between the user device, e.g. the users smartphone, and the optimal Edge Application Server (EAS) instance nearby. If the user device is detected by the developer to have moved into a different geographical location, the Traffic Influence API can be invoked again to get the optimal routing in the new location.
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  contact:
+    email: project-email@sample.com
+servers:
+- url: '{apiRoot}/traffic-influence/vwip'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root for the Traffic Influence API
+tags:
+- name: Traffic Influence API Read
+  description: Reads existing TrafficInfluence resources
+paths:
+  /traffic-influences:
+    get:
+      security:
+      - openId:
+        - traffic-influence:traffic-influences:read
+      parameters:
+      - $ref: '#/components/parameters/x-correlator'
+      - in: query
+        name: appId
+        schema:
+          $ref: '#/components/schemas/AppId'
+        description: Used to select traffic influence resources filtered by appId
+      tags:
+      - Traffic Influence API Read
+      summary: Global System for Mobile Communications Retries existing TrafficInfluence…
+      description: Reads all of the active TrafficInfluence resources owned by the same API Consumer
+      operationId: getTrafficInfluence
+      responses:
+        '200':
+          description: Returns the information about existing TrafficInfluence resources.
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TrafficInfluence'
+        '401':
+          $ref: '#/components/responses/Generic401'
+        '403':
+          $ref: '#/components/responses/Generic403'
+        '500':
+          $ref: '#/components/responses/GenericError'
+        '503':
+          $ref: '#/components/responses/Generic503'
+        '504':
+          $ref: '#/components/responses/BackendConnTimeout'
+  /traffic-influences/{trafficInfluenceID}:
+    parameters:
+    - name: trafficInfluenceID
+      in: path
+      description: Identifier of the specific TrafficInfluence resource to be retrieved, modified or deleted. It is the value used to fill trafficInfluenceID parameter.
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - Traffic Influence API Read
+      summary: Global System for Mobile Communications Reads a specific TrafficInfluence…
+      description: Returns a specific TrafficInfluence resources owned by the same API Consumer.
+      operationId: getAllTrafficInfluences
+      parameters:
+      - $ref: '#/components/parameters/x-correlator'
+      security:
+      - openId:
+        - traffic-influence:traffic-influences:read
+      responses:
+        '200':
+          description: OK.
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrafficInfluence'
+        '401':
+          $ref: '#/components/responses/Generic401'
+        '403':
+          $ref: '#/components/responses/Generic403'
+        '404':
+          $ref: '#/components/responses/ResNotFound'
+        '500':
+          $ref: '#/components/responses/GenericError'
+        '503':
+          $ref: '#/components/responses/Generic503'
+        '504':
+          $ref: '#/components/responses/BackendConnTimeout'
+components:
+  responses:
+    Generic401:
+      description: Authentication problem with the client request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 401
+            code: UNAUTHENTICATED
+            message: Request not authenticated due to missing, invalid, or expired credentials
+    Generic503:
+      description: Service unavailable. Typically the server is down
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 503
+            code: UNAVAILABLE
+            message: Service unavailable
+    Generic403:
+      description: Client does not have sufficient permission
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            PermissionDenied:
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action
+            InvalidTokenContext:
+              value:
+                status: 403
+                code: INVALID_TOKEN_CONTEXT
+                message: Phone number cannot be deducted from access token context
+    GenericError:
+      description: An unknow error has occurred
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrResponse'
+          example:
+            status: ERROR
+            message: Generic error
+    BackendConnTimeout:
+      description: Connection timeout towards backend service has occurred
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrResponse'
+          example:
+            status: ERROR
+            message: Backend connection timeout
+    ResNotFound:
+      description: The specified resource was not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrResponse'
+          example:
+            status: ERROR
+            message: Resource not found
+  schemas:
+    EdgeCloudRegion:
+      type: string
+      description: 'Human readable name of the geographical Edge Cloud Region of
+
+        the Edge Cloud. Defined by the Edge Cloud Provider.
+
+        '
+      additionalProperties: false
+    ErrResponse:
+      description: Responce feedback in case of errors
+      type: object
+      properties:
+        status:
+          description: status for the error
+          type: string
+          example: OK
+        message:
+          description: additional message for the error
+          type: string
+          example: OK
+    NetworkAccessIdentifier:
+      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+      type: string
+      example: 123456789@domain.com
+    ErrorInfo:
+      description: Information in case of error
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+    Protocol:
+      description: The protocol for the influeced flow. It can be specified and it is identified by a string according to the column Keyword as defined by IANA (https://www.iana.org/assignments/protocol-numbers/\ protocol-numbers.xhtml), e.g. UDP or TCP.
+      type: string
+      example: TCP
+    AppInstanceId:
+      type: string
+      format: uuid
+      description: A globally unique identifier associated with a running instance of an application. OP generates this identifier.
+    DeviceIpv4Addr:
+      type: object
+      description: "The device should be identified by either the public (observed) IP\n  address and port as seen by the application server, or the private\n  (local) and any public (observed) IP addresses in use by the device\n  (this information can be obtained by various means, for example from\n  some DNS servers).\nIf the allocated and observed IP addresses are the same (i.e. NAT is not\n  in use) then  the same address should be specified for both\n  publicAddress and privateAddress.\nIf NAT64 is in use, the device should be identified by its publicAddress\n  and publicPort, or separately by its allocated IPv6 address (field\n  ipv6Address of the Device object)\nIn all cases, publicAddress must be specified, along with at least one\n  of either privateAddress or publicPort, dependent upon which is known.\n  In general, mobile devices cannot be identified by their public IPv4\n  address alone.\n"
+      properties:
+        publicAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr'
+        privateAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr'
+        publicPort:
+          $ref: '#/components/schemas/Port'
+      anyOf:
+      - required:
+        - publicAddress
+        - privateAddress
+      - required:
+        - publicAddress
+        - publicPort
+      example:
+        publicAddress: 84.125.93.10
+        publicPort: 59765
+    DeviceIpv6Address:
+      description: "The device should be identified by the observed IPv6 address, or by any\n  single IPv6 address from within the subnet allocated to the device\n  (e.g. adding ::0 to the /64 prefix).\n"
+      type: string
+      format: ipv6
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+    Device:
+      description: 'End-user equipment able to connect to a mobile network. Examples of
+
+        devices include smartphones or IoT sensors/actuators.
+
+        The developer can choose to provide the below specified device
+
+        identifiers:
+
+        * `ipv4Address`
+
+        * `ipv6Address`
+
+        * `phoneNumber`
+
+        * `networkAccessIdentifier`
+
+        NOTE1: the MNO might support only a subset of these options.
+
+        The API invoker can provide multiple identifiers to be compatible
+
+        across different MNOs. In this case the identifiers MUST belong to
+
+        the same device.
+
+        NOTE2: for the Commonalities release v0.4, we are enforcing that the
+
+        networkAccessIdentifier is only part of the schema for
+
+        future-proofing, and CAMARA does not currently allow its use.
+
+        After the CAMARA meta-release work is concluded and the relevant
+
+        issues are resolved, its use will need to be explicitly documented
+
+        in the guidelines.
+
+        '
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+        networkAccessIdentifier:
+          $ref: '#/components/schemas/NetworkAccessIdentifier'
+        ipv4Address:
+          $ref: '#/components/schemas/DeviceIpv4Addr'
+        ipv6Address:
+          $ref: '#/components/schemas/DeviceIpv6Address'
+      minProperties: 1
+    SingleIpv4Addr:
+      description: A single IPv4 address with no subnet mask
+      type: string
+      format: ipv4
+      example: 84.125.93.10
+    Port:
+      description: TCP or UDP port number
+      type: integer
+      minimum: 0
+      maximum: 65535
+    PhoneNumber:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+123456789'
+    EdgeCloudZoneId:
+      type: string
+      format: uuid
+      description: 'Unique identifier created by the Edge Cloud Platform to identify an
+
+        Edge Cloud Zone within an Edge Cloud
+
+        '
+    AppId:
+      type: string
+      format: uuid
+      example: 6B29FC40-CA47-1067-B31D-00DD010662DA
+      description: A globally unique identifier associated with theapplication. OP generates this identifier when the application is submitted over NBI.
+    TrafficInfluence:
+      description: Resource conteining the informations to influence the traffic from the device to the EAS
+      type: object
+      properties:
+        trafficInfluenceID:
+          type: string
+          description: Identifier for the Traffic Influence resource. This parameter is returned by the API and must be used to update it (e.g., adding new users or deleting it).
+        apiConsumerId:
+          type: string
+          description: Unique Identifier of the TI API Consumer.
+        appId:
+          $ref: '#/components/schemas/AppId'
+        appInstanceId:
+          $ref: '#/components/schemas/AppInstanceId'
+        edgeCloudRegion:
+          $ref: '#/components/schemas/EdgeCloudRegion'
+        edgeCloudZoneId:
+          $ref: '#/components/schemas/EdgeCloudZoneId'
+        device:
+          $ref: '#/components/schemas/Device'
+        state:
+          type: string
+          description: it reports the state of the TrafficInfluence resource. When first invoked, the resource is 'ordered'. When the platforms prepares the resource, it is 'created'. When the new routing is enabled in the network, the state is 'active'.  If an error occurs in the resource creation or in its activation, the state is 'error'. When the DELETE method is invoked the state is 'deletion in progress'. After the resource is deleted (as a consequence of the previous invokation of the DELETE method) the state is 'deleted'.
+          enum:
+          - ordered
+          - created
+          - active
+          - error
+          - deletion in progress
+          - deleted
+        sourceTrafficFilters:
+          description: Public source port used by the device for flows to which the requested traffic influence should apply.  Traffic influence will be applied to the flow between "sourcePort" and the Application Server address and port specified in "destinationTrafficFilters".
+          type: object
+          properties:
+            sourcePort:
+              allOf:
+              - $ref: '#/components/schemas/Port'
+        destinationTrafficFilters:
+          description: Identifies the destination IP packet filters. To be used when it is needed a traffic flow towards a specific EAS interface identified by a protocol and a port.  Also the Protocol (e.g. TCP or UDP) can be specified.
+          type: object
+          properties:
+            destinationPort:
+              allOf:
+              - $ref: '#/components/schemas/Port'
+            destinationProtocol:
+              allOf:
+              - $ref: '#/components/schemas/Protocol'
+        notificationUri:
+          type: string
+          description: Defines the callback uri which should be notified in asynchronous way when the state for the requested resources changes (i.e. ordered to activated)
+        notificationAuthToken:
+          type: string
+          description: Authentification token for callback API
+      required:
+      - apiConsumerId
+      - appId
+  parameters:
+    x-correlator:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services.
+      schema:
+        type: string
+  headers:
+    x-correlator:
+      description: Correlation id for the different services.
+      schema:
+        type: string
+  securitySchemes:
+    openId:
+      description: to support Consent Management
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+externalDocs:
+  description: Product documentation at Camara
+  url: https://github.com/camaraproject/EdgeCloud

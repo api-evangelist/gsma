@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "GSMA Camara Project Home Devices QoD",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

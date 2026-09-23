@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "GSMA Camara Project One Time Password SMS",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

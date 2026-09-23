@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "GSMA Camara Project SIM Swap API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
