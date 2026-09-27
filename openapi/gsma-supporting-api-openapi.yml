@@ -292,6 +292,20 @@ paths:
               $ref: '#/components/headers/X-Date'
 components:
   parameters:
+    X-User-Credential-2:
+      name: X-User-Credential-2
+      in: header
+      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    X-User-Credential-1:
+      name: X-User-Credential-1
+      in: header
+      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
     X-Date:
       name: X-Date
       in: header
@@ -300,36 +314,6 @@ components:
       schema:
         type: string
         format: date-time
-    X-Content-Hash:
-      name: X-Content-Hash
-      in: header
-      description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
-      required: false
-      schema:
-        type: string
-    X-Channel:
-      name: X-Channel
-      in: header
-      description: String containing the channel that was used to originate the request. For example USSD, Web, App.
-      required: false
-      schema:
-        type: string
-        maxLength: 256
-    serverCorrelationId:
-      name: serverCorrelationId
-      in: path
-      description: Path variable to uniquely identify a request state. Must be supplied as a UUID.
-      required: true
-      schema:
-        type: string
-        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-    X-User-Credential-2:
-      name: X-User-Credential-2
-      in: header
-      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
-      required: false
-      schema:
-        type: string
     clientCorrelationId:
       name: clientCorrelationId
       in: path
@@ -338,13 +322,22 @@ components:
       schema:
         type: string
         pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-    X-User-Credential-1:
-      name: X-User-Credential-1
+    serverCorrelationId:
+      name: serverCorrelationId
+      in: path
+      description: Path variable to uniquely identify a request state. Must be supplied as a UUID.
+      required: true
+      schema:
+        type: string
+        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+    X-Channel:
+      name: X-Channel
       in: header
-      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      description: String containing the channel that was used to originate the request. For example USSD, Web, App.
       required: false
       schema:
         type: string
+        maxLength: 256
     X-CorrelationID:
       name: X-CorrelationID
       in: header
@@ -353,10 +346,10 @@ components:
       schema:
         type: string
         pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-    X-API-Key:
-      name: X-API-Key
+    X-Content-Hash:
+      name: X-Content-Hash
       in: header
-      description: Used to pass pre-shared client's API key to the server.
+      description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
       required: false
       schema:
         type: string
@@ -368,72 +361,63 @@ components:
       schema:
         type: string
         maxLength: 256
+    X-API-Key:
+      name: X-API-Key
+      in: header
+      description: Used to pass pre-shared client's API key to the server.
+      required: false
+      schema:
+        type: string
   schemas:
-    requestGenericPatch:
+    requestStateObject:
       type: object
       required:
-      - op
-      - path
-      - value
+      - notificationMethod
+      - serverCorrelationId
+      - status
       properties:
-        op:
-          description: Indicates the Patch operation to be performed. 'replace' is used to update a field and 'add' is used to add a new field.
+        serverCorrelationId:
+          type: string
+          description: A unique identifier issued by the provider to enable the client to identify the RequestState resource on subsequent polling requests. Must be supplied as a UUID.
+          minLength: 1
+          maxLength: 256
+          pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+        objectReference:
+          type: string
+          description: Provides a reference to the subject resource, e.g. transaction reference.
+          minLength: 0
+          maxLength: 256
+        status:
           type: string
           enum:
-          - replace
-          - add
-        path:
-          description: Specify the field to be updated or added preceded by '/'.
+          - pending
+          - completed
+          - failed
+          description: Indicates the status of the request.
+        notificationMethod:
           type: string
-          maxLength: 256
-        value:
-          description: Specify the value of the field to be updated or added.
+          enum:
+          - callback
+          - polling
+          description: Indicates whether a callback will be issued or whether the client will need to poll.
+        pendingReason:
           type: string
+          description: A textual description that can be provided to describe the reason for a pending status.
+          minLength: 0
           maxLength: 256
-    metadataArray:
-      type: array
-      description: A collection of key/value pairs. These can be used to populate additional properties that describe administrative information regarding the resource.
-      items:
-        $ref: '#/components/schemas/metadata'
-      maxItems: 20
-    serviceStatus:
-      type: string
-      description: Provides the status of the requested service.
-      enum:
-      - available
-      - unavailable
-      - degraded
-    responseHeartbeat:
-      type: object
-      required:
-      - serviceStatus
-      properties:
-        serviceStatus:
-          $ref: '#/components/schemas/serviceStatus'
-        delay:
-          $ref: '#/components/schemas/delay'
-        plannedRestorationTime:
-          $ref: '#/components/schemas/plannedRestorationTime'
-    plannedRestorationTime:
-      type: string
-      format: date-time
-      description: Where the planned restoration time is known (e.g. scheduled maintenance), it can be provided in this field.
-    metadata:
-      type: object
-      required:
-      - key
-      - value
-      properties:
-        key:
+        expiryTime:
           type: string
-          description: Identifies the type of additional field.
-          minLength: 1
-          maxLength: 256
-        value:
-          type: string
-          description: Identifies the value of the additional field.
-          minLength: 1
-          maxLength: 256
+          format: date-time
+          description: Indicate the time by which the provider will fail the request if completion criteria have not been met. For an example, a debit party failing to authorise within the allowed period.
+        pollLimit:
+          type: number
+          format: int32
+          description: Indicates the number of poll attempts for the given requeststate resource that will be allowed by the provider.
+          exclusiveMinimum: 0
+        error:
+          description: If the asynchronous processing failed, details of the error will be returned here.
+          allOf:
+          - $ref: '#/components/schemas/errorObject'
     responseResponse:
       type: object
       required:
@@ -441,10 +425,6 @@ components:
       properties:
         link:
           $ref: '#/components/schemas/link'
-    delay:
-      type: number
-      format: int64
-      description: The anticipated processing delay in milliseconds.
     errorObject:
       type: object
       required:
@@ -516,60 +496,31 @@ components:
           description: Diagnostic information in the form of key/value pairs relating to the error.
           allOf:
           - $ref: '#/components/schemas/metadataArray'
-    requestStateObject:
+    delay:
+      type: number
+      format: int64
+      description: The anticipated processing delay in milliseconds.
+    requestGenericPatch:
       type: object
       required:
-      - notificationMethod
-      - serverCorrelationId
-      - status
+      - op
+      - path
+      - value
       properties:
-        serverCorrelationId:
-          type: string
-          description: A unique identifier issued by the provider to enable the client to identify the RequestState resource on subsequent polling requests. Must be supplied as a UUID.
-          minLength: 1
-          maxLength: 256
-          pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-        objectReference:
-          type: string
-          description: Provides a reference to the subject resource, e.g. transaction reference.
-          minLength: 0
-          maxLength: 256
-        status:
+        op:
+          description: Indicates the Patch operation to be performed. 'replace' is used to update a field and 'add' is used to add a new field.
           type: string
           enum:
-          - pending
-          - completed
-          - failed
-          description: Indicates the status of the request.
-        notificationMethod:
+          - replace
+          - add
+        path:
+          description: Specify the field to be updated or added preceded by '/'.
           type: string
-          enum:
-          - callback
-          - polling
-          description: Indicates whether a callback will be issued or whether the client will need to poll.
-        pendingReason:
-          type: string
-          description: A textual description that can be provided to describe the reason for a pending status.
-          minLength: 0
           maxLength: 256
-        expiryTime:
+        value:
+          description: Specify the value of the field to be updated or added.
           type: string
-          format: date-time
-          description: Indicate the time by which the provider will fail the request if completion criteria have not been met. For an example, a debit party failing to authorise within the allowed period.
-        pollLimit:
-          type: number
-          format: int32
-          description: Indicates the number of poll attempts for the given requeststate resource that will be allowed by the provider.
-          exclusiveMinimum: 0
-        error:
-          description: If the asynchronous processing failed, details of the error will be returned here.
-          allOf:
-          - $ref: '#/components/schemas/errorObject'
-    link:
-      type: string
-      description: Provides a URL to the resource.
-      minLength: 1
-      maxLength: 256
+          maxLength: 256
     requestGenericPatchArray:
       type: array
       description: Collection of updates that are to be processed.
@@ -577,6 +528,55 @@ components:
         $ref: '#/components/schemas/requestGenericPatch'
       minItems: 1
       maxItems: 10
+    plannedRestorationTime:
+      type: string
+      format: date-time
+      description: Where the planned restoration time is known (e.g. scheduled maintenance), it can be provided in this field.
+    metadata:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Identifies the type of additional field.
+          minLength: 1
+          maxLength: 256
+        value:
+          type: string
+          description: Identifies the value of the additional field.
+          minLength: 1
+          maxLength: 256
+    responseHeartbeat:
+      type: object
+      required:
+      - serviceStatus
+      properties:
+        serviceStatus:
+          $ref: '#/components/schemas/serviceStatus'
+        delay:
+          $ref: '#/components/schemas/delay'
+        plannedRestorationTime:
+          $ref: '#/components/schemas/plannedRestorationTime'
+    link:
+      type: string
+      description: Provides a URL to the resource.
+      minLength: 1
+      maxLength: 256
+    serviceStatus:
+      type: string
+      description: Provides the status of the requested service.
+      enum:
+      - available
+      - unavailable
+      - degraded
+    metadataArray:
+      type: array
+      description: A collection of key/value pairs. These can be used to populate additional properties that describe administrative information regarding the resource.
+      items:
+        $ref: '#/components/schemas/metadata'
+      maxItems: 20
   headers:
     X-Date:
       required: false

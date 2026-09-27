@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: Global System for Mobile Communications GSMA Camara Project…
+  title: Global System for Mobile Communications GSMA Camara…
   description: SMS API provides the customer with the ability to send an SMS to a mobile phone number in use on a mobile phone device. There are 3 different categories of SMS, namely Service SMS, Promotional SMS and Transactional SMS. The SMS API can also be used to send a binary message to a mobile phone number which is being used on an (IoT) device.
   version: 0.1.0-alpha.1
   termsOfService: http://example.com/terms/
@@ -68,96 +68,14 @@ paths:
         '503':
           $ref: '#/components/responses/Generic503'
 components:
+  parameters:
+    x-correlator:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        type: string
   responses:
-    Generic500:
-      description: Server error
-      headers:
-        x-correlator:
-          description: Correlation id for the different services
-          schema:
-            type: string
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 500
-            code: INTERNAL
-            detail: Server error
-    Generic400:
-      description: Problem with the client request
-      headers:
-        x-correlator:
-          description: Correlation id for the different services
-          schema:
-            type: string
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 400
-            code: INVALID_ARGUMENT
-            detail: Client specified an invalid argument, request body or query param
-    Generic401:
-      description: Authentication problem with the client request
-      headers:
-        x-correlator:
-          description: Correlation id for the different services
-          schema:
-            type: string
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 401
-            code: UNAUTHENTICATED
-            detail: Request not authenticated due to missing, invalid, or expired credentials
-    Generic503:
-      description: Service unavailable. Typically the server is down.
-      headers:
-        x-correlator:
-          description: Correlation id for the different services
-          schema:
-            type: string
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 503
-            code: UNAVAILABLE
-            detail: Service unavailable
-    Generic200:
-      description: OK
-      headers:
-        x-correlator:
-          description: Correlation id for the different services
-          schema:
-            type: string
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MessageResponse'
-          example:
-            msgId: 56647d96-b3e6-48d2-b93f-ab0d56bdd965
-            timestamp: '2024-03-19T12:33:27.070Z'
-    Generic404:
-      description: Resource Not Found
-      headers:
-        x-correlator:
-          description: Correlation id for the different services
-          schema:
-            type: string
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 404
-            code: NOT_FOUND
-            detail: A specified resource is not found
     Generic403:
       description: Client does not have sufficient permission
       headers:
@@ -180,14 +98,112 @@ components:
                 status: 403
                 code: INVALID_TOKEN_CONTEXT
                 detail: Phone number cannot be deducted from access token context
-  parameters:
-    x-correlator:
-      name: x-correlator
-      in: header
-      description: Correlation id for the different services
-      schema:
-        type: string
+    Generic503:
+      description: Service unavailable. Typically the server is down.
+      headers:
+        x-correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 503
+            code: UNAVAILABLE
+            detail: Service unavailable
+    Generic404:
+      description: Resource Not Found
+      headers:
+        x-correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 404
+            code: NOT_FOUND
+            detail: A specified resource is not found
+    Generic401:
+      description: Authentication problem with the client request
+      headers:
+        x-correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 401
+            code: UNAUTHENTICATED
+            detail: Request not authenticated due to missing, invalid, or expired credentials
+    Generic500:
+      description: Server error
+      headers:
+        x-correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 500
+            code: INTERNAL
+            detail: Server error
+    Generic200:
+      description: OK
+      headers:
+        x-correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          example:
+            msgId: 56647d96-b3e6-48d2-b93f-ab0d56bdd965
+            timestamp: '2024-03-19T12:33:27.070Z'
+    Generic400:
+      description: Problem with the client request
+      headers:
+        x-correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 400
+            code: INVALID_ARGUMENT
+            detail: Client specified an invalid argument, request body or query param
   schemas:
+    ErrorInfo:
+      type: object
+      required:
+      - status
+      - code
+      - detail
+      properties:
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: Code given to this error
+        detail:
+          type: string
+          description: Detailed error description
     MessageRequest:
       type: object
       required:
@@ -212,22 +228,6 @@ components:
         message:
           type: string
           description: SMS message
-    ErrorInfo:
-      type: object
-      required:
-      - status
-      - code
-      - detail
-      properties:
-        status:
-          type: integer
-          description: HTTP response status code
-        code:
-          type: string
-          description: Code given to this error
-        detail:
-          type: string
-          description: Detailed error description
     MessageResponse:
       type: object
       required:

@@ -124,78 +124,9 @@ paths:
       - openId:
         - one-time-password-sms:send-validate
 components:
-  schemas:
-    ValidateCodeBody:
-      description: Strcuture to request code verification
-      type: object
-      properties:
-        authenticationId:
-          $ref: '#/components/schemas/AuthenticationId'
-        code:
-          $ref: '#/components/schemas/Code'
-      required:
-      - authenticationId
-      - code
-    ErrorInfo:
-      description: Structure to describe error
-      type: object
-      required:
-      - status
-      - code
-      - message
-      properties:
-        status:
-          type: integer
-          description: HTTP response status code
-        code:
-          type: string
-          description: Code given to this error
-        message:
-          type: string
-          description: Detailed error description
-    AuthenticationId:
-      type: string
-      description: unique id of the verification attempt the code belongs to.
-      maxLength: 36
-      example: ea0840f3-3663-4149-bd10-c7c6b8912105
-    SendCodeResponse:
-      description: Structure to provide authentication identifier
-      type: object
-      properties:
-        authenticationId:
-          $ref: '#/components/schemas/AuthenticationId'
-      required:
-      - authenticationId
-    PhoneNumber:
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
-      type: string
-      pattern: ^\+[1-9][0-9]{4,14}$
-      example: '+346661113334'
-    Message:
-      type: string
-      description: Message template used to compose the content of the SMS sent to the phone number. It must include the following label indicating where to include the short code `{{code}}`
-      pattern: .*\{\{code\}\}.*
-      maxLength: 160
-      example: '{{code}} is your short code to authenticate with Cool App via SMS'
-    Code:
-      type: string
-      description: temporal, short code to be validated
-      maxLength: 10
-      example: AJY3
-    SendCodeBody:
-      description: Structure to request sending a code to a phone number
-      type: object
-      properties:
-        phoneNumber:
-          $ref: '#/components/schemas/PhoneNumber'
-        message:
-          $ref: '#/components/schemas/Message'
-      required:
-      - phoneNumber
-      - message
   responses:
-    Generic415:
-      description: The server refuses to accept the request because the payload format is in an unsupported format
+    Generic406:
+      description: The server can not produce a response matching the content
       headers:
         x-correlator:
           description: Correlation id for the different services
@@ -206,11 +137,11 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorInfo'
           example:
-            status: 415
-            code: UNSUPPORTED_MEDIA_TYPE
-            message: The server refuses to accept the request because the payload format is in an unsupported format
-    Generic500:
-      description: Server error
+            status: 406
+            code: NOT_ACCEPTABLE
+            message: The server can't produce a response matching the content requested by the client through Accept-* headers
+    Generic504:
+      description: Request time exceeded. If it happens repeatedly, consider reducing the request complexity
       headers:
         x-correlator:
           description: Correlation id for the different services
@@ -221,24 +152,9 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorInfo'
           example:
-            status: 500
-            code: INTERNAL
-            message: Server error
-    Generic429:
-      description: Either out of resource quota or reaching rate limiting
-      headers:
-        x-correlator:
-          description: Correlation id for the different services
-          schema:
-            type: string
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 429
-            code: TOO_MANY_REQUESTS
-            message: Either out of resource quota or reaching rate limiting
+            status: 504
+            code: TIMEOUT
+            message: Request timeout exceeded. Try later.
     Generic503:
       description: Service unavailable. Typically the server is down.
       headers:
@@ -254,8 +170,8 @@ components:
             status: 503
             code: UNAVAILABLE
             message: Service unavailable
-    Generic403:
-      description: Client does not have sufficient permission
+    Generic500:
+      description: Server error
       headers:
         x-correlator:
           description: Correlation id for the different services
@@ -266,9 +182,9 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorInfo'
           example:
-            status: 403
-            code: PERMISSION_DENIED
-            message: Client does not have sufficient permissions to perform this action
+            status: 500
+            code: INTERNAL
+            message: Server error
     ValidateCodeBadRequestError400:
       description: "Problem with the client request. In addition to regular scenario of `INVALID_ARGUMENT`, another scenarios may exist:\n  - Too many unsuccessful attempts (`{\"code\": \"ONE_TIME_PASSWORD_SMS.VERIFICATION_FAILED\",\"message\": \"The maximum number of attempts for this authenticationId was exceeded without providing a valid OTP\"}`)\n  - Expired authenticationId (`{\"code\": \"ONE_TIME_PASSWORD_SMS.VERIFICATION_EXPIRED\",\"message\": \"The authenticationId is no longer valid\"}`)\n  - OTP is not valid for the provided authenticationId (`{\"code\": \"ONE_TIME_PASSWORD_SMS.INVALID_OTP\",\"message\": \"The provided OTP is not valid for this authenticationId\"}`)"
       headers:
@@ -316,6 +232,66 @@ components:
             status: 401
             code: UNAUTHENTICATED
             message: Request not authenticated due to missing, invalid, or expired credentials
+    Generic429:
+      description: Either out of resource quota or reaching rate limiting
+      headers:
+        x-correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 429
+            code: TOO_MANY_REQUESTS
+            message: Either out of resource quota or reaching rate limiting
+    Generic403:
+      description: Client does not have sufficient permission
+      headers:
+        x-correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 403
+            code: PERMISSION_DENIED
+            message: Client does not have sufficient permissions to perform this action
+    Generic404:
+      description: Resource Not Found
+      headers:
+        x-correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 404
+            code: NOT_FOUND
+            message: A specified resource is not found
+    Generic415:
+      description: The server refuses to accept the request because the payload format is in an unsupported format
+      headers:
+        x-correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 415
+            code: UNSUPPORTED_MEDIA_TYPE
+            message: The server refuses to accept the request because the payload format is in an unsupported format
     SendCodeForbiddenError403:
       description: "Client does not have sufficient permissions to perform this action.\nIn addition to regular scenario of `PERMISSION_DENIED`, another scenarios may exist:\n  - Too many code requests were sent (`{\"code\": \"ONE_TIME_PASSWORD_SMS.MAX_OTP_CODES_EXCEEDED\",\"message\": \"Too many OTPs have been requested for this MSISDN. Try later.\"}`)\n  - The given phoneNumber can't receive an SMS due to business reasons in the operator, e.g. fraud, receiving SMS is not supported, etc (`{\"code\": \"ONE_TIME_PASSWORD_SMS.PHONE_NUMBER_NOT_ALLOWED\",\"message\": \"Phone_number can't receive an SMS due to business reasons in the operator.\"}`)\n  - The given phoneNumber is blocked to receive SMS due to any blocking business reason in the operator (`{\"code\": \"ONE_TIME_PASSWORD_SMS.PHONE_NUMBER_BLOCKED\",\"message\": \"Phone_number is blocked to receive SMS due to any blocking business reason in the operator.\"}`)"
       headers:
@@ -348,36 +324,6 @@ components:
                 status: 403
                 code: ONE_TIME_PASSWORD_SMS.PHONE_NUMBER_BLOCKED
                 message: Phone_number is blocked to receive SMS due to any blocking business reason in the operator.
-    Generic406:
-      description: The server can not produce a response matching the content
-      headers:
-        x-correlator:
-          description: Correlation id for the different services
-          schema:
-            type: string
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 406
-            code: NOT_ACCEPTABLE
-            message: The server can't produce a response matching the content requested by the client through Accept-* headers
-    Generic504:
-      description: Request time exceeded. If it happens repeatedly, consider reducing the request complexity
-      headers:
-        x-correlator:
-          description: Correlation id for the different services
-          schema:
-            type: string
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 504
-            code: TIMEOUT
-            message: Request timeout exceeded. Try later.
     Generic400:
       description: Problem with the client request
       headers:
@@ -393,21 +339,75 @@ components:
             status: 400
             code: INVALID_ARGUMENT
             message: Client specified an invalid argument, request body or query param
-    Generic404:
-      description: Resource Not Found
-      headers:
-        x-correlator:
-          description: Correlation id for the different services
-          schema:
-            type: string
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 404
-            code: NOT_FOUND
-            message: A specified resource is not found
+  schemas:
+    PhoneNumber:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+346661113334'
+    ValidateCodeBody:
+      description: Strcuture to request code verification
+      type: object
+      properties:
+        authenticationId:
+          $ref: '#/components/schemas/AuthenticationId'
+        code:
+          $ref: '#/components/schemas/Code'
+      required:
+      - authenticationId
+      - code
+    Message:
+      type: string
+      description: Message template used to compose the content of the SMS sent to the phone number. It must include the following label indicating where to include the short code `{{code}}`
+      pattern: .*\{\{code\}\}.*
+      maxLength: 160
+      example: '{{code}} is your short code to authenticate with Cool App via SMS'
+    ErrorInfo:
+      description: Structure to describe error
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+    SendCodeBody:
+      description: Structure to request sending a code to a phone number
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+        message:
+          $ref: '#/components/schemas/Message'
+      required:
+      - phoneNumber
+      - message
+    AuthenticationId:
+      type: string
+      description: unique id of the verification attempt the code belongs to.
+      maxLength: 36
+      example: ea0840f3-3663-4149-bd10-c7c6b8912105
+    Code:
+      type: string
+      description: temporal, short code to be validated
+      maxLength: 10
+      example: AJY3
+    SendCodeResponse:
+      description: Structure to provide authentication identifier
+      type: object
+      properties:
+        authenticationId:
+          $ref: '#/components/schemas/AuthenticationId'
+      required:
+      - authenticationId
   securitySchemes:
     openId:
       type: openIdConnect

@@ -125,6 +125,54 @@ paths:
           $ref: '#/components/responses/Generic429'
 components:
   schemas:
+    PaymentAmountForCharge:
+      type: object
+      required:
+      - chargingInformation
+      properties:
+        chargingInformation:
+          $ref: '#/components/schemas/ChargingInformation'
+        chargingMetaData:
+          $ref: '#/components/schemas/ChargingMetaData'
+        paymentDetails:
+          $ref: '#/components/schemas/PaymentDetails'
+    ChargingMetaData:
+      type: object
+      properties:
+        merchantName:
+          type: string
+          description: Indicates the merchant name. Allows aggregators/partners to specify the actual merchant name
+          example: EA Sports
+        merchantIdentifier:
+          type: string
+          description: Indicates the merchant identifier. Allows aggregators/partners to specify the actual merchant identifier
+          example: eas-12345
+        fee:
+          type: number
+          format: float
+          multipleOf: 0.01
+          description: Percentage of the amount to be received by the requester
+          example: 10
+        purchaseCategoryCode:
+          type: string
+          description: A category defining the type of service, product or media being purchased
+          example: games
+        channel:
+          type: string
+          description: The channel over which the requester is interacting with the merchant (e.g. WAP, Web, SMS...)
+          example: web
+        serviceId:
+          type: string
+          description: The identifier of the partner/merchant service being purchased
+          example: games-online
+        productId:
+          type: string
+          description: The product identifier to be combined with the `serviceId` to uniquely identify the product being purchased. For example if the `serviceId` relates to a VOD service, the `productId` can specify the movie rented
+          example: '138235321'
+    XCorrelator:
+      type: string
+      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
+      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
     AmountTransaction:
       required:
       - phoneNumber
@@ -174,6 +222,47 @@ components:
         message:
           type: string
           description: A human-readable description of what the event represents
+    ChargingInformation:
+      type: object
+      required:
+      - amount
+      - currency
+      - description
+      properties:
+        amount:
+          type: number
+          format: float
+          multipleOf: 0.001
+          minimum: 0.001
+          description: Amount to be charged or reserved.
+          example: 100
+        currency:
+          type: string
+          description: Currency code in which amount is expressed as defined in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html).
+          example: EUR
+        description:
+          type: string
+          description: Description text to be used for information and billing text
+          example: FIFA EA Sports 24
+        isTaxIncluded:
+          type: boolean
+          default: false
+          description: If true, the `amount` is tax included, if false the `amount` is provided without tax. In both cases, `taxAmount` could be indicated to provide tax amount.
+        taxAmount:
+          type: number
+          format: float
+          multipleOf: 0.001
+          minimum: 0
+          description: 'The tax amount charged by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
+
+            '
+          example: 21
+    PaymentArray:
+      description: A list of payment(s)
+      type: array
+      minItems: 0
+      items:
+        $ref: '#/components/schemas/Payment'
     Payment:
       type: object
       required:
@@ -206,12 +295,6 @@ components:
           pattern: ^https:\/\/.+$
           description: The address to which events shall be delivered, using the HTTP protocol.
           example: https://endpoint.example.com/sink
-    PaymentArray:
-      description: A list of payment(s)
-      type: array
-      minItems: 0
-      items:
-        $ref: '#/components/schemas/Payment'
     PaymentItem:
       type: object
       required:
@@ -252,109 +335,122 @@ components:
 
             '
           example: 21
-    ChargingInformation:
-      type: object
-      required:
-      - amount
-      - currency
-      - description
-      properties:
-        amount:
-          type: number
-          format: float
-          multipleOf: 0.001
-          minimum: 0.001
-          description: Amount to be charged or reserved.
-          example: 100
-        currency:
-          type: string
-          description: Currency code in which amount is expressed as defined in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html).
-          example: EUR
-        description:
-          type: string
-          description: Description text to be used for information and billing text
-          example: FIFA EA Sports 24
-        isTaxIncluded:
-          type: boolean
-          default: false
-          description: If true, the `amount` is tax included, if false the `amount` is provided without tax. In both cases, `taxAmount` could be indicated to provide tax amount.
-        taxAmount:
-          type: number
-          format: float
-          multipleOf: 0.001
-          minimum: 0
-          description: 'The tax amount charged by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
-
-            '
-          example: 21
-    PaymentAmountForCharge:
-      type: object
-      required:
-      - chargingInformation
-      properties:
-        chargingInformation:
-          $ref: '#/components/schemas/ChargingInformation'
-        chargingMetaData:
-          $ref: '#/components/schemas/ChargingMetaData'
-        paymentDetails:
-          $ref: '#/components/schemas/PaymentDetails'
-    ChargingMetaData:
-      type: object
-      properties:
-        merchantName:
-          type: string
-          description: Indicates the merchant name. Allows aggregators/partners to specify the actual merchant name
-          example: EA Sports
-        merchantIdentifier:
-          type: string
-          description: Indicates the merchant identifier. Allows aggregators/partners to specify the actual merchant identifier
-          example: eas-12345
-        fee:
-          type: number
-          format: float
-          multipleOf: 0.01
-          description: Percentage of the amount to be received by the requester
-          example: 10
-        purchaseCategoryCode:
-          type: string
-          description: A category defining the type of service, product or media being purchased
-          example: games
-        channel:
-          type: string
-          description: The channel over which the requester is interacting with the merchant (e.g. WAP, Web, SMS...)
-          example: web
-        serviceId:
-          type: string
-          description: The identifier of the partner/merchant service being purchased
-          example: games-online
-        productId:
-          type: string
-          description: The product identifier to be combined with the `serviceId` to uniquely identify the product being purchased. For example if the `serviceId` relates to a VOD service, the `productId` can specify the movie rented
-          example: '138235321'
     PaymentDetails:
       type: array
       description: Detailed description of the concepts/items considered within a specific payment procedure.
       minItems: 1
       items:
         $ref: '#/components/schemas/PaymentItem'
-    XCorrelator:
-      type: string
-      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
-      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
   headers:
-    X-Total-Count:
-      description: Total number of items matching criteria
-      schema:
-        type: integer
-    Content-Last-Key:
-      description: Indicates the index of the last result provided in the response
-      schema:
-        type: integer
     x-correlator:
       description: Correlation id for the different services
       schema:
         $ref: '#/components/schemas/XCorrelator'
+    Content-Last-Key:
+      description: Indicates the index of the last result provided in the response
+      schema:
+        type: integer
+    X-Total-Count:
+      description: Total number of items matching criteria
+      schema:
+        type: integer
+  parameters:
+    PaymentStatus:
+      description: List of payment status to be considered for the query
+      in: query
+      name: paymentStatus
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+          - processing
+          - pending_validation
+          - denied
+          - reserved
+          - succeeded
+          - cancelled
+    Order:
+      description: Used to return the sorted results in descending (default) or ascending order, based on `paymentCreationDate` property
+      in: query
+      name: order
+      required: false
+      schema:
+        default: desc
+        enum:
+        - desc
+        - asc
+        type: string
+    EndPaymentCreationDate:
+      description: End `paymentCreationDate` for running the query. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+      in: query
+      name: paymentCreationDate.lte
+      required: false
+      schema:
+        format: date-time
+        type: string
+    StartPaymentCreationDate:
+      description: Initial `paymentCreationDate` for running the query. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+      in: query
+      name: paymentCreationDate.gte
+      required: false
+      schema:
+        format: date-time
+        type: string
+    MerchantIdentifier:
+      description: Merchant identifier to filter the results
+      in: query
+      name: merchantIdentifier
+      required: false
+      schema:
+        type: string
+    x-correlator:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        $ref: '#/components/schemas/XCorrelator'
+    Page:
+      name: page
+      in: query
+      description: Requested index to indicate the start of the resources to be provided in the response
+      schema:
+        type: integer
+        default: 1
+    PerPage:
+      name: perPage
+      in: query
+      description: Requested number of resources to be provided in response
+      schema:
+        type: integer
+        default: 10
   responses:
+    Generic401:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 401
+                code:
+                  enum:
+                  - UNAUTHENTICATED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated and a new authentication is required
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
     Generic429:
       description: Too Many Requests
       headers:
@@ -381,6 +477,32 @@ components:
                 status: 429
                 code: TOO_MANY_REQUESTS
                 message: Rate limit reached.
+    Generic400:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              summary: Generic Invalid Argument
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
     Generic403:
       description: Forbidden
       headers:
@@ -406,6 +528,32 @@ components:
                 status: 403
                 code: PERMISSION_DENIED
                 message: Client does not have sufficient permissions to perform this action.
+    Generic404:
+      description: Resource Not Found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 404
+                code:
+                  enum:
+                  - NOT_FOUND
+          examples:
+            GENERIC_404_NOT_FOUND:
+              summary: Generic Not Found
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
     GetPaymentsInvalid400:
       description: "Invalid input. In addition to regular INVALID_ARGUMENT scenario other scenarios may exist:\n  - Inconsistent paymentCreationDate.gte and paymentCreationDate.lte values (\"code\": \"CARRIER_BILLING.INVALID_DATE_RANGE\",\"message\": \"Client specified an invalid date range\").\n  - Request out of range (\"code\": \"OUT_OF_RANGE\",\"message\": \"Client specified an invalid range\").\n  - Too many matching records found (\"code\": \"CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS\",\"message\": \"Too many matching records found. Specify additional/suitable criteria to limit the number of records.\")."
       headers:
@@ -456,154 +604,6 @@ components:
                 status: 400
                 code: CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS
                 message: Too many matching records found. Specify additional/suitable criteria to limit the number of records.
-    Generic401:
-      description: Unauthorized
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 401
-                code:
-                  enum:
-                  - UNAUTHENTICATED
-          examples:
-            GENERIC_401_UNAUTHENTICATED:
-              description: Request cannot be authenticated and a new authentication is required
-              value:
-                status: 401
-                code: UNAUTHENTICATED
-                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
-    Generic400:
-      description: Bad Request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 400
-                code:
-                  enum:
-                  - INVALID_ARGUMENT
-          examples:
-            GENERIC_400_INVALID_ARGUMENT:
-              summary: Generic Invalid Argument
-              description: Invalid Argument. Generic Syntax Exception
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param.
-    Generic404:
-      description: Resource Not Found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 404
-                code:
-                  enum:
-                  - NOT_FOUND
-          examples:
-            GENERIC_404_NOT_FOUND:
-              summary: Generic Not Found
-              description: Resource is not found
-              value:
-                status: 404
-                code: NOT_FOUND
-                message: The specified resource is not found.
-  parameters:
-    Order:
-      description: Used to return the sorted results in descending (default) or ascending order, based on `paymentCreationDate` property
-      in: query
-      name: order
-      required: false
-      schema:
-        default: desc
-        enum:
-        - desc
-        - asc
-        type: string
-    x-correlator:
-      name: x-correlator
-      in: header
-      description: Correlation id for the different services
-      schema:
-        $ref: '#/components/schemas/XCorrelator'
-    PerPage:
-      name: perPage
-      in: query
-      description: Requested number of resources to be provided in response
-      schema:
-        type: integer
-        default: 10
-    MerchantIdentifier:
-      description: Merchant identifier to filter the results
-      in: query
-      name: merchantIdentifier
-      required: false
-      schema:
-        type: string
-    StartPaymentCreationDate:
-      description: Initial `paymentCreationDate` for running the query. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-      in: query
-      name: paymentCreationDate.gte
-      required: false
-      schema:
-        format: date-time
-        type: string
-    Page:
-      name: page
-      in: query
-      description: Requested index to indicate the start of the resources to be provided in the response
-      schema:
-        type: integer
-        default: 1
-    EndPaymentCreationDate:
-      description: End `paymentCreationDate` for running the query. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-      in: query
-      name: paymentCreationDate.lte
-      required: false
-      schema:
-        format: date-time
-        type: string
-    PaymentStatus:
-      description: List of payment status to be considered for the query
-      in: query
-      name: paymentStatus
-      required: false
-      schema:
-        type: array
-        items:
-          type: string
-          enum:
-          - processing
-          - pending_validation
-          - denied
-          - reserved
-          - succeeded
-          - cancelled
   securitySchemes:
     openId:
       type: openIdConnect

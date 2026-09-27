@@ -65,31 +65,6 @@ paths:
           $ref: '#/components/responses/Generic422'
 components:
   responses:
-    Generic404:
-      description: Not found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/X-Correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 404
-                code:
-                  enum:
-                  - IDENTIFIER_NOT_FOUND
-          examples:
-            GENERIC_404_IDENTIFIER_NOT_FOUND:
-              description: The phone number is not associated with a CSP customer account
-              value:
-                status: 404
-                code: IDENTIFIER_NOT_FOUND
-                message: The phone number provided is not associated with a customer account
     Generic403:
       description: Forbidden
       headers:
@@ -115,6 +90,56 @@ components:
                 status: 403
                 code: PERMISSION_DENIED
                 message: Client does not have sufficient permissions to perform this action.
+    Generic404:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/X-Correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 404
+                code:
+                  enum:
+                  - IDENTIFIER_NOT_FOUND
+          examples:
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              description: The phone number is not associated with a CSP customer account
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: The phone number provided is not associated with a customer account
+    Generic401:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/X-Correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 401
+                code:
+                  enum:
+                  - UNAUTHENTICATED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated and a new authentication is required
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
     Generic422:
       description: Unprocessable Content
       headers:
@@ -154,31 +179,6 @@ components:
                 status: 422
                 code: UNNECESSARY_IDENTIFIER
                 message: An explicit phone number has been provided when one is already associated with the access token
-    Generic401:
-      description: Unauthorized
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/X-Correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 401
-                code:
-                  enum:
-                  - UNAUTHENTICATED
-          examples:
-            GENERIC_401_UNAUTHENTICATED:
-              description: Request cannot be authenticated and a new authentication is required
-              value:
-                status: 401
-                code: UNAUTHENTICATED
-                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
     Generic400:
       description: Bad Request
       headers:
@@ -212,6 +212,15 @@ components:
                 code: OUT_OF_RANGE
                 message: Client specified an invalid range.
   schemas:
+    XCorrelator:
+      type: string
+      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
+      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
+    PhoneNumber:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+123456789'
     ErrorInfo:
       type: object
       required:
@@ -257,15 +266,6 @@ components:
           - Business
       required:
       - tenureDateCheck
-    PhoneNumber:
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
-      type: string
-      pattern: ^\+[1-9][0-9]{4,14}$
-      example: '+123456789'
-    XCorrelator:
-      type: string
-      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
-      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
     Tenure:
       description: Specifies date from which continuous tenure of the identified mobile subscriber is required to be confirmed
       type: object

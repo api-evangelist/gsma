@@ -73,7 +73,152 @@ paths:
       summary: Check device swap
       x-summary-source: derived
 components:
+  examples:
+    CHECK_2LEGS:
+      summary: Check request without 3-legged access tokens
+      value:
+        phoneNumber: '+346661113334'
+        maxAge: 120
+    CHECK_3LEGS:
+      summary: Check request with 3-legged access tokens
+      value:
+        maxAge: 120
+  schemas:
+    CreateCheckDeviceSwap:
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+        maxAge:
+          type: integer
+          example: 240
+          description: 'Period in hours to be checked for device swap.
+
+            '
+          format: int32
+          minimum: 1
+          maximum: 2400
+          default: 240
+    PhoneNumber:
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+34666111333'
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+    CheckDeviceSwapInfo:
+      type: object
+      required:
+      - swapped
+      properties:
+        swapped:
+          type: boolean
+          description: Indicates whether the device has been swapped during the period within the provided age.
+    ErrorInfo:
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+  parameters:
+    x-correlator:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        type: string
+        pattern: ^[a-zA-Z0-9-]{0,55}$
   responses:
+    Generic403:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 403
+                code:
+                  enum:
+                  - PERMISSION_DENIED
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+    Generic404:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 404
+                code:
+                  enum:
+                  - NOT_FOUND
+                  - IDENTIFIER_NOT_FOUND
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              description: Some identifier cannot be matched to a device
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: Device identifier not found.
+    Generic401:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 401
+                code:
+                  enum:
+                  - UNAUTHENTICATED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials.
     Generic422:
       description: Unprocessable Content
       headers:
@@ -113,31 +258,6 @@ components:
                 status: 422
                 code: UNNECESSARY_IDENTIFIER
                 message: The device is already identified by the access token.
-    Generic401:
-      description: Unauthorized
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 401
-                code:
-                  enum:
-                  - UNAUTHENTICATED
-          examples:
-            GENERIC_401_UNAUTHENTICATED:
-              description: Request cannot be authenticated
-              value:
-                status: 401
-                code: UNAUTHENTICATED
-                message: Request not authenticated due to missing, invalid, or expired credentials.
     Generic400Check:
       description: "Bad Request \n\nIn addition to regular scenario of INVALID_ARGUMENT, other scenarios may exist:\n- Out of Range. Specific Syntax Exception used when a given field has a pre-defined range or a invalid filter criteria combination is requested (\"code\": \"OUT_OF_RANGE\",\"message\": \"Client specified an invalid range.\")"
       headers:
@@ -170,126 +290,6 @@ components:
                 status: 400
                 code: OUT_OF_RANGE
                 message: Client specified an invalid range.
-    Generic404:
-      description: Not found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 404
-                code:
-                  enum:
-                  - NOT_FOUND
-                  - IDENTIFIER_NOT_FOUND
-          examples:
-            GENERIC_404_NOT_FOUND:
-              description: Resource is not found
-              value:
-                status: 404
-                code: NOT_FOUND
-                message: The specified resource is not found.
-            GENERIC_404_IDENTIFIER_NOT_FOUND:
-              description: Some identifier cannot be matched to a device
-              value:
-                status: 404
-                code: IDENTIFIER_NOT_FOUND
-                message: Device identifier not found.
-    Generic403:
-      description: Forbidden
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 403
-                code:
-                  enum:
-                  - PERMISSION_DENIED
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
-  examples:
-    CHECK_2LEGS:
-      summary: Check request without 3-legged access tokens
-      value:
-        phoneNumber: '+346661113334'
-        maxAge: 120
-    CHECK_3LEGS:
-      summary: Check request with 3-legged access tokens
-      value:
-        maxAge: 120
-  schemas:
-    CreateCheckDeviceSwap:
-      type: object
-      properties:
-        phoneNumber:
-          $ref: '#/components/schemas/PhoneNumber'
-        maxAge:
-          type: integer
-          example: 240
-          description: 'Period in hours to be checked for device swap.
-
-            '
-          format: int32
-          minimum: 1
-          maximum: 2400
-          default: 240
-    PhoneNumber:
-      type: string
-      pattern: ^\+[1-9][0-9]{4,14}$
-      example: '+34666111333'
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
-    ErrorInfo:
-      type: object
-      required:
-      - status
-      - code
-      - message
-      properties:
-        status:
-          type: integer
-          description: HTTP response status code
-        code:
-          type: string
-          description: Code given to this error
-        message:
-          type: string
-          description: Detailed error description
-    CheckDeviceSwapInfo:
-      type: object
-      required:
-      - swapped
-      properties:
-        swapped:
-          type: boolean
-          description: Indicates whether the device has been swapped during the period within the provided age.
-  parameters:
-    x-correlator:
-      name: x-correlator
-      in: header
-      description: Correlation id for the different services
-      schema:
-        type: string
-        pattern: ^[a-zA-Z0-9-]{0,55}$
   headers:
     x-correlator:
       description: Correlation id for the different services

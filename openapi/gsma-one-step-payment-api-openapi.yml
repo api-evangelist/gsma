@@ -115,6 +115,117 @@ components:
       minLength: 1
       description: "Identifies the context in which an event happened - be a non-empty `URI-reference` like:\n- URI with a DNS authority:\n  * https://github.com/cloudevents\n  * mailto:cncf-wg-serverless@lists.cncf.io\n- Universally-unique URN with a UUID:\n  * urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66\n- Application-specific identifier:\n  * /cloudevents/spec/pull/123\n  * 1-555-123-4567"
       example: https://notificationSendServer12.supertelco.com
+    PaymentAmountForCharge:
+      type: object
+      required:
+      - chargingInformation
+      properties:
+        chargingInformation:
+          $ref: '#/components/schemas/ChargingInformation'
+        chargingMetaData:
+          $ref: '#/components/schemas/ChargingMetaData'
+        paymentDetails:
+          $ref: '#/components/schemas/PaymentDetails'
+    CreatePayment:
+      type: object
+      required:
+      - amountTransaction
+      properties:
+        amountTransaction:
+          $ref: '#/components/schemas/AmountTransactionInput'
+        sink:
+          type: string
+          format: uri
+          pattern: ^https:\/\/.+$
+          description: The address to which events shall be delivered, using the HTTP protocol.
+          example: https://endpoint.example.com/sink
+        sinkCredential:
+          allOf:
+          - description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
+          - $ref: '#/components/schemas/SinkCredential'
+    ChargingMetaData:
+      type: object
+      properties:
+        merchantName:
+          type: string
+          description: Indicates the merchant name. Allows aggregators/partners to specify the actual merchant name
+          example: EA Sports
+        merchantIdentifier:
+          type: string
+          description: Indicates the merchant identifier. Allows aggregators/partners to specify the actual merchant identifier
+          example: eas-12345
+        fee:
+          type: number
+          format: float
+          multipleOf: 0.01
+          description: Percentage of the amount to be received by the requester
+          example: 10
+        purchaseCategoryCode:
+          type: string
+          description: A category defining the type of service, product or media being purchased
+          example: games
+        channel:
+          type: string
+          description: The channel over which the requester is interacting with the merchant (e.g. WAP, Web, SMS...)
+          example: web
+        serviceId:
+          type: string
+          description: The identifier of the partner/merchant service being purchased
+          example: games-online
+        productId:
+          type: string
+          description: The product identifier to be combined with the `serviceId` to uniquely identify the product being purchased. For example if the `serviceId` relates to a VOD service, the `productId` can specify the movie rented
+          example: '138235321'
+    PaymentCreated:
+      type: object
+      required:
+      - amountTransaction
+      - paymentId
+      - paymentStatus
+      - paymentCreationDate
+      properties:
+        paymentId:
+          type: string
+          description: Unique Identifier of the payment
+          example: AK234rfweSBuWGFUEWFGWEVWRV
+        amountTransaction:
+          $ref: '#/components/schemas/AmountTransaction'
+        paymentStatus:
+          type: string
+          description: Specifies the payment status (`processing`, `pending_validation`, `denied`, `reserved`, `succeeded`, `cancelled`).
+          example: processing
+        paymentCreationDate:
+          type: string
+          format: date-time
+          description: Date time when the payment is created in server database. This is a technical information. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+        paymentDate:
+          type: string
+          format: date-time
+          description: Date time when the payment is effectively performed. This is a business information. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+        sink:
+          type: string
+          format: uri
+          pattern: ^https:\/\/.+$
+          description: The address to which events shall be delivered, using the HTTP protocol.
+          example: https://endpoint.example.com/sink
+    SinkCredential:
+      type: object
+      properties:
+        credentialType:
+          type: string
+          enum:
+          - PLAIN
+          - ACCESSTOKEN
+          - REFRESHTOKEN
+          description: The type of the credential. Only `ACCESSTOKEN` is supported so far.
+      discriminator:
+        propertyName: credentialType
+        mapping:
+          PLAIN: '#/components/schemas/PlainCredential'
+          ACCESSTOKEN: '#/components/schemas/AccessTokenCredential'
+          REFRESHTOKEN: '#/components/schemas/RefreshTokenCredential'
+      required:
+      - credentialType
     CloudEvent:
       description: The notification format
       required:
@@ -158,6 +269,10 @@ components:
           org.camaraproject.carrier-billing.v0.payment-completed: '#/components/schemas/EventPaymentCompleted'
           org.camaraproject.carrier-billing.v0.payment-cancelled: '#/components/schemas/EventPaymentCancelled'
           org.camaraproject.carrier-billing.v0.payment-denied: '#/components/schemas/EventPaymentDenied'
+    XCorrelator:
+      type: string
+      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
+      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
     AmountTransaction:
       required:
       - phoneNumber
@@ -191,38 +306,6 @@ components:
           type: string
           description: Reference to the charge or refund, provided by the server, and meaningful to the server’s backend system for the purpose of reconciliation.
           example: ref-pay-834tfr2rA3v8r8vr3rv-serv
-    PaymentCreated:
-      type: object
-      required:
-      - amountTransaction
-      - paymentId
-      - paymentStatus
-      - paymentCreationDate
-      properties:
-        paymentId:
-          type: string
-          description: Unique Identifier of the payment
-          example: AK234rfweSBuWGFUEWFGWEVWRV
-        amountTransaction:
-          $ref: '#/components/schemas/AmountTransaction'
-        paymentStatus:
-          type: string
-          description: Specifies the payment status (`processing`, `pending_validation`, `denied`, `reserved`, `succeeded`, `cancelled`).
-          example: processing
-        paymentCreationDate:
-          type: string
-          format: date-time
-          description: Date time when the payment is created in server database. This is a technical information. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-        paymentDate:
-          type: string
-          format: date-time
-          description: Date time when the payment is effectively performed. This is a business information. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-        sink:
-          type: string
-          format: uri
-          pattern: ^https:\/\/.+$
-          description: The address to which events shall be delivered, using the HTTP protocol.
-          example: https://endpoint.example.com/sink
     ErrorInfo:
       type: object
       required:
@@ -239,23 +322,46 @@ components:
         message:
           type: string
           description: A human-readable description of what the event represents
-    CreatePayment:
+    ChargingInformation:
       type: object
       required:
-      - amountTransaction
+      - amount
+      - currency
+      - description
       properties:
-        amountTransaction:
-          $ref: '#/components/schemas/AmountTransactionInput'
-        sink:
+        amount:
+          type: number
+          format: float
+          multipleOf: 0.001
+          minimum: 0.001
+          description: Amount to be charged or reserved.
+          example: 100
+        currency:
           type: string
-          format: uri
-          pattern: ^https:\/\/.+$
-          description: The address to which events shall be delivered, using the HTTP protocol.
-          example: https://endpoint.example.com/sink
-        sinkCredential:
-          allOf:
-          - description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
-          - $ref: '#/components/schemas/SinkCredential'
+          description: Currency code in which amount is expressed as defined in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html).
+          example: EUR
+        description:
+          type: string
+          description: Description text to be used for information and billing text
+          example: FIFA EA Sports 24
+        isTaxIncluded:
+          type: boolean
+          default: false
+          description: If true, the `amount` is tax included, if false the `amount` is provided without tax. In both cases, `taxAmount` could be indicated to provide tax amount.
+        taxAmount:
+          type: number
+          format: float
+          multipleOf: 0.001
+          minimum: 0
+          description: 'The tax amount charged by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
+
+            '
+          example: 21
+    DateTime:
+      type: string
+      format: date-time
+      description: Timestamp when the occurrence happened. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+      example: '2023-11-03T12:27:10Z'
     PaymentItem:
       type: object
       required:
@@ -296,90 +402,12 @@ components:
 
             '
           example: 21
-    ChargingInformation:
-      type: object
-      required:
-      - amount
-      - currency
-      - description
-      properties:
-        amount:
-          type: number
-          format: float
-          multipleOf: 0.001
-          minimum: 0.001
-          description: Amount to be charged or reserved.
-          example: 100
-        currency:
-          type: string
-          description: Currency code in which amount is expressed as defined in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html).
-          example: EUR
-        description:
-          type: string
-          description: Description text to be used for information and billing text
-          example: FIFA EA Sports 24
-        isTaxIncluded:
-          type: boolean
-          default: false
-          description: If true, the `amount` is tax included, if false the `amount` is provided without tax. In both cases, `taxAmount` could be indicated to provide tax amount.
-        taxAmount:
-          type: number
-          format: float
-          multipleOf: 0.001
-          minimum: 0
-          description: 'The tax amount charged by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
-
-            '
-          example: 21
-    PaymentAmountForCharge:
-      type: object
-      required:
-      - chargingInformation
-      properties:
-        chargingInformation:
-          $ref: '#/components/schemas/ChargingInformation'
-        chargingMetaData:
-          $ref: '#/components/schemas/ChargingMetaData'
-        paymentDetails:
-          $ref: '#/components/schemas/PaymentDetails'
-    ChargingMetaData:
-      type: object
-      properties:
-        merchantName:
-          type: string
-          description: Indicates the merchant name. Allows aggregators/partners to specify the actual merchant name
-          example: EA Sports
-        merchantIdentifier:
-          type: string
-          description: Indicates the merchant identifier. Allows aggregators/partners to specify the actual merchant identifier
-          example: eas-12345
-        fee:
-          type: number
-          format: float
-          multipleOf: 0.01
-          description: Percentage of the amount to be received by the requester
-          example: 10
-        purchaseCategoryCode:
-          type: string
-          description: A category defining the type of service, product or media being purchased
-          example: games
-        channel:
-          type: string
-          description: The channel over which the requester is interacting with the merchant (e.g. WAP, Web, SMS...)
-          example: web
-        serviceId:
-          type: string
-          description: The identifier of the partner/merchant service being purchased
-          example: games-online
-        productId:
-          type: string
-          description: The product identifier to be combined with the `serviceId` to uniquely identify the product being purchased. For example if the `serviceId` relates to a VOD service, the `productId` can specify the movie rented
-          example: '138235321'
-    DateTime:
-      type: string
-      format: date-time
-      description: Timestamp when the occurrence happened. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-      example: '2023-11-03T12:27:10Z'
+    PaymentDetails:
+      type: array
+      description: Detailed description of the concepts/items considered within a specific payment procedure.
+      minItems: 1
+      items:
+        $ref: '#/components/schemas/PaymentItem'
     AmountTransactionInput:
       type: object
       required:
@@ -409,37 +437,9 @@ components:
           type: string
           description: Merchant generated payment reference to uniquely identify the request, for instance, in the case of disputes.
           example: ref-pay-834tfr2rA3v8r8vr3rv
-    PaymentDetails:
-      type: array
-      description: Detailed description of the concepts/items considered within a specific payment procedure.
-      minItems: 1
-      items:
-        $ref: '#/components/schemas/PaymentItem'
-    SinkCredential:
-      type: object
-      properties:
-        credentialType:
-          type: string
-          enum:
-          - PLAIN
-          - ACCESSTOKEN
-          - REFRESHTOKEN
-          description: The type of the credential. Only `ACCESSTOKEN` is supported so far.
-      discriminator:
-        propertyName: credentialType
-        mapping:
-          PLAIN: '#/components/schemas/PlainCredential'
-          ACCESSTOKEN: '#/components/schemas/AccessTokenCredential'
-          REFRESHTOKEN: '#/components/schemas/RefreshTokenCredential'
-      required:
-      - credentialType
-    XCorrelator:
-      type: string
-      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
-      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
   responses:
-    IdentifierNotFound404:
-      description: Phone Number Not Found
+    PaymentPermissionDenied403:
+      description: "Client does not have sufficient permission.\nIn addition to regular PERMISSION_DENIED scenario other scenarios may exist:\n  - Payment denied by business (\"code\": \"CARRIER_BILLING.PAYMENT_DENIED\",\"message\": \"Payment denied by business.\")."
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -452,43 +452,25 @@ components:
               properties:
                 status:
                   enum:
-                  - 404
+                  - 403
                 code:
                   enum:
-                  - IDENTIFIER_NOT_FOUND
+                  - PERMISSION_DENIED
+                  - CARRIER_BILLING.PAYMENT_DENIED
           examples:
-            GENERIC_404_IDENTIFIER_NOT_FOUND:
-              description: Some identifier cannot be matched to a device. In this API it refers to a phoneNumber.
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
               value:
-                status: 404
-                code: IDENTIFIER_NOT_FOUND
-                message: phoneNumber not found.
-    Generic429:
-      description: Too Many Requests
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 429
-                code:
-                  enum:
-                  - TOO_MANY_REQUESTS
-          examples:
-            GENERIC_429_TOO_MANY_REQUESTS:
-              summary: Generic Too Many Requests
-              description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+            GENERIC_403_PAYMENT_DENIED:
+              summary: Generic Payment Denied
+              description: Payment denied by business
               value:
-                status: 429
-                code: TOO_MANY_REQUESTS
-                message: Rate limit reached.
+                status: 403
+                code: CARRIER_BILLING.PAYMENT_DENIED
+                message: Payment denied by business.
     Generic409:
       description: Conflict
       headers:
@@ -515,31 +497,6 @@ components:
                 status: 409
                 code: ALREADY_EXISTS
                 message: The resource that a client tried to create already exists.
-    Generic403:
-      description: Forbidden
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 403
-                code:
-                  enum:
-                  - PERMISSION_DENIED
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
     Generic401:
       description: Unauthorized
       headers:
@@ -565,8 +522,8 @@ components:
                 status: 401
                 code: UNAUTHENTICATED
                 message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
-    Generic410:
-      description: Gone
+    Generic429:
+      description: Too Many Requests
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -579,44 +536,18 @@ components:
               properties:
                 status:
                   enum:
-                  - 410
+                  - 429
                 code:
                   enum:
-                  - GONE
+                  - TOO_MANY_REQUESTS
           examples:
-            GENERIC_410_GONE:
-              summary: Generic Gone
-              description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
+            GENERIC_429_TOO_MANY_REQUESTS:
+              summary: Generic Too Many Requests
+              description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
               value:
-                status: 410
-                code: GONE
-                message: Access to the target resource is no longer available.
-    Generic400:
-      description: Bad Request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 400
-                code:
-                  enum:
-                  - INVALID_ARGUMENT
-          examples:
-            GENERIC_400_INVALID_ARGUMENT:
-              summary: Generic Invalid Argument
-              description: Invalid Argument. Generic Syntax Exception
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param.
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Rate limit reached.
     PaymentUnprocessable422:
       description: "Client indicates content that is understable by the Server but unable to be processed.\nScenarios that may exist:\n  - Service not applicable for the provided identifier (\"code\": \"SERVICE_NOT_APPLICABLE\",\"message\": \"The service is not available for the provided identifier.\")\n  - An identifier is not included in the request and the device or phone number identification cannot be derived from the 3-legged access token (\"code\": \"MISSING_IDENTIFIER\",\"message\": \"The phone number cannot be identified.\")\n  - An explicit identifier is provided when a device or phone number has already been identified from the access token (\"code\": \"UNNECESSARY_IDENTIFIER\",\"message\": \"The phone number is already identified by the access token.\")\n  - Unauthorized amount requested (\"code\": \"CARRIER_BILLING.UNAUTHORIZED_AMOUNT\",\"message\": \"Unauthorized amount requested.\").\n  - Accumulated threshold amount for the user's mobile account overpassed (\"code\": \"CARRIER_BILLING.USER_AMOUNT_THRESHOLD_OVERPASSED\",\"message\": \"Unauthorized payment request. Accumulated user mobile payments overpass account amount threshold.\")."
       headers:
@@ -672,8 +603,59 @@ components:
                 status: 422
                 code: CARRIER_BILLING.USER_AMOUNT_THRESHOLD_OVERPASSED
                 message: Unauthorized payment request. Accumulated user mobile payments overpass account amount threshold.
-    PaymentPermissionDenied403:
-      description: "Client does not have sufficient permission.\nIn addition to regular PERMISSION_DENIED scenario other scenarios may exist:\n  - Payment denied by business (\"code\": \"CARRIER_BILLING.PAYMENT_DENIED\",\"message\": \"Payment denied by business.\")."
+    Generic400:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              summary: Generic Invalid Argument
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+    IdentifierNotFound404:
+      description: Phone Number Not Found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 404
+                code:
+                  enum:
+                  - IDENTIFIER_NOT_FOUND
+          examples:
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              description: Some identifier cannot be matched to a device. In this API it refers to a phoneNumber.
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: phoneNumber not found.
+    Generic403:
+      description: Forbidden
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -690,7 +672,6 @@ components:
                 code:
                   enum:
                   - PERMISSION_DENIED
-                  - CARRIER_BILLING.PAYMENT_DENIED
           examples:
             GENERIC_403_PERMISSION_DENIED:
               description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
@@ -698,13 +679,32 @@ components:
                 status: 403
                 code: PERMISSION_DENIED
                 message: Client does not have sufficient permissions to perform this action.
-            GENERIC_403_PAYMENT_DENIED:
-              summary: Generic Payment Denied
-              description: Payment denied by business
+    Generic410:
+      description: Gone
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 410
+                code:
+                  enum:
+                  - GONE
+          examples:
+            GENERIC_410_GONE:
+              summary: Generic Gone
+              description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
               value:
-                status: 403
-                code: CARRIER_BILLING.PAYMENT_DENIED
-                message: Payment denied by business.
+                status: 410
+                code: GONE
+                message: Access to the target resource is no longer available.
     PaymentInvalid400:
       description: "Invalid input.\nCommon INVALID_ARGUMENT scenarios usually are:\n  - Schema validation failed (\"code\": \"INVALID_ARGUMENT\",\"message\": \"Client specified an invalid argument, request body or query param.\").\n  - Currency is unknown or not authorized (\"code\": \"INVALID_ARGUMENT\",\"message\": \"Currency is unknown or not authorized\").\n  - clientCorrelator still exist (\"code\": \"INVALID_ARGUMENT\",\"message\": \"clientCorrelator already exist on server\").\n\nIn addition to regular INVALID_ARGUMENT scenario other scenarios may exist:\n  - Invalid sink credential (\"code\": \"INVALID_CREDENTIAL\",\"message\": \"Only Access token is supported\").\n  - Invalid sink credential access token (\"code\": \"INVALID_TOKEN\",\"message\": \"Only bearer token is supported\").\n  - Invalid sink (\"code\": \"INVALID_SINK\",\"message\": \"sink not valid for the specified protocol\")."
       headers:
@@ -769,15 +769,15 @@ components:
                 status: 400
                 code: INVALID_SINK
                 message: sink not valid for the specified protocol
+  headers:
+    x-correlator:
+      description: Correlation id for the different services
+      schema:
+        $ref: '#/components/schemas/XCorrelator'
   parameters:
     x-correlator:
       name: x-correlator
       in: header
-      description: Correlation id for the different services
-      schema:
-        $ref: '#/components/schemas/XCorrelator'
-  headers:
-    x-correlator:
       description: Correlation id for the different services
       schema:
         $ref: '#/components/schemas/XCorrelator'

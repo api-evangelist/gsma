@@ -101,33 +101,50 @@ paths:
       - openId:
         - location-retrieval:read
 components:
+  examples:
+    LOCATION_CIRCLE_WITH_DEVICE:
+      summary: circle-based device location retrieval, returning the device identifier used by the implementation
+      description: The device is localized within a circle with a center at the specified coordinates and a radius of 800 meters. Response when the request used a 2-legged access token with multiple device identifiers, or possibly only a single device identifier.
+      value:
+        lastLocationTime: '2023-10-17T13:18:23.682Z'
+        area:
+          areaType: CIRCLE
+          center:
+            latitude: 45.754114
+            longitude: 4.860374
+          radius: 800
+        device:
+          phoneNumber: '+123456789'
+    RETRIEVAL_POLYGON:
+      summary: polygon-based device location retrieval
+      description: The device is localized within a polygon delimited by the provided coordinates.
+      value:
+        lastLocationTime: '2023-10-17T13:18:23.682Z'
+        area:
+          areaType: POLYGON
+          boundary:
+          - latitude: 45.754114
+            longitude: 4.860374
+          - latitude: 45.753845
+            longitude: 4.863185
+          - latitude: 45.75249
+            longitude: 4.861876
+          - latitude: 45.751224
+            longitude: 4.861125
+          - latitude: 45.751442
+            longitude: 4.859827
+    RETRIEVAL_CIRCLE:
+      summary: circle-based device location retrieval
+      description: The device is localized within a circle with a center at the specified coordinates and a radius of 800 meters.
+      value:
+        lastLocationTime: '2023-10-17T13:18:23.682Z'
+        area:
+          areaType: CIRCLE
+          center:
+            latitude: 45.754114
+            longitude: 4.860374
+          radius: 800
   responses:
-    RetrieveLocationNotFound404:
-      description: Not found
-      headers:
-        x-correlator:
-          $ref: ../common/CAMARA_common.yaml#/components/headers/x-correlator
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: ../common/CAMARA_common.yaml#/components/schemas/ErrorInfo
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 404
-                code:
-                  enum:
-                  - IDENTIFIER_NOT_FOUND
-          examples:
-            GENERIC_404_IDENTIFIER_NOT_FOUND:
-              summary: Identifier not found
-              description: Some identifier cannot be matched to a device
-              value:
-                status: 404
-                code: IDENTIFIER_NOT_FOUND
-                message: Device identifier not found.
     Generic403:
       description: Forbidden
       headers:
@@ -154,6 +171,32 @@ components:
                 status: 403
                 code: PERMISSION_DENIED
                 message: Client does not have sufficient permissions to perform this action.
+    RetrieveLocationNotFound404:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: ../common/CAMARA_common.yaml#/components/headers/x-correlator
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: ../common/CAMARA_common.yaml#/components/schemas/ErrorInfo
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 404
+                code:
+                  enum:
+                  - IDENTIFIER_NOT_FOUND
+          examples:
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              summary: Identifier not found
+              description: Some identifier cannot be matched to a device
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: Device identifier not found.
     RetrieveLocationUnprocessableEntity422:
       description: Unprocessable Content
       headers:
@@ -229,6 +272,10 @@ components:
                 code: LOCATION_RETRIEVAL.UNABLE_TO_LOCATE
                 message: The network is unable to locate the device
   schemas:
+    DeviceResponse:
+      $ref: ../common/CAMARA_common.yaml#/components/schemas/DeviceResponse
+    Area:
+      $ref: ../common/CAMARA_common.yaml#/components/schemas/Area
     Location:
       type: object
       description: Device location
@@ -242,8 +289,12 @@ components:
           $ref: '#/components/schemas/Area'
         device:
           $ref: '#/components/schemas/DeviceResponse'
-    DeviceResponse:
-      $ref: ../common/CAMARA_common.yaml#/components/schemas/DeviceResponse
+    LastLocationTime:
+      description: Last date and time when the device was localized. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+      type: string
+      format: date-time
+      maxLength: 64
+      example: '2023-09-07T10:40:52Z'
     RetrievalLocationRequest:
       description: Request to retrieve the location of a device. Device is not required when using a 3-legged access token, following the rules in the description.
       type: object
@@ -263,57 +314,6 @@ components:
           maximum: 2147483647
           description: Maximum surface in square meters which is accepted by the client for the location retrieval. Absence of maxSurface means "any surface size".
           example: 1000000
-    Area:
-      $ref: ../common/CAMARA_common.yaml#/components/schemas/Area
-    LastLocationTime:
-      description: Last date and time when the device was localized. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-      type: string
-      format: date-time
-      maxLength: 64
-      example: '2023-09-07T10:40:52Z'
-  examples:
-    RETRIEVAL_CIRCLE:
-      summary: circle-based device location retrieval
-      description: The device is localized within a circle with a center at the specified coordinates and a radius of 800 meters.
-      value:
-        lastLocationTime: '2023-10-17T13:18:23.682Z'
-        area:
-          areaType: CIRCLE
-          center:
-            latitude: 45.754114
-            longitude: 4.860374
-          radius: 800
-    LOCATION_CIRCLE_WITH_DEVICE:
-      summary: circle-based device location retrieval, returning the device identifier used by the implementation
-      description: The device is localized within a circle with a center at the specified coordinates and a radius of 800 meters. Response when the request used a 2-legged access token with multiple device identifiers, or possibly only a single device identifier.
-      value:
-        lastLocationTime: '2023-10-17T13:18:23.682Z'
-        area:
-          areaType: CIRCLE
-          center:
-            latitude: 45.754114
-            longitude: 4.860374
-          radius: 800
-        device:
-          phoneNumber: '+123456789'
-    RETRIEVAL_POLYGON:
-      summary: polygon-based device location retrieval
-      description: The device is localized within a polygon delimited by the provided coordinates.
-      value:
-        lastLocationTime: '2023-10-17T13:18:23.682Z'
-        area:
-          areaType: POLYGON
-          boundary:
-          - latitude: 45.754114
-            longitude: 4.860374
-          - latitude: 45.753845
-            longitude: 4.863185
-          - latitude: 45.75249
-            longitude: 4.861876
-          - latitude: 45.751224
-            longitude: 4.861125
-          - latitude: 45.751442
-            longitude: 4.859827
   securitySchemes:
     openId:
       description: OpenID Connect authentication

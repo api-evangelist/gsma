@@ -1,3 +1,5 @@
+# x-archived-from: open-gateway-get-device-identifiers-api-openapi.yml
+# x-archived-on: 2026-09-26
 openapi: 3.2.0
 info:
   title: Get Device Identifiers API

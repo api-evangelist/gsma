@@ -868,417 +868,17 @@ paths:
             X-Date:
               $ref: '#/components/headers/X-Date'
 components:
-  parameters:
-    identifier:
-      name: identifier
-      in: path
-      description: Path variable that contains the account identifier.
-      required: true
-      schema:
-        type: string
-        maxLength: 256
-        minLength: 1
-    X-Date:
-      name: X-Date
-      in: header
-      description: Header parameter to indicate the date and time that the message was originated. It is used for basic message integrity checks, to ensure the request is not stale. Note that the header was previously referenced as 'Date' in version 1.0 of the Mobile Money API.
-      required: false
-      schema:
-        type: string
-        format: date-time
-    X-Content-Hash:
-      name: X-Content-Hash
-      in: header
-      description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
-      required: false
-      schema:
-        type: string
-    X-Channel:
-      name: X-Channel
-      in: header
-      description: String containing the channel that was used to originate the request. For example USSD, Web, App.
-      required: false
-      schema:
-        type: string
-        maxLength: 256
-    authorisationCode:
-      name: authorisationCode
-      in: path
-      description: Path variable to uniquely identify an authorisation code.
-      required: true
-      schema:
-        type: string
-        maxLength: 256
-        minLength: 1
-    X-User-Credential-2:
-      name: X-User-Credential-2
-      in: header
-      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
-      required: false
-      schema:
-        type: string
-    X-User-Bearer:
-      name: X-User-Bearer
-      in: header
-      description: Used to pass user’s access token when OAuth 2.0/OIDC authorisation framework is used for end-user authentication.
-      required: false
-      schema:
-        type: string
-    X-Account-Holding-Institution-Identifier-Type:
-      name: X-Account-Holding-Institution-Identifier-Type
-      in: header
-      description: A header variable that identifies the type of the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier header.
-      required: false
-      schema:
-        type: string
-        enum:
-        - lei
-        - swiftbic
-        - organisationid
-    limit:
-      name: limit
-      in: query
-      description: Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request.
-      required: false
-      schema:
-        type: integer
-        format: int32
-    toDateTime:
-      name: toDateTime
-      in: query
-      description: Indicates the maximum creation date for which records should be returned.
-      required: false
-      schema:
-        type: string
-        format: date-time
-    fromDateTime:
-      name: fromDateTime
-      in: query
-      description: Indicates the minimum creation date for which records should be returned.
-      required: false
-      schema:
-        type: string
-        format: date-time
-    X-Account-Holding-Institution-Identifier:
-      name: X-Account-Holding-Institution-Identifier
-      in: header
-      description: A header variable that identifies the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier-Type header.
-      required: false
-      schema:
-        type: string
-    offset:
-      name: offset
-      in: query
-      description: Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60.
-      required: false
-      schema:
-        type: integer
-        format: int32
-    identifierType:
-      name: identifierType
-      in: path
-      required: true
-      description: Path variable to specify the type of the identifier that is used to identify the account.
-      schema:
-        type: string
-        enum:
-        - accountid
-        - msisdn
-        - walletid
-        - linkref
-        - consumerno
-        - serviceprovider
-        - storeid
-        - accountcategory
-        - bankaccountno
-        - accountrank
-        - identityalias
-        - iban
-        - swiftbic
-        - sortcode
-        - organisationid
-        - bankname
-        - bankaccounttitle
-        - username
-        - emailaddress
-        - mandatereference
-    X-User-Credential-1:
-      name: X-User-Credential-1
-      in: header
-      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
-      required: false
-      schema:
-        type: string
-    X-Callback-URL:
-      name: X-Callback-URL
-      in: header
-      description: The URL supplied by the client that will be used to return the callback in the form of a HTTP PUT.
-      required: false
-      schema:
-        type: string
-        format: uri
-    X-CorrelationID:
-      name: X-CorrelationID
-      in: header
-      description: Header parameter to uniquely identify the request. Must be supplied as a UUID.
-      required: false
-      schema:
-        type: string
-        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-    X-API-Key:
-      name: X-API-Key
-      in: header
-      description: Used to pass pre-shared client's API key to the server.
-      required: false
-      schema:
-        type: string
-    codeState:
-      name: codeState
-      in: query
-      description: Allows returned records to be filtered on state of the authorisation code.
-      required: true
-      schema:
-        type: string
-        maxLength: 256
-    accountId:
-      name: accountId
-      in: path
-      description: 'Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference.'
-      required: true
-      schema:
-        type: string
-        pattern: ^((accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+))(\$(accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+)){0,2}$
-    X-Client-Id:
-      name: X-Client-Id
-      in: header
-      description: Used to pass pre-shared client's identifier to the server.
-      required: false
-      schema:
-        type: string
-        maxLength: 256
-  headers:
-    X-Records-Available-Count:
-      required: false
-      description: Integer containing number of records that are available to be returned.
-      schema:
-        type: integer
-        format: int32
-    X-Date:
-      required: false
-      description: The date and time that the response message was sent.
-      schema:
-        type: string
-        format: date-time
-    X-Records-Returned-Count:
-      required: false
-      description: Integer containing number of records that are returned.
-      schema:
-        type: integer
-        format: int32
   schemas:
-    requestAuthorisationCode:
-      type: object
-      properties:
-        amount:
-          description: Indicates the amount associated with the authorisation code.
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          example: '15.00'
-        currency:
-          description: Indicates the Amount Currency. Must be supplied when an amount is supplied.
-          allOf:
-          - $ref: '#/components/schemas/currency'
-        amountType:
-          $ref: '#/components/schemas/amountType'
-        codeLifetime:
-          $ref: '#/components/schemas/codeLifetime'
-        holdFundsIndicator:
-          $ref: '#/components/schemas/holdFundsIndicator'
-        redemptionAccountIdentifiers:
-          $ref: '#/components/schemas/redemptionAccountIdentifiers'
-        redemptionChannels:
-          $ref: '#/components/schemas/redemptionChannels'
-        redemptionTransactionTypes:
-          $ref: '#/components/schemas/redemptionTransactionTypes'
-        requestingOrganisation:
-          $ref: '#/components/schemas/requestingOrganisation'
-        requestDate:
-          $ref: '#/components/schemas/requestDate'
-        customData:
-          $ref: '#/components/schemas/customDataArray'
-        metadata:
-          $ref: '#/components/schemas/metadataArray'
-    genericUpdateSuccess:
-      type: object
-      required:
-      - result
-      properties:
-        result:
-          type: string
-          description: The success message provided in a callback to communicate the success of an update operation.
-          enum:
-          - success
-    customData:
-      type: object
-      required:
-      - key
-      - value
-      properties:
-        key:
-          type: string
-          description: Identifies the type of additional field.
-          minLength: 1
-          maxLength: 256
-        value:
-          type: string
-          description: Identifies the value of the additional field.
-          minLength: 1
-          maxLength: 256
-    requestGenericPatch:
-      type: object
-      required:
-      - op
-      - path
-      - value
-      properties:
-        op:
-          description: Indicates the Patch operation to be performed. 'replace' is used to update a field and 'add' is used to add a new field.
-          type: string
-          enum:
-          - replace
-          - add
-        path:
-          description: Specify the field to be updated or added preceded by '/'.
-          type: string
-          maxLength: 256
-        value:
-          description: Specify the value of the field to be updated or added.
-          type: string
-          maxLength: 256
-    requestDate:
-      type: string
-      format: date-time
-      description: The date and time of the request as supplied by the client.
-    requestingOrganisation:
-      type: object
-      description: An object that details the originating organisation of the request.
-      required:
-      - requestingOrganisationIdentifierType
-      - requestingOrganisationIdentifier
-      properties:
-        requestingOrganisationIdentifierType:
-          type: string
-          description: Identifies the identifier type of the requesting organisation.
-          enum:
-          - lei
-          - swiftbic
-          - organisationid
-        requestingOrganisationIdentifier:
-          type: string
-          description: Contains the requesting organisation identifier.
-          minLength: 1
-          maxLength: 256
-    metadataArray:
-      type: array
-      description: A collection of key/value pairs. These can be used to populate additional properties that describe administrative information regarding the resource.
-      items:
-        $ref: '#/components/schemas/metadata'
-      maxItems: 20
-    amount:
-      type: string
-      minLength: 1
-      maxLength: 23
-      pattern: ^([0]|([1-9][0-9]{0,17}))([.][0-9]{0,3}[0-9])?$
-      example: '15.21'
-    codeState:
-      type: string
-      description: Indicates the state of the Authorisation Code.
-      enum:
-      - active
-      - expired
-      - cancelled
-    party:
-      type: object
-      required:
-      - key
-      - value
-      properties:
-        key:
-          type: string
-          description: Provides the account identifier type.
-          minLength: 1
-          maxLength: 256
-          example: msisdn
-        value:
-          type: string
-          description: Provides the account identifier type value.
-          minLength: 1
-          maxLength: 256
-          example: '+33555123456'
-    authorisationCode:
-      type: string
-      description: The code that will be presented to the other party for redemption.
-      maxLength: 256
-    customDataArray:
-      type: array
-      description: A collection of key/value pairs. These can be used to populate provider specific fields.
-      items:
-        $ref: '#/components/schemas/customData'
-      maxItems: 20
-    modificationDate:
-      type: string
-      format: date-time
-      description: Date and time when the object was modified by the API Provider.
-    responseAuthorisationCode:
-      type: object
-      required:
-      - authorisationCode
-      - codeState
-      properties:
-        authorisationCode:
-          $ref: '#/components/schemas/authorisationCode'
-        codeState:
-          $ref: '#/components/schemas/codeState'
-        amount:
-          description: Indicates the amount associated with the authorisation code.
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          example: '15.00'
-        currency:
-          description: Indicates the Amount Currency. Must be supplied when an amount is supplied.
-          allOf:
-          - $ref: '#/components/schemas/currency'
-        amountType:
-          $ref: '#/components/schemas/amountType'
-        codeLifetime:
-          $ref: '#/components/schemas/codeLifetime'
-        holdFundsIndicator:
-          $ref: '#/components/schemas/holdFundsIndicator'
-        redemptionAccountIdentifiers:
-          $ref: '#/components/schemas/redemptionAccountIdentifiers'
-        redemptionChannels:
-          $ref: '#/components/schemas/redemptionChannels'
-        redemptionTransactionTypes:
-          $ref: '#/components/schemas/redemptionTransactionTypes'
-        requestingOrganisation:
-          $ref: '#/components/schemas/requestingOrganisation'
-        creationDate:
-          $ref: '#/components/schemas/creationDate'
-        modificationDate:
-          $ref: '#/components/schemas/modificationDate'
-        requestDate:
-          $ref: '#/components/schemas/requestDate'
-        customData:
-          $ref: '#/components/schemas/customDataArray'
-        metadata:
-          $ref: '#/components/schemas/metadataArray'
+    holdFundsIndicator:
+      type: boolean
+      description: Indicates whether funds should be reserved against the payers account where the payer is the requestor.
     amountType:
       type: string
       description: The amount for the authorisation can be an exact amount or can be a maximum amount.
       enum:
       - exact
       - maximum
-    metadata:
+    customData:
       type: object
       required:
       - key
@@ -1300,20 +900,96 @@ components:
       minimum: 1
       example: '600'
       description: Indicates the expiry time in seconds of the code.
-    redemptionChannels:
+    amount:
+      type: string
+      minLength: 1
+      maxLength: 23
+      pattern: ^([0]|([1-9][0-9]{0,17}))([.][0-9]{0,3}[0-9])?$
+      example: '15.21'
+    requestStateObject:
+      type: object
+      required:
+      - notificationMethod
+      - serverCorrelationId
+      - status
+      properties:
+        serverCorrelationId:
+          type: string
+          description: A unique identifier issued by the provider to enable the client to identify the RequestState resource on subsequent polling requests. Must be supplied as a UUID.
+          minLength: 1
+          maxLength: 256
+          pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+        objectReference:
+          type: string
+          description: Provides a reference to the subject resource, e.g. transaction reference.
+          minLength: 0
+          maxLength: 256
+        status:
+          type: string
+          enum:
+          - pending
+          - completed
+          - failed
+          description: Indicates the status of the request.
+        notificationMethod:
+          type: string
+          enum:
+          - callback
+          - polling
+          description: Indicates whether a callback will be issued or whether the client will need to poll.
+        pendingReason:
+          type: string
+          description: A textual description that can be provided to describe the reason for a pending status.
+          minLength: 0
+          maxLength: 256
+        expiryTime:
+          type: string
+          format: date-time
+          description: Indicate the time by which the provider will fail the request if completion criteria have not been met. For an example, a debit party failing to authorise within the allowed period.
+        pollLimit:
+          type: number
+          format: int32
+          description: Indicates the number of poll attempts for the given requeststate resource that will be allowed by the provider.
+          exclusiveMinimum: 0
+        error:
+          description: If the asynchronous processing failed, details of the error will be returned here.
+          allOf:
+          - $ref: '#/components/schemas/errorObject'
+    party:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Provides the account identifier type.
+          minLength: 1
+          maxLength: 256
+          example: msisdn
+        value:
+          type: string
+          description: Provides the account identifier type value.
+          minLength: 1
+          maxLength: 256
+          example: '+33555123456'
+    codeState:
+      type: string
+      description: Indicates the state of the Authorisation Code.
+      enum:
+      - active
+      - expired
+      - cancelled
+    customDataArray:
       type: array
-      description: Indicates the channel(s) that the code can be redeemed against, e.g. ATM, Merchant, etc.
+      description: A collection of key/value pairs. These can be used to populate provider specific fields.
       items:
-        type: object
-        properties:
-          channelType:
-            type: string
-            description: Identifies the channel type.
-            minLength: 1
-            maxLength: 256
-        required:
-        - channelType
-      maxItems: 50
+        $ref: '#/components/schemas/customData'
+      maxItems: 20
+    authorisationCode:
+      type: string
+      description: The code that will be presented to the other party for redemption.
+      maxLength: 256
     errorObject:
       type: object
       required:
@@ -1385,79 +1061,10 @@ components:
           description: Diagnostic information in the form of key/value pairs relating to the error.
           allOf:
           - $ref: '#/components/schemas/metadataArray'
-    redemptionAccountIdentifiers:
-      type: array
-      description: A collection of key/value pairs that enable the redemption account to be identified. Keys include MSISDN and Wallet Identifier.
-      items:
-        $ref: '#/components/schemas/party'
-      maxItems: 50
-    type:
+    requestDate:
       type: string
-      description: The harmonised Transaction Type.
-      enum:
-      - billpay
-      - deposit
-      - disbursement
-      - transfer
-      - merchantpay
-      - inttransfer
-      - adjustment
-      - reversal
-      - withdrawal
-    requestStateObject:
-      type: object
-      required:
-      - notificationMethod
-      - serverCorrelationId
-      - status
-      properties:
-        serverCorrelationId:
-          type: string
-          description: A unique identifier issued by the provider to enable the client to identify the RequestState resource on subsequent polling requests. Must be supplied as a UUID.
-          minLength: 1
-          maxLength: 256
-          pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-        objectReference:
-          type: string
-          description: Provides a reference to the subject resource, e.g. transaction reference.
-          minLength: 0
-          maxLength: 256
-        status:
-          type: string
-          enum:
-          - pending
-          - completed
-          - failed
-          description: Indicates the status of the request.
-        notificationMethod:
-          type: string
-          enum:
-          - callback
-          - polling
-          description: Indicates whether a callback will be issued or whether the client will need to poll.
-        pendingReason:
-          type: string
-          description: A textual description that can be provided to describe the reason for a pending status.
-          minLength: 0
-          maxLength: 256
-        expiryTime:
-          type: string
-          format: date-time
-          description: Indicate the time by which the provider will fail the request if completion criteria have not been met. For an example, a debit party failing to authorise within the allowed period.
-        pollLimit:
-          type: number
-          format: int32
-          description: Indicates the number of poll attempts for the given requeststate resource that will be allowed by the provider.
-          exclusiveMinimum: 0
-        error:
-          description: If the asynchronous processing failed, details of the error will be returned here.
-          allOf:
-          - $ref: '#/components/schemas/errorObject'
-    subType:
-      type: string
-      description: A non-harmonised sub-classification of the type of transaction. Values are not fixed, and usage will vary according to Provider.
-      minLength: 0
-      maxLength: 256
+      format: date-time
+      description: The date and time of the request as supplied by the client.
     redemptionTransactionTypes:
       type: array
       description: Indicates the Transaction Types(s) that the code can be redeemed against.
@@ -1471,13 +1078,27 @@ components:
         required:
         - transactionType
       maxItems: 50
-    holdFundsIndicator:
-      type: boolean
-      description: Indicates whether funds should be reserved against the payers account where the payer is the requestor.
-    creationDate:
-      type: string
-      format: date-time
-      description: Date and time when the object was created by the API Provider.
+    requestGenericPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          description: Indicates the Patch operation to be performed. 'replace' is used to update a field and 'add' is used to add a new field.
+          type: string
+          enum:
+          - replace
+          - add
+        path:
+          description: Specify the field to be updated or added preceded by '/'.
+          type: string
+          maxLength: 256
+        value:
+          description: Specify the value of the field to be updated or added.
+          type: string
+          maxLength: 256
     requestGenericPatchArray:
       type: array
       description: Collection of updates that are to be processed.
@@ -1485,6 +1106,129 @@ components:
         $ref: '#/components/schemas/requestGenericPatch'
       minItems: 1
       maxItems: 10
+    responseAuthorisationCode:
+      type: object
+      required:
+      - authorisationCode
+      - codeState
+      properties:
+        authorisationCode:
+          $ref: '#/components/schemas/authorisationCode'
+        codeState:
+          $ref: '#/components/schemas/codeState'
+        amount:
+          description: Indicates the amount associated with the authorisation code.
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          example: '15.00'
+        currency:
+          description: Indicates the Amount Currency. Must be supplied when an amount is supplied.
+          allOf:
+          - $ref: '#/components/schemas/currency'
+        amountType:
+          $ref: '#/components/schemas/amountType'
+        codeLifetime:
+          $ref: '#/components/schemas/codeLifetime'
+        holdFundsIndicator:
+          $ref: '#/components/schemas/holdFundsIndicator'
+        redemptionAccountIdentifiers:
+          $ref: '#/components/schemas/redemptionAccountIdentifiers'
+        redemptionChannels:
+          $ref: '#/components/schemas/redemptionChannels'
+        redemptionTransactionTypes:
+          $ref: '#/components/schemas/redemptionTransactionTypes'
+        requestingOrganisation:
+          $ref: '#/components/schemas/requestingOrganisation'
+        creationDate:
+          $ref: '#/components/schemas/creationDate'
+        modificationDate:
+          $ref: '#/components/schemas/modificationDate'
+        requestDate:
+          $ref: '#/components/schemas/requestDate'
+        customData:
+          $ref: '#/components/schemas/customDataArray'
+        metadata:
+          $ref: '#/components/schemas/metadataArray'
+    creationDate:
+      type: string
+      format: date-time
+      description: Date and time when the object was created by the API Provider.
+    metadata:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Identifies the type of additional field.
+          minLength: 1
+          maxLength: 256
+        value:
+          type: string
+          description: Identifies the value of the additional field.
+          minLength: 1
+          maxLength: 256
+    type:
+      type: string
+      description: The harmonised Transaction Type.
+      enum:
+      - billpay
+      - deposit
+      - disbursement
+      - transfer
+      - merchantpay
+      - inttransfer
+      - adjustment
+      - reversal
+      - withdrawal
+    redemptionAccountIdentifiers:
+      type: array
+      description: A collection of key/value pairs that enable the redemption account to be identified. Keys include MSISDN and Wallet Identifier.
+      items:
+        $ref: '#/components/schemas/party'
+      maxItems: 50
+    modificationDate:
+      type: string
+      format: date-time
+      description: Date and time when the object was modified by the API Provider.
+    subType:
+      type: string
+      description: A non-harmonised sub-classification of the type of transaction. Values are not fixed, and usage will vary according to Provider.
+      minLength: 0
+      maxLength: 256
+    requestAuthorisationCode:
+      type: object
+      properties:
+        amount:
+          description: Indicates the amount associated with the authorisation code.
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          example: '15.00'
+        currency:
+          description: Indicates the Amount Currency. Must be supplied when an amount is supplied.
+          allOf:
+          - $ref: '#/components/schemas/currency'
+        amountType:
+          $ref: '#/components/schemas/amountType'
+        codeLifetime:
+          $ref: '#/components/schemas/codeLifetime'
+        holdFundsIndicator:
+          $ref: '#/components/schemas/holdFundsIndicator'
+        redemptionAccountIdentifiers:
+          $ref: '#/components/schemas/redemptionAccountIdentifiers'
+        redemptionChannels:
+          $ref: '#/components/schemas/redemptionChannels'
+        redemptionTransactionTypes:
+          $ref: '#/components/schemas/redemptionTransactionTypes'
+        requestingOrganisation:
+          $ref: '#/components/schemas/requestingOrganisation'
+        requestDate:
+          $ref: '#/components/schemas/requestDate'
+        customData:
+          $ref: '#/components/schemas/customDataArray'
+        metadata:
+          $ref: '#/components/schemas/metadataArray'
     currency:
       type: string
       enum:
@@ -1666,7 +1410,270 @@ components:
       - ZAR
       - ZMW
       - ZWL
+    redemptionChannels:
+      type: array
+      description: Indicates the channel(s) that the code can be redeemed against, e.g. ATM, Merchant, etc.
+      items:
+        type: object
+        properties:
+          channelType:
+            type: string
+            description: Identifies the channel type.
+            minLength: 1
+            maxLength: 256
+        required:
+        - channelType
+      maxItems: 50
+    genericUpdateSuccess:
+      type: object
+      required:
+      - result
+      properties:
+        result:
+          type: string
+          description: The success message provided in a callback to communicate the success of an update operation.
+          enum:
+          - success
+    requestingOrganisation:
+      type: object
+      description: An object that details the originating organisation of the request.
+      required:
+      - requestingOrganisationIdentifierType
+      - requestingOrganisationIdentifier
+      properties:
+        requestingOrganisationIdentifierType:
+          type: string
+          description: Identifies the identifier type of the requesting organisation.
+          enum:
+          - lei
+          - swiftbic
+          - organisationid
+        requestingOrganisationIdentifier:
+          type: string
+          description: Contains the requesting organisation identifier.
+          minLength: 1
+          maxLength: 256
+    metadataArray:
+      type: array
+      description: A collection of key/value pairs. These can be used to populate additional properties that describe administrative information regarding the resource.
+      items:
+        $ref: '#/components/schemas/metadata'
+      maxItems: 20
+  parameters:
+    X-User-Credential-2:
+      name: X-User-Credential-2
+      in: header
+      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    offset:
+      name: offset
+      in: query
+      description: Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60.
+      required: false
+      schema:
+        type: integer
+        format: int32
+    X-User-Bearer:
+      name: X-User-Bearer
+      in: header
+      description: Used to pass user’s access token when OAuth 2.0/OIDC authorisation framework is used for end-user authentication.
+      required: false
+      schema:
+        type: string
+    X-User-Credential-1:
+      name: X-User-Credential-1
+      in: header
+      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    X-Date:
+      name: X-Date
+      in: header
+      description: Header parameter to indicate the date and time that the message was originated. It is used for basic message integrity checks, to ensure the request is not stale. Note that the header was previously referenced as 'Date' in version 1.0 of the Mobile Money API.
+      required: false
+      schema:
+        type: string
+        format: date-time
+    codeState:
+      name: codeState
+      in: query
+      description: Allows returned records to be filtered on state of the authorisation code.
+      required: true
+      schema:
+        type: string
+        maxLength: 256
+    limit:
+      name: limit
+      in: query
+      description: Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request.
+      required: false
+      schema:
+        type: integer
+        format: int32
+    toDateTime:
+      name: toDateTime
+      in: query
+      description: Indicates the maximum creation date for which records should be returned.
+      required: false
+      schema:
+        type: string
+        format: date-time
+    accountId:
+      name: accountId
+      in: path
+      description: 'Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference.'
+      required: true
+      schema:
+        type: string
+        pattern: ^((accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+))(\$(accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+)){0,2}$
+    X-Callback-URL:
+      name: X-Callback-URL
+      in: header
+      description: The URL supplied by the client that will be used to return the callback in the form of a HTTP PUT.
+      required: false
+      schema:
+        type: string
+        format: uri
+    X-Channel:
+      name: X-Channel
+      in: header
+      description: String containing the channel that was used to originate the request. For example USSD, Web, App.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    X-CorrelationID:
+      name: X-CorrelationID
+      in: header
+      description: Header parameter to uniquely identify the request. Must be supplied as a UUID.
+      required: false
+      schema:
+        type: string
+        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+    X-Account-Holding-Institution-Identifier:
+      name: X-Account-Holding-Institution-Identifier
+      in: header
+      description: A header variable that identifies the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier-Type header.
+      required: false
+      schema:
+        type: string
+    authorisationCode:
+      name: authorisationCode
+      in: path
+      description: Path variable to uniquely identify an authorisation code.
+      required: true
+      schema:
+        type: string
+        maxLength: 256
+        minLength: 1
+    X-Content-Hash:
+      name: X-Content-Hash
+      in: header
+      description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
+      required: false
+      schema:
+        type: string
+    X-Account-Holding-Institution-Identifier-Type:
+      name: X-Account-Holding-Institution-Identifier-Type
+      in: header
+      description: A header variable that identifies the type of the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier header.
+      required: false
+      schema:
+        type: string
+        enum:
+        - lei
+        - swiftbic
+        - organisationid
+    X-Client-Id:
+      name: X-Client-Id
+      in: header
+      description: Used to pass pre-shared client's identifier to the server.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    X-API-Key:
+      name: X-API-Key
+      in: header
+      description: Used to pass pre-shared client's API key to the server.
+      required: false
+      schema:
+        type: string
+    identifier:
+      name: identifier
+      in: path
+      description: Path variable that contains the account identifier.
+      required: true
+      schema:
+        type: string
+        maxLength: 256
+        minLength: 1
+    fromDateTime:
+      name: fromDateTime
+      in: query
+      description: Indicates the minimum creation date for which records should be returned.
+      required: false
+      schema:
+        type: string
+        format: date-time
+    identifierType:
+      name: identifierType
+      in: path
+      required: true
+      description: Path variable to specify the type of the identifier that is used to identify the account.
+      schema:
+        type: string
+        enum:
+        - accountid
+        - msisdn
+        - walletid
+        - linkref
+        - consumerno
+        - serviceprovider
+        - storeid
+        - accountcategory
+        - bankaccountno
+        - accountrank
+        - identityalias
+        - iban
+        - swiftbic
+        - sortcode
+        - organisationid
+        - bankname
+        - bankaccounttitle
+        - username
+        - emailaddress
+        - mandatereference
+  headers:
+    X-Records-Returned-Count:
+      required: false
+      description: Integer containing number of records that are returned.
+      schema:
+        type: integer
+        format: int32
+    X-Date:
+      required: false
+      description: The date and time that the response message was sent.
+      schema:
+        type: string
+        format: date-time
+    X-Records-Available-Count:
+      required: false
+      description: Integer containing number of records that are available to be returned.
+      schema:
+        type: integer
+        format: int32
   requestBodies:
+    genericUpdateSuccess:
+      required: true
+      description: Represents the request body of a success message callback to an update event.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericUpdateSuccess'
     requestAuthorisationCode:
       required: true
       description: Represents the request body of an Authorisation Code.
@@ -1695,10 +1702,3 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/errorObject'
-    genericUpdateSuccess:
-      required: true
-      description: Represents the request body of a success message callback to an update event.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/genericUpdateSuccess'
