@@ -74,14 +74,78 @@ paths:
         '503':
           $ref: '#/components/responses/Generic503'
 components:
-  parameters:
-    x-correlator:
-      name: x-correlator
-      in: header
-      description: Correlation id for the different services
-      schema:
-        type: string
+  schemas:
+    ErrorInfo:
+      description: error information
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP status code returned along with this error response
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+    CreateCallForwardingSignal:
+      description: resource containing the phone number (PhoneNumber) regarding which the Call Forwarding Service must be checked
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+    PhoneNumber:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+123456789'
+    UnconditionalCallForwardingSignal:
+      description: resource containing the information about the Unconditional Call Forwarding Service for the given phone number (PhoneNumber)
+      type: object
+      properties:
+        active:
+          type: boolean
+          description: Indicates if the unconditional call forwarding service is active.
   responses:
+    Generic500:
+      description: Server error
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 500
+            code: INTERNAL
+            message: Server error
+    Generic429:
+      description: Too Many Requests
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_429_QUOTA_EXCEEDED:
+              description: Request is rejected due to exceeding a business quota limit.
+              value:
+                status: 429
+                code: QUOTA_EXCEEDED
+                message: Either out of resource quota or reaching rate limiting.
+            GENERIC_429_TOO_MANY_REQUESTS:
+              description: API Server request limit is overpassed
+              value:
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Either out of resource quota or reaching rate limiting.
     Generic403:
       description: Client does not have sufficient permission
       headers:
@@ -102,8 +166,8 @@ components:
                 status: 403
                 code: INVALID_TOKEN_CONTEXT
                 message: PhoneNumber parameter doesn't match the value from the access token context
-    Generic503:
-      description: Service unavailable. Typically the server is down
+    Generic401:
+      description: Authentication problem with the client request
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -112,11 +176,11 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorInfo'
           example:
-            status: 503
-            code: UNAVAILABLE
-            message: Service unavailable
-    Generic409:
-      description: Conflict
+            status: 401
+            code: UNAUTHENTICATED
+            message: Request not authenticated due to missing, invalid, or expired credentials
+    Generic400:
+      description: Problem with the client request
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -124,25 +188,10 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_409_ABORTED:
-              description: Concurrency of processes of the same nature/scope
-              value:
-                status: 409
-                code: ABORTED
-                message: Concurrency conflict.
-            GENERIC_409_ALREADY_EXISTS:
-              description: Trying to create an existing resource
-              value:
-                status: 409
-                code: ALREADY_EXISTS
-                message: The resource that a client tried to create already exists.
-            GENERIC_409_CONFLICT:
-              description: Duplication of an existing resource
-              value:
-                status: 409
-                code: CONFLICT
-                message: A specified resource duplicate entry found.
+          example:
+            status: 400
+            code: INVALID_ARGUMENT
+            message: Client specified an invalid argument, request body or query param
     Generic415:
       description: Unsupported Media Type
       headers:
@@ -159,8 +208,8 @@ components:
                 status: 415
                 code: UNSUPPORTED_MEDIA_TYPE
                 message: The server refuses to accept the request because the payload format is in an unsupported format.
-    Generic500:
-      description: Server error
+    Generic404:
+      description: The specified resource was not found
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -169,11 +218,11 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorInfo'
           example:
-            status: 500
-            code: INTERNAL
-            message: Server error
-    Generic401:
-      description: Authentication problem with the client request
+            status: 404
+            code: CALL_FORWARDING.UNKNOWN_PHONE_NUMBER
+            message: Call forwarding check can't be done because the phone number is unknown
+    Generic503:
+      description: Service unavailable. Typically the server is down
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -182,9 +231,22 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorInfo'
           example:
-            status: 401
-            code: UNAUTHENTICATED
-            message: Request not authenticated due to missing, invalid, or expired credentials
+            status: 503
+            code: UNAVAILABLE
+            message: Service unavailable
+    Generic504:
+      description: Request time exceeded. If it happens repeatedly, consider reducing the request complexity
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 504
+            code: TIMEOUT
+            message: Request timeout exceeded. Try later
     Generic422:
       description: Unprocessable Content
       headers:
@@ -213,8 +275,8 @@ components:
                 status: 422
                 code: UNIDENTIFIABLE_DEVICE
                 message: phone number not defined
-    Generic429:
-      description: Too Many Requests
+    Generic409:
+      description: Conflict
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -223,93 +285,31 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorInfo'
           examples:
-            GENERIC_429_QUOTA_EXCEEDED:
-              description: Request is rejected due to exceeding a business quota limit.
+            GENERIC_409_ABORTED:
+              description: Concurrency of processes of the same nature/scope
               value:
-                status: 429
-                code: QUOTA_EXCEEDED
-                message: Either out of resource quota or reaching rate limiting.
-            GENERIC_429_TOO_MANY_REQUESTS:
-              description: API Server request limit is overpassed
+                status: 409
+                code: ABORTED
+                message: Concurrency conflict.
+            GENERIC_409_ALREADY_EXISTS:
+              description: Trying to create an existing resource
               value:
-                status: 429
-                code: TOO_MANY_REQUESTS
-                message: Either out of resource quota or reaching rate limiting.
-    Generic404:
-      description: The specified resource was not found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 404
-            code: CALL_FORWARDING.UNKNOWN_PHONE_NUMBER
-            message: Call forwarding check can't be done because the phone number is unknown
-    Generic504:
-      description: Request time exceeded. If it happens repeatedly, consider reducing the request complexity
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 504
-            code: TIMEOUT
-            message: Request timeout exceeded. Try later
-    Generic400:
-      description: Problem with the client request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 400
-            code: INVALID_ARGUMENT
-            message: Client specified an invalid argument, request body or query param
-  schemas:
-    UnconditionalCallForwardingSignal:
-      description: resource containing the information about the Unconditional Call Forwarding Service for the given phone number (PhoneNumber)
-      type: object
-      properties:
-        active:
-          type: boolean
-          description: Indicates if the unconditional call forwarding service is active.
-    PhoneNumber:
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
-      type: string
-      pattern: ^\+[1-9][0-9]{4,14}$
-      example: '+123456789'
-    ErrorInfo:
-      description: error information
-      type: object
-      required:
-      - status
-      - code
-      - message
-      properties:
-        status:
-          type: integer
-          description: HTTP status code returned along with this error response
-        code:
-          type: string
-          description: Code given to this error
-        message:
-          type: string
-          description: Detailed error description
-    CreateCallForwardingSignal:
-      description: resource containing the phone number (PhoneNumber) regarding which the Call Forwarding Service must be checked
-      type: object
-      properties:
-        phoneNumber:
-          $ref: '#/components/schemas/PhoneNumber'
+                status: 409
+                code: ALREADY_EXISTS
+                message: The resource that a client tried to create already exists.
+            GENERIC_409_CONFLICT:
+              description: Duplication of an existing resource
+              value:
+                status: 409
+                code: CONFLICT
+                message: A specified resource duplicate entry found.
+  parameters:
+    x-correlator:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        type: string
   headers:
     x-correlator:
       description: Correlation id for the different services

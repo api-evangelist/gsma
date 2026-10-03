@@ -102,9 +102,9 @@ paths:
         - location-retrieval:read
 components:
   examples:
-    LOCATION_CIRCLE_WITH_DEVICE:
-      summary: circle-based device location retrieval, returning the device identifier used by the implementation
-      description: The device is localized within a circle with a center at the specified coordinates and a radius of 800 meters. Response when the request used a 2-legged access token with multiple device identifiers, or possibly only a single device identifier.
+    RETRIEVAL_CIRCLE:
+      summary: circle-based device location retrieval
+      description: The device is localized within a circle with a center at the specified coordinates and a radius of 800 meters.
       value:
         lastLocationTime: '2023-10-17T13:18:23.682Z'
         area:
@@ -113,8 +113,6 @@ components:
             latitude: 45.754114
             longitude: 4.860374
           radius: 800
-        device:
-          phoneNumber: '+123456789'
     RETRIEVAL_POLYGON:
       summary: polygon-based device location retrieval
       description: The device is localized within a polygon delimited by the provided coordinates.
@@ -133,9 +131,9 @@ components:
             longitude: 4.861125
           - latitude: 45.751442
             longitude: 4.859827
-    RETRIEVAL_CIRCLE:
-      summary: circle-based device location retrieval
-      description: The device is localized within a circle with a center at the specified coordinates and a radius of 800 meters.
+    LOCATION_CIRCLE_WITH_DEVICE:
+      summary: circle-based device location retrieval, returning the device identifier used by the implementation
+      description: The device is localized within a circle with a center at the specified coordinates and a radius of 800 meters. Response when the request used a 2-legged access token with multiple device identifiers, or possibly only a single device identifier.
       value:
         lastLocationTime: '2023-10-17T13:18:23.682Z'
         area:
@@ -144,6 +142,8 @@ components:
             latitude: 45.754114
             longitude: 4.860374
           radius: 800
+        device:
+          phoneNumber: '+123456789'
   responses:
     Generic403:
       description: Forbidden
@@ -272,10 +272,12 @@ components:
                 code: LOCATION_RETRIEVAL.UNABLE_TO_LOCATE
                 message: The network is unable to locate the device
   schemas:
-    DeviceResponse:
-      $ref: ../common/CAMARA_common.yaml#/components/schemas/DeviceResponse
-    Area:
-      $ref: ../common/CAMARA_common.yaml#/components/schemas/Area
+    LastLocationTime:
+      description: Last date and time when the device was localized. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+      type: string
+      format: date-time
+      maxLength: 64
+      example: '2023-09-07T10:40:52Z'
     Location:
       type: object
       description: Device location
@@ -289,12 +291,8 @@ components:
           $ref: '#/components/schemas/Area'
         device:
           $ref: '#/components/schemas/DeviceResponse'
-    LastLocationTime:
-      description: Last date and time when the device was localized. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-      type: string
-      format: date-time
-      maxLength: 64
-      example: '2023-09-07T10:40:52Z'
+    DeviceResponse:
+      $ref: ../common/CAMARA_common.yaml#/components/schemas/DeviceResponse
     RetrievalLocationRequest:
       description: Request to retrieve the location of a device. Device is not required when using a 3-legged access token, following the rules in the description.
       type: object
@@ -314,6 +312,8 @@ components:
           maximum: 2147483647
           description: Maximum surface in square meters which is accepted by the client for the location retrieval. Absence of maxSurface means "any surface size".
           example: 1000000
+    Area:
+      $ref: ../common/CAMARA_common.yaml#/components/schemas/Area
   securitySchemes:
     openId:
       description: OpenID Connect authentication

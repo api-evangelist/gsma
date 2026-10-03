@@ -167,98 +167,43 @@ paths:
         onTrafficInfluenceChanged:
           $ref: '#/components/callbacks/onTrafficInfluenceChanged'
 components:
-  callbacks:
-    onTrafficInfluenceChanged:
-      '{$request.body.notificationUri}/event':
-        post:
-          tags:
-          - Traffic Influence CALLBACK Operation
-          summary: Provides a notifican channel for changes in the TrafficInfluence resource
-          description: Creating, modifying or delating a Traffic Influece resourece is an asycronous task. For this reason a notification channel via callback to a specified URL is provided.
-          operationId: postTrafficInfluence
-          parameters:
-          - $ref: '#/components/parameters/x-correlator'
-          requestBody:
-            description: subscription payload which contains the updated traffic influence instance
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/TrafficInfluenceNotification'
-          responses:
-            '202':
-              description: Your server implementation should return this HTTP status code if the data was received successfully
-              headers:
-                x-correlator:
-                  $ref: '#/components/headers/x-correlator'
-            '204':
-              description: Your server should return this HTTP status code if no longer interested in further updates
-              headers:
-                x-correlator:
-                  $ref: '#/components/headers/x-correlator'
+  parameters:
+    x-correlator:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services.
+      schema:
+        type: string
   schemas:
-    PhoneNumber:
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+    AppInstanceId:
       type: string
-      pattern: ^\+[1-9][0-9]{4,14}$
-      example: '+123456789'
-    Protocol:
-      description: The protocol for the influeced flow. It can be specified and it is identified by a string according to the column Keyword as defined by IANA (https://www.iana.org/assignments/protocol-numbers/\ protocol-numbers.xhtml), e.g. UDP or TCP.
+      format: uuid
+      description: A globally unique identifier associated with a running instance of an application. OP generates this identifier.
+    AppId:
       type: string
-      example: TCP
-    DeviceIpv6Address:
-      description: "The device should be identified by the observed IPv6 address, or by any\n  single IPv6 address from within the subnet allocated to the device\n  (e.g. adding ::0 to the /64 prefix).\n"
+      format: uuid
+      example: 6B29FC40-CA47-1067-B31D-00DD010662DA
+      description: A globally unique identifier associated with theapplication. OP generates this identifier when the application is submitted over NBI.
+    EdgeCloudRegion:
       type: string
-      format: ipv6
-      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
-    Device:
-      description: 'End-user equipment able to connect to a mobile network. Examples of
+      description: 'Human readable name of the geographical Edge Cloud Region of
 
-        devices include smartphones or IoT sensors/actuators.
-
-        The developer can choose to provide the below specified device
-
-        identifiers:
-
-        * `ipv4Address`
-
-        * `ipv6Address`
-
-        * `phoneNumber`
-
-        * `networkAccessIdentifier`
-
-        NOTE1: the MNO might support only a subset of these options.
-
-        The API invoker can provide multiple identifiers to be compatible
-
-        across different MNOs. In this case the identifiers MUST belong to
-
-        the same device.
-
-        NOTE2: for the Commonalities release v0.4, we are enforcing that the
-
-        networkAccessIdentifier is only part of the schema for
-
-        future-proofing, and CAMARA does not currently allow its use.
-
-        After the CAMARA meta-release work is concluded and the relevant
-
-        issues are resolved, its use will need to be explicitly documented
-
-        in the guidelines.
+        the Edge Cloud. Defined by the Edge Cloud Provider.
 
         '
-      type: object
+      additionalProperties: false
+    PostTrafficInfluence:
+      allOf:
+      - $ref: '#/components/schemas/TrafficInfluence'
       properties:
-        phoneNumber:
-          $ref: '#/components/schemas/PhoneNumber'
-        networkAccessIdentifier:
-          $ref: '#/components/schemas/NetworkAccessIdentifier'
-        ipv4Address:
-          $ref: '#/components/schemas/DeviceIpv4Addr'
-        ipv6Address:
-          $ref: '#/components/schemas/DeviceIpv6Address'
-      minProperties: 1
+        trafficInfluenceID:
+          readOnly: true
+        state:
+          readOnly: true
+    NetworkAccessIdentifier:
+      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+      type: string
+      example: 123456789@domain.com
     PatchTrafficInfluence:
       description: inherits from TrafficInfluence and restricts the access to certain parameters. Only some paramter can be indeed modified with the PATCH operation.
       allOf:
@@ -272,14 +217,6 @@ components:
           readOnly: true
         state:
           readOnly: true
-    TrafficInfluenceNotification:
-      type: object
-      description: Notifican channel for changes in the TrafficInfluence resource. It returnes back the TrafficInfluece resource with the updated status ("state") and also proivides back the identifier of the selected EAS instance.
-      allOf:
-      - $ref: '#/components/schemas/TrafficInfluence'
-      properties:
-        selected_appInstanceId:
-          $ref: '#/components/schemas/AppInstanceId'
     ErrorInfo:
       description: Information in case of error
       type: object
@@ -293,11 +230,6 @@ components:
         message:
           type: string
           description: Detailed error description
-    SingleIpv4Addr:
-      description: A single IPv4 address with no subnet mask
-      type: string
-      format: ipv4
-      example: 84.125.93.10
     TrafficInfluence:
       description: Resource conteining the informations to influence the traffic from the device to the EAS
       type: object
@@ -354,32 +286,22 @@ components:
       required:
       - apiConsumerId
       - appId
-    NetworkAccessIdentifier:
-      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+    Protocol:
+      description: The protocol for the influeced flow. It can be specified and it is identified by a string according to the column Keyword as defined by IANA (https://www.iana.org/assignments/protocol-numbers/\ protocol-numbers.xhtml), e.g. UDP or TCP.
       type: string
-      example: 123456789@domain.com
-    Port:
-      description: TCP or UDP port number
-      type: integer
-      minimum: 0
-      maximum: 65535
-    AppInstanceId:
-      type: string
-      format: uuid
-      description: A globally unique identifier associated with a running instance of an application. OP generates this identifier.
-    EdgeCloudZoneId:
-      type: string
-      format: uuid
-      description: 'Unique identifier created by the Edge Cloud Platform to identify an
-
-        Edge Cloud Zone within an Edge Cloud
-
-        '
-    AppId:
-      type: string
-      format: uuid
-      example: 6B29FC40-CA47-1067-B31D-00DD010662DA
-      description: A globally unique identifier associated with theapplication. OP generates this identifier when the application is submitted over NBI.
+      example: TCP
+    ErrResponse:
+      description: Responce feedback in case of errors
+      type: object
+      properties:
+        status:
+          description: status for the error
+          type: string
+          example: OK
+        message:
+          description: additional message for the error
+          type: string
+          example: OK
     DeviceIpv4Addr:
       type: object
       description: "The device should be identified by either the public (observed) IP\n  address and port as seen by the application server, or the private\n  (local) and any public (observed) IP addresses in use by the device\n  (this information can be obtained by various means, for example from\n  some DNS servers).\nIf the allocated and observed IP addresses are the same (i.e. NAT is not\n  in use) then  the same address should be specified for both\n  publicAddress and privateAddress.\nIf NAT64 is in use, the device should be identified by its publicAddress\n  and publicPort, or separately by its allocated IPv6 address (field\n  ipv6Address of the Device object)\nIn all cases, publicAddress must be specified, along with at least one\n  of either privateAddress or publicPort, dependent upon which is known.\n  In general, mobile devices cannot be identified by their public IPv4\n  address alone.\n"
@@ -400,34 +322,119 @@ components:
       example:
         publicAddress: 84.125.93.10
         publicPort: 59765
-    ErrResponse:
-      description: Responce feedback in case of errors
+    DeviceIpv6Address:
+      description: "The device should be identified by the observed IPv6 address, or by any\n  single IPv6 address from within the subnet allocated to the device\n  (e.g. adding ::0 to the /64 prefix).\n"
+      type: string
+      format: ipv6
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+    TrafficInfluenceNotification:
       type: object
-      properties:
-        status:
-          description: status for the error
-          type: string
-          example: OK
-        message:
-          description: additional message for the error
-          type: string
-          example: OK
-    PostTrafficInfluence:
+      description: Notifican channel for changes in the TrafficInfluence resource. It returnes back the TrafficInfluece resource with the updated status ("state") and also proivides back the identifier of the selected EAS instance.
       allOf:
       - $ref: '#/components/schemas/TrafficInfluence'
       properties:
-        trafficInfluenceID:
-          readOnly: true
-        state:
-          readOnly: true
-    EdgeCloudRegion:
+        selected_appInstanceId:
+          $ref: '#/components/schemas/AppInstanceId'
+    SingleIpv4Addr:
+      description: A single IPv4 address with no subnet mask
       type: string
-      description: 'Human readable name of the geographical Edge Cloud Region of
+      format: ipv4
+      example: 84.125.93.10
+    Port:
+      description: TCP or UDP port number
+      type: integer
+      minimum: 0
+      maximum: 65535
+    PhoneNumber:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+123456789'
+    EdgeCloudZoneId:
+      type: string
+      format: uuid
+      description: 'Unique identifier created by the Edge Cloud Platform to identify an
 
-        the Edge Cloud. Defined by the Edge Cloud Provider.
+        Edge Cloud Zone within an Edge Cloud
 
         '
-      additionalProperties: false
+    Device:
+      description: 'End-user equipment able to connect to a mobile network. Examples of
+
+        devices include smartphones or IoT sensors/actuators.
+
+        The developer can choose to provide the below specified device
+
+        identifiers:
+
+        * `ipv4Address`
+
+        * `ipv6Address`
+
+        * `phoneNumber`
+
+        * `networkAccessIdentifier`
+
+        NOTE1: the MNO might support only a subset of these options.
+
+        The API invoker can provide multiple identifiers to be compatible
+
+        across different MNOs. In this case the identifiers MUST belong to
+
+        the same device.
+
+        NOTE2: for the Commonalities release v0.4, we are enforcing that the
+
+        networkAccessIdentifier is only part of the schema for
+
+        future-proofing, and CAMARA does not currently allow its use.
+
+        After the CAMARA meta-release work is concluded and the relevant
+
+        issues are resolved, its use will need to be explicitly documented
+
+        in the guidelines.
+
+        '
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+        networkAccessIdentifier:
+          $ref: '#/components/schemas/NetworkAccessIdentifier'
+        ipv4Address:
+          $ref: '#/components/schemas/DeviceIpv4Addr'
+        ipv6Address:
+          $ref: '#/components/schemas/DeviceIpv6Address'
+      minProperties: 1
+  callbacks:
+    onTrafficInfluenceChanged:
+      '{$request.body.notificationUri}/event':
+        post:
+          tags:
+          - Traffic Influence CALLBACK Operation
+          summary: Provides a notifican channel for changes in the TrafficInfluence resource
+          description: Creating, modifying or delating a Traffic Influece resourece is an asycronous task. For this reason a notification channel via callback to a specified URL is provided.
+          operationId: postTrafficInfluence
+          parameters:
+          - $ref: '#/components/parameters/x-correlator'
+          requestBody:
+            description: subscription payload which contains the updated traffic influence instance
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/TrafficInfluenceNotification'
+          responses:
+            '202':
+              description: Your server implementation should return this HTTP status code if the data was received successfully
+              headers:
+                x-correlator:
+                  $ref: '#/components/headers/x-correlator'
+            '204':
+              description: Your server should return this HTTP status code if no longer interested in further updates
+              headers:
+                x-correlator:
+                  $ref: '#/components/headers/x-correlator'
   responses:
     OkDeletionInProgress:
       description: The resource delation request has been accepted
@@ -441,19 +448,6 @@ components:
           example:
             status: OK
             message: Accepted
-    Generic503:
-      description: Service unavailable. Typically the server is down
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 503
-            code: UNAVAILABLE
-            message: Service unavailable
     Generic401:
       description: Authentication problem with the client request
       headers:
@@ -467,6 +461,55 @@ components:
             status: 401
             code: UNAUTHENTICATED
             message: Request not authenticated due to missing, invalid, or expired credentials
+    ResNotFound:
+      description: The specified resource was not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrResponse'
+          example:
+            status: ERROR
+            message: Resource not found
+    Generic503:
+      description: Service unavailable. Typically the server is down
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 503
+            code: UNAVAILABLE
+            message: Service unavailable
+    BackendConnTimeout:
+      description: Connection timeout towards backend service has occurred
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrResponse'
+          example:
+            status: ERROR
+            message: Backend connection timeout
+    GenericError:
+      description: An unknow error has occurred
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrResponse'
+          example:
+            status: ERROR
+            message: Generic error
     Generic403:
       description: Client does not have sufficient permission
       headers:
@@ -487,30 +530,6 @@ components:
                 status: 403
                 code: INVALID_TOKEN_CONTEXT
                 message: Phone number cannot be deducted from access token context
-    BackendConnTimeout:
-      description: Connection timeout towards backend service has occurred
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrResponse'
-          example:
-            status: ERROR
-            message: Backend connection timeout
-    ResNotFound:
-      description: The specified resource was not found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrResponse'
-          example:
-            status: ERROR
-            message: Resource not found
     Generic400:
       description: Problem with the client request
       headers:
@@ -524,27 +543,8 @@ components:
             status: 400
             code: INVALID_ARGUMENT
             message: Client specified an invalid argument, request body or query param
-    GenericError:
-      description: An unknow error has occurred
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrResponse'
-          example:
-            status: ERROR
-            message: Generic error
   headers:
     x-correlator:
-      description: Correlation id for the different services.
-      schema:
-        type: string
-  parameters:
-    x-correlator:
-      name: x-correlator
-      in: header
       description: Correlation id for the different services.
       schema:
         type: string

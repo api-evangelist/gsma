@@ -68,27 +68,72 @@ paths:
         '504':
           $ref: '#/components/responses/Generic504'
 components:
-  parameters:
-    x-correlator:
-      name: x-correlator
-      in: header
-      description: Correlation id for the different services
-      schema:
-        type: string
+  schemas:
+    ErrorInfo:
+      type: object
+      required:
+      - message
+      - status
+      - code
+      properties:
+        message:
+          type: string
+          description: A human readable description of what the event represent
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: Friendly Code to describe the error
+    QosOnDemandUpdate:
+      type: object
+      description: Payload to change the QoS behaviour associated to a home device.
+      required:
+      - serviceClass
+      - ipAddress
+      properties:
+        serviceClass:
+          type: string
+          description: 'The name of the service class requested by the API client. It is associated with QoS behaviours optimised for a particular application type. Each service class is mapped to a DSCP value according to [RFC4594](https://datatracker.ietf.org/doc/html/rfc4594) guidelines. The DSCP value is used to classify the target home device''s traffic so that it can be treated accordingly (i.e. to meet its QoS needs).
+
+
+            The following service classes are supported:
+
+
+            | Service Class Name    | DSCP Name | DSCP value (decimal) | DCSP value (binary) | Application Examples                          |
+
+            |-----------------------|-----------|----------------------|---------------------|-----------------------------------------------|
+
+            | Real-Time Interactive |    CS4    |          32          |        100000       | Video conferencing and Interactive gaming     |
+
+            | Multimedia Streaming  |    AF31   |          26          |        011010       | Streaming video and audio on demand           |
+
+            | Broadcast Video       |    CS3    |          24          |        011000       | Broadcast TV & live events                    |
+
+            | Low-Latency Data      |    AF21   |          18          |        010010       | Client/server transactions Web-based ordering |
+
+            | High-Throughput Data  |    AF11   |          10          |        001010       | Store and forward applications                |
+
+            | Low-Priority Data     |    CS1    |           8          |        001000       | Any flow that has no BW assurance             |
+
+            | Standard              |  DF(CS0)  |           0          |        000000       | Undifferentiated applications                 |
+
+            '
+          enum:
+          - real_time_interactive
+          - multimedia_streaming
+          - broadcast_video
+          - low_latency_data
+          - high_throughput_data
+          - low_priority_data
+          - standard
+          example: real_time_interactive
+        ipAddress:
+          type: string
+          format: ipv4
+          description: Internal IP address of the connected device in the LAN.
+          example: 192.168.1.27
   responses:
-    Generic401:
-      description: Unauthorized
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 401
-            code: UNAUTHENTICATED
-            message: Request not authenticated due to missing, invalid, or expired credentials
     Generic500:
       description: Internal Server Error
       headers:
@@ -102,39 +147,6 @@ components:
             status: 500
             code: INTERNAL
             message: Server error
-    setQosPermissionDenied403:
-      description: Forbidden
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            PermissionDenied:
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action
-            InvalidTokenContext:
-              value:
-                status: 403
-                code: INVALID_TOKEN_CONTEXT
-                message: User home network cannot be deducted from access token context
-    Generic504:
-      description: Gateway Timeout
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 504
-            code: TIMEOUT
-            message: Request timeout exceeded
     setQosNotFound404:
       description: Not found
       headers:
@@ -155,8 +167,8 @@ components:
                 status: 404
                 code: DEVICE_NOT_FOUND
                 message: No connected device found for the input criteria provided
-    setQosServiceUnavailable503:
-      description: Service Unavailable
+    setQosPermissionDenied403:
+      description: Forbidden
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -165,16 +177,55 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorInfo'
           examples:
-            Unavailable:
+            PermissionDenied:
               value:
-                status: 503
-                code: UNAVAILABLE
-                message: Service Unavailable
-            RouterOffline:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action
+            InvalidTokenContext:
               value:
-                status: 503
-                code: HOME_DEVICES_QOD.ROUTER_OFFLINE
-                message: Router is not online. Try it later
+                status: 403
+                code: INVALID_TOKEN_CONTEXT
+                message: User home network cannot be deducted from access token context
+    Generic401:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 401
+            code: UNAUTHENTICATED
+            message: Request not authenticated due to missing, invalid, or expired credentials
+    Generic400:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 400
+            code: INVALID_ARGUMENT
+            message: Client specified an invalid argument, request body or query param
+    Generic504:
+      description: Gateway Timeout
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 504
+            code: TIMEOUT
+            message: Request timeout exceeded
     setQosConflict409:
       description: Conflict
       headers:
@@ -225,8 +276,8 @@ components:
                 status: 409
                 code: HOME_DEVICES_QOD.QOS_ALREADY_SET_TO_DEFAULT
                 message: Device QoS is already set to default value
-    Generic400:
-      description: Bad Request
+    setQosServiceUnavailable503:
+      description: Service Unavailable
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -234,75 +285,24 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 400
-            code: INVALID_ARGUMENT
-            message: Client specified an invalid argument, request body or query param
-  schemas:
-    QosOnDemandUpdate:
-      type: object
-      description: Payload to change the QoS behaviour associated to a home device.
-      required:
-      - serviceClass
-      - ipAddress
-      properties:
-        serviceClass:
-          type: string
-          description: 'The name of the service class requested by the API client. It is associated with QoS behaviours optimised for a particular application type. Each service class is mapped to a DSCP value according to [RFC4594](https://datatracker.ietf.org/doc/html/rfc4594) guidelines. The DSCP value is used to classify the target home device''s traffic so that it can be treated accordingly (i.e. to meet its QoS needs).
-
-
-            The following service classes are supported:
-
-
-            | Service Class Name    | DSCP Name | DSCP value (decimal) | DCSP value (binary) | Application Examples                          |
-
-            |-----------------------|-----------|----------------------|---------------------|-----------------------------------------------|
-
-            | Real-Time Interactive |    CS4    |          32          |        100000       | Video conferencing and Interactive gaming     |
-
-            | Multimedia Streaming  |    AF31   |          26          |        011010       | Streaming video and audio on demand           |
-
-            | Broadcast Video       |    CS3    |          24          |        011000       | Broadcast TV & live events                    |
-
-            | Low-Latency Data      |    AF21   |          18          |        010010       | Client/server transactions Web-based ordering |
-
-            | High-Throughput Data  |    AF11   |          10          |        001010       | Store and forward applications                |
-
-            | Low-Priority Data     |    CS1    |           8          |        001000       | Any flow that has no BW assurance             |
-
-            | Standard              |  DF(CS0)  |           0          |        000000       | Undifferentiated applications                 |
-
-            '
-          enum:
-          - real_time_interactive
-          - multimedia_streaming
-          - broadcast_video
-          - low_latency_data
-          - high_throughput_data
-          - low_priority_data
-          - standard
-          example: real_time_interactive
-        ipAddress:
-          type: string
-          format: ipv4
-          description: Internal IP address of the connected device in the LAN.
-          example: 192.168.1.27
-    ErrorInfo:
-      type: object
-      required:
-      - message
-      - status
-      - code
-      properties:
-        message:
-          type: string
-          description: A human readable description of what the event represent
-        status:
-          type: integer
-          description: HTTP response status code
-        code:
-          type: string
-          description: Friendly Code to describe the error
+          examples:
+            Unavailable:
+              value:
+                status: 503
+                code: UNAVAILABLE
+                message: Service Unavailable
+            RouterOffline:
+              value:
+                status: 503
+                code: HOME_DEVICES_QOD.ROUTER_OFFLINE
+                message: Router is not online. Try it later
+  parameters:
+    x-correlator:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        type: string
   headers:
     x-correlator:
       description: Correlation id for the different services

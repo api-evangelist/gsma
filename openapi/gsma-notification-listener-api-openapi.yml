@@ -165,32 +165,385 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
+  requestBodies:
+    ApplicationAttributeValueChangeEvent:
+      description: Application attributeValueChange Event payload
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApplicationAttributeValueChangeEvent'
+          examples:
+            ApplicationAttributeValueChangeEvent:
+              $ref: '#/components/examples/ApplicationAttributeValueChangeEvent_request'
+      required: true
+    ApplicationCreateEvent:
+      description: Application create Event payload
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApplicationCreateEvent'
+          examples:
+            ApplicationCreateEvent:
+              $ref: '#/components/examples/ApplicationCreateEvent_request'
+      required: true
+    ApiProductOrderCreateEvent:
+      description: ApiProductOrder create Event payload
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiProductOrderCreateEvent'
+          examples:
+            ApiProductOrderCreateEvent:
+              $ref: '#/components/examples/ApiProductOrderCreateEvent_request'
+      required: true
+    ApplicationOwnerCreateEvent:
+      description: ApplicationOwner create Event payload
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApplicationOwnerCreateEvent'
+          examples:
+            ApplicationOwnerCreateEvent:
+              $ref: '#/components/examples/ApplicationOwnerCreateEvent_request'
+      required: true
+    ApplicationOwnerAttributeValueChangeEvent:
+      description: ApplicationOwner attributeValueChange Event payload
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApplicationOwnerAttributeValueChangeEvent'
+          examples:
+            ApplicationOwnerAttributeValueChangeEvent:
+              $ref: '#/components/examples/ApplicationOwnerAttributeValueChangeEvent_request'
+      required: true
+    ApiProductOrderStateChangeEvent:
+      description: ApiProductOrder stateChange Event payload
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiProductOrderStateChangeEvent'
+          examples:
+            ApiProductOrderStateChangeEvent:
+              $ref: '#/components/examples/ApiProductOrderStateChangeEvent_request'
+      required: true
+    ApiProductOrderAttributeValueChangeEvent:
+      description: ApiProductOrder attributeValueChange Event payload
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiProductOrderAttributeValueChangeEvent'
+          examples:
+            ApiProductOrderAttributeValueChangeEvent:
+              $ref: '#/components/examples/ApiProductOrderAttributeValueChangeEvent_request'
+      required: true
+    ApplicationOwnerApprovalStatusChangeEvent:
+      description: ApplicationOwner approvalStatusChange Event payload
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApplicationOwnerApprovalStatusChangeEvent'
+          examples:
+            ApplicationOwnerApprovalStatusChangeEvent:
+              $ref: '#/components/examples/ApplicationOwnerApprovalStatusChangeEvent_request'
+      required: true
+    ApplicationApprovalStatusChangeEvent:
+      description: Application approvalStatusChange Event payload
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApplicationApprovalStatusChangeEvent'
+          examples:
+            ApplicationApprovalStatusChangeEvent:
+              $ref: '#/components/examples/ApplicationApprovalStatusChangeEvent_request'
+      required: true
+    MonitorStateChangeEvent:
+      description: Monitor stateChange Event payload
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MonitorStateChangeEvent'
+          examples:
+            MonitorStateChangeEvent:
+              $ref: '#/components/examples/MonitorStateChangeEvent_request'
+      required: true
   schemas:
-    LightGeographicSubAddress:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: Representation of a GeographicSubAddress. It is used for addressing within a property in an urban area (country properties are often defined differently). It may refer to a building, a building cluster, or a floor of a multistory building.
-        properties:
-          buildingName:
-            type: string
-            description: allows for buildings that have well-known names
-          levelNumber:
-            type: string
-            description: used where a level type may be repeated e.g. BASEMENT 1, BASEMENT 2
-          levelType:
-            type: string
-            description: describes level types within a building
-          privateStreetName:
-            type: string
-            description: private streets internal to a property (e.g. a university) may have internal names that are not recorded by the land title office.
-          privateStreetNumber:
-            type: string
-            description: private streets numbers internal to a private street
+    AttachmentRefOrValue:
+      type: object
+      description: The polymorphic attributes @type, @schemaLocation & @referredType are related to the Attachment entity and not the AttachmentRefOrValue class itself
+      oneOf:
+      - $ref: '#/components/schemas/Attachment'
+      - $ref: '#/components/schemas/AttachmentRef'
       discriminator:
         propertyName: '@type'
         mapping:
-          LightGeographicSubAddress: '#/components/schemas/LightGeographicSubAddress'
+          Attachment: '#/components/schemas/Attachment'
+          AttachmentRef: '#/components/schemas/AttachmentRef'
+    ApplicationOwnerRelatedOrganization:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: ApplicationOwnerRelatedOrganization represents an Organization that has a role within the ApplicationOwner, in the Open Gateway context. Typically a department inside the company.
+        properties:
+          name:
+            type: string
+            description: Organization name (department name for example)
+          contactMedium:
+            type: array
+            items:
+              $ref: '#/components/schemas/ContactMedium'
+            description: List of means for contacting the party, e.g. mobile phone, email address
+          organizationType:
+            $ref: '#/components/schemas/DpvOrganizationType'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ApplicationOwnerRelatedOrganization: '#/components/schemas/ApplicationOwnerRelatedOrganization'
+    ApplicationCreateEventPayload:
+      type: object
+      description: ApplicationCreateEventPayload
+      properties:
+        application:
+          $ref: '#/components/schemas/Application'
+    ApplicationCategoryType:
+      enum:
+      - agriculture
+      - artAndDesign
+      - autoAndVehicle
+      - beauty
+      - booksAndReference
+      - business
+      - construction
+      - defense
+      - developerTools
+      - education
+      - engineering
+      - eventsAndEntertainment
+      - finance
+      - foodAndDrink
+      - games
+      - healthAndFitness
+      - healthcare
+      - information
+      - kids
+      - librariesAndDemo
+      - lifestyle
+      - manufacturing
+      - mapsAndNavigation
+      - media
+      - medical
+      - mining
+      - musicAndAudio
+      - newsAndMagazines
+      - organizations
+      - other
+      - photoAndVideo
+      - productivity
+      - publicService
+      - realEstate
+      - shopping
+      - socialNetworkingAndCommunications
+      - sports
+      - tourism
+      - utilities
+      - trading
+      - transportation
+      - travelAndLocal
+      - water
+      - weather
+      type: string
+      description: Valid values for the category of the Application. Please refer to main Application stores in order to retrieve a more precise definition of the categories.
+    ApplicationOwner:
+      allOf:
+      - $ref: '#/components/schemas/Entity'
+      - type: object
+        description: Application Owner represents the role played by the organization that owns an Application that can consume API products. It's a specialization of a PartyRole in the Open Gateway context.
+        properties:
+          name:
+            type: string
+            description: A word, term, or phrase by which the ApplicationOwner is known and distinguished from other PartyRoles. It's the name of the ApplicationOwner unique entity.
+          description:
+            type: string
+            description: A description of the ApplicationOwner.
+          engagedParty:
+            $ref: '#/components/schemas/ApplicationOwnerOrganization'
+          channelPartner:
+            $ref: '#/components/schemas/PartyRoleRef'
+          approvalStatus:
+            $ref: '#/components/schemas/ApprovalStatusType'
+          approvalStatusReason:
+            type: string
+            description: The reason why the approval status changed.
+          status:
+            $ref: '#/components/schemas/ApplicationOwnerStatusType'
+          statusReason:
+            type: string
+            description: A string providing an explanation on the value of the Status lifecycle. For instance if the Status is Rejected, statusReason will provide the reason for rejection.
+          validFor:
+            $ref: '#/components/schemas/TimePeriod'
+          creationDate:
+            type: string
+            format: date-time
+            description: Date and time when the ApplicationOwner was created
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ApplicationOwner: '#/components/schemas/ApplicationOwner'
+    LogicalResource:
+      allOf:
+      - $ref: '#/components/schemas/Entity'
+      - type: object
+        description: Logic resource is a type of resource that describes the common set of attributes shared by all concrete logical resources (e.g. TPE, MSISDN, IP Addresses) in the inventory.
+        properties:
+          description:
+            type: string
+            description: free-text description of the resource
+          name:
+            type: string
+            description: the name of the resource
+          operationalState:
+            $ref: '#/components/schemas/ResourceOperationalStateType'
+          resourceVersion:
+            type: string
+            description: A field that identifies the specific version of an instance of a resource.
+          externalIdentifier:
+            type: array
+            description: An identification of this resource that is owned by or originates in a software system different from the current system. The structure identifies the system itself, the nature of the resource within the system and the unique ID of the resource within the system. It is anticipated that multiple external IDs can be held for a single resource, e.g. if the resource passed through multiple systems on the way to the current system.
+            items:
+              $ref: '#/components/schemas/ExternalIdentifier'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          Application: '#/components/schemas/Application'
+          LogicalResource: '#/components/schemas/LogicalResource'
+    ApplicationApprovalStatusChangeEventPayload:
+      type: object
+      description: ApplicationApprovalStatusChangeEventPayload
+      properties:
+        application:
+          $ref: '#/components/schemas/Application'
+    ApplicationAttributeValueChangeEvent:
+      allOf:
+      - $ref: '#/components/schemas/Event'
+      - type: object
+        description: ApplicationAttributeValueChangeEvent generic structure
+        properties:
+          event:
+            $ref: '#/components/schemas/ApplicationAttributeValueChangeEventPayload'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ApplicationAttributeValueChangeEvent: '#/components/schemas/ApplicationAttributeValueChangeEvent'
+    ISO31661Alpha2StandardIdentifier:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: The corresponding identification of the resource in different standard, regulatory definitions. The standard specification identifier (e.g., ISO 3166-1 Alpha-2) and the corresponding value (e.g., BE) relevant to a particular resource.
+        properties:
+          value:
+            type: string
+            description: The value of the resource in the ISO 3166-1 Alpha 2 standard
+            pattern: '[A-Z]{2}'
+            example: GB
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ISO31661Alpha2StandardIdentifier: '#/components/schemas/ISO31661Alpha2StandardIdentifier'
+    ResourceOperationalStateType:
+      enum:
+      - enable
+      - disable
+      type: string
+      description: 'ResourceOperationalStateType enumerations; values defined by ITU X.731: ''disable'': The resource is totally inoperable and unable to provide service to the user(s); ''enable'': The resource is partially or fully operable and available for use.'
+    AssetGroup:
+      type: object
+      description: Defines a group of assets (entities) to which access can be controlled. Specific subclasses allow definition in various ways (list of entities, queries, ownership by customer, etc.). AssetGroup is not a managed entity, its concrete subclasses are always included by value in their containing entities.
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ApiListAssetGroup: '#/components/schemas/ApiListAssetGroup'
+          AssetGroup: '#/components/schemas/AssetGroup'
+    PartyRef:
+      type: object
+      description: A Party reference
+      allOf:
+      - $ref: '#/components/schemas/EntityRef'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          PartyRef: '#/components/schemas/PartyRef'
+    ApplicationOwnerApprovalStatusChangeEventPayload:
+      type: object
+      description: ApplicationOwnerApprovalStatusChangeEventPayload
+      properties:
+        applicationOwner:
+          $ref: '#/components/schemas/ApplicationOwner'
+    ApplicationAttributeValueChangeEventPayload:
+      type: object
+      description: ApplicationAttributeValueChangeEventPayload
+      properties:
+        application:
+          $ref: '#/components/schemas/Application'
+    LightGeographicAddress:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: 'Structured textual way of describing how to find a Property in an urban area (country properties are often defined differently). Note : Address corresponds to SID UrbanPropertyAddress'
+        properties:
+          streetNr:
+            type: string
+            description: Number identifying a specific property on a public street.
+          streetName:
+            type: string
+            description: Name of the street
+          locality:
+            type: string
+            description: An area of defined or undefined boundaries within a local authority or other legislatively defined area, usually rural or semi rural in nature, or a suburb, a bounded locality within a city, town or shire principally of urban character
+          city:
+            type: string
+            description: City that the address is in
+          stateOrProvince:
+            type: string
+            description: the State or Province that the address is in
+          countryCode:
+            $ref: '#/components/schemas/ISO31661Alpha2StandardIdentifier'
+          postcode:
+            type: string
+            description: descriptor for a postal delivery area, used to speed and simplify the delivery of mail (also know as zipcode)
+          geographicSubAddress:
+            $ref: '#/components/schemas/LightGeographicSubAddress'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          LightGeographicAddress: '#/components/schemas/LightGeographicAddress'
+    Addressable:
+      type: object
+      description: Base schema for addressable entities
+      properties:
+        href:
+          type: string
+          description: Hyperlink reference
+        id:
+          type: string
+          description: unique identifier
+    ApplicationOwnerPartyOrPartyRole:
+      type: object
+      description: Schema that permits to identify an Individual or an Organisation in the Open Gateway context.
+      oneOf:
+      - $ref: '#/components/schemas/ApplicationOwnerRelatedIndividual'
+      - $ref: '#/components/schemas/ApplicationOwnerRelatedOrganization'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ApplicationOwnerRelatedIndividual: '#/components/schemas/ApplicationOwnerRelatedIndividual'
+          ApplicationOwnerRelatedOrganization: '#/components/schemas/ApplicationOwnerRelatedOrganization'
+    ApiProductOrderAttributeValueChangeEventPayload:
+      type: object
+      description: ApiProductOrderAttributeValueChangeEventPayload
+      properties:
+        productOrder:
+          $ref: '#/components/schemas/ApiProductOrder'
     Application:
       allOf:
       - $ref: '#/components/schemas/LogicalResource'
@@ -241,21 +594,41 @@ components:
             type: string
             format: date-time
             description: Date and time when the Application was created
-    ISO31661Alpha2StandardIdentifier:
+    Attachment:
       allOf:
-      - $ref: '#/components/schemas/Extensible'
+      - $ref: '#/components/schemas/Entity'
       - type: object
-        description: The corresponding identification of the resource in different standard, regulatory definitions. The standard specification identifier (e.g., ISO 3166-1 Alpha-2) and the corresponding value (e.g., BE) relevant to a particular resource.
+        description: Complements the description of an element (for instance a product) through video, pictures...
         properties:
-          value:
+          name:
             type: string
-            description: The value of the resource in the ISO 3166-1 Alpha 2 standard
-            pattern: '[A-Z]{2}'
-            example: GB
+            description: The name of the attachment
+          description:
+            type: string
+            description: A narrative text describing the content of the attachment
+            example: Photograph of the Product
+          url:
+            type: string
+            description: Uniform Resource Locator, is a web page address (a subset of URI)
+            example: https://host/Content/4aafacbd-11ff-4dc8-b445-305f2215715f
+          content:
+            type: string
+            format: base64
+            description: The actual contents of the attachment object, if embedded, encoded as base64
+          size:
+            $ref: '#/components/schemas/Quantity'
+          validFor:
+            $ref: '#/components/schemas/TimePeriod'
+          attachmentType:
+            type: string
+            description: a business characterization of the purpose of the attachment, for example logo, instructionManual, contractCopy
+          mimeType:
+            type: string
+            description: a technical characterization of the attachment content format using IETF Mime Types
       discriminator:
         propertyName: '@type'
         mapping:
-          ISO31661Alpha2StandardIdentifier: '#/components/schemas/ISO31661Alpha2StandardIdentifier'
+          Attachment: '#/components/schemas/Attachment'
     ApplicationOwnerOrganization:
       allOf:
       - $ref: '#/components/schemas/Extensible'
@@ -314,6 +687,23 @@ components:
         propertyName: '@type'
         mapping:
           ApplicationOwnerOrganization: '#/components/schemas/ApplicationOwnerOrganization'
+    PartyRefOrPartyRoleRef:
+      type: object
+      description: ''
+      oneOf:
+      - $ref: '#/components/schemas/PartyRef'
+      - $ref: '#/components/schemas/PartyRoleRef'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          PartyRef: '#/components/schemas/PartyRef'
+          PartyRoleRef: '#/components/schemas/PartyRoleRef'
+    ApiProductOrderStateChangeEventPayload:
+      type: object
+      description: ApiProductOrderStateChangeEventPayload
+      properties:
+        productOrder:
+          $ref: '#/components/schemas/ApiProductOrder'
     TimePeriod:
       type: object
       description: A period of time, either as a deadline (endDateTime only) a startDateTime only, or both
@@ -328,84 +718,48 @@ components:
           type: string
           format: date-time
           example: '1985-04-12T23:20:50.52Z'
-    AgreementRef:
-      type: object
-      description: Agreement reference. An agreement represents a contract or arrangement, either written or verbal and sometimes enforceable by law, such as a service level agreement or a customer price agreement. An agreement involves a number of other business entities, such as products, services, and resources and/or their specifications.
-      allOf:
-      - $ref: '#/components/schemas/EntityRef'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          AgreementRef: '#/components/schemas/AgreementRef'
-    ApplicationApprovalStatusChangeEvent:
-      allOf:
-      - $ref: '#/components/schemas/Event'
-      - type: object
-        description: ApplicationApprovalStatusChangeEvent generic structure
-        properties:
-          event:
-            $ref: '#/components/schemas/ApplicationApprovalStatusChangeEventPayload'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApplicationApprovalStatusChangeEvent: '#/components/schemas/ApplicationApprovalStatusChangeEvent'
-    Attachment:
-      allOf:
-      - $ref: '#/components/schemas/Entity'
-      - type: object
-        description: Complements the description of an element (for instance a product) through video, pictures...
-        properties:
-          name:
-            type: string
-            description: The name of the attachment
-          description:
-            type: string
-            description: A narrative text describing the content of the attachment
-            example: Photograph of the Product
-          url:
-            type: string
-            description: Uniform Resource Locator, is a web page address (a subset of URI)
-            example: https://host/Content/4aafacbd-11ff-4dc8-b445-305f2215715f
-          content:
-            type: string
-            format: base64
-            description: The actual contents of the attachment object, if embedded, encoded as base64
-          size:
-            $ref: '#/components/schemas/Quantity'
-          validFor:
-            $ref: '#/components/schemas/TimePeriod'
-          attachmentType:
-            type: string
-            description: a business characterization of the purpose of the attachment, for example logo, instructionManual, contractCopy
-          mimeType:
-            type: string
-            description: a technical characterization of the attachment content format using IETF Mime Types
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          Attachment: '#/components/schemas/Attachment'
     ApiProductOrderCreateEventPayload:
       type: object
       description: ApiProductOrderCreateEventPayload
       properties:
         productOrder:
           $ref: '#/components/schemas/ApiProductOrder'
-    AttachmentRef:
+    ApiProductOrderCreateEvent:
       allOf:
-      - $ref: '#/components/schemas/EntityRef'
+      - $ref: '#/components/schemas/Event'
       - type: object
-        description: Attachment reference. An attachment complements the description of an element (for instance a product) through video, pictures
+        description: ApiProductOrderCreateEvent generic structure
         properties:
-          description:
-            type: string
-            description: A narrative text describing the content of the attachment
-          url:
-            description: Link to the attachment media/content
-            type: string
+          event:
+            $ref: '#/components/schemas/ApiProductOrderCreateEventPayload'
       discriminator:
         propertyName: '@type'
         mapping:
-          AttachmentRef: '#/components/schemas/AttachmentRef'
+          ApiProductOrderCreateEvent: '#/components/schemas/ApiProductOrderCreateEvent'
+    Characteristic:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: 'Describes a given characteristic of an object or entity through a name/value pair. This is an abstract base class, the actual value is in one of the strongly-typed subclasses : StringCharacteristic, ObjectCharacteristic, FloatCharacteristic, BooleanCharacteristic, NumberCharacteristic, IntegerCharacteristic, StringArrayCharacteristic, ObjectArrayCharacteristic, BooleanArrayCharacteristic, NumberArrayCharacteristic, IntegerArrayCharacteristic...'
+        properties:
+          id:
+            type: string
+            description: Unique identifier of the characteristic
+          name:
+            type: string
+            description: Name of the characteristic
+          valueType:
+            type: string
+            description: Data type of the value of the characteristic
+          characteristicRelationship:
+            type: array
+            description: Collection of characteristic relationships
+            items:
+              $ref: '#/components/schemas/CharacteristicRelationship'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          Characteristic: '#/components/schemas/Characteristic'
     ApiProductOrder:
       allOf:
       - $ref: '#/components/schemas/Entity'
@@ -454,310 +808,18 @@ components:
         propertyName: '@type'
         mapping:
           ApiProductOrder: '#/components/schemas/ApiProductOrder'
-    ApplicationOwnerApprovalStatusChangeEventPayload:
-      type: object
-      description: ApplicationOwnerApprovalStatusChangeEventPayload
-      properties:
-        applicationOwner:
-          $ref: '#/components/schemas/ApplicationOwner'
-    AssetGroup:
-      type: object
-      description: Defines a group of assets (entities) to which access can be controlled. Specific subclasses allow definition in various ways (list of entities, queries, ownership by customer, etc.). AssetGroup is not a managed entity, its concrete subclasses are always included by value in their containing entities.
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApiListAssetGroup: '#/components/schemas/ApiListAssetGroup'
-          AssetGroup: '#/components/schemas/AssetGroup'
-    ApiProductOrderAttributeValueChangeEvent:
+    ApiProductOrderStateChangeEvent:
       allOf:
       - $ref: '#/components/schemas/Event'
       - type: object
-        description: ApiProductOrderAttributeValueChangeEvent generic structure
+        description: ApiProductOrderStateChangeEvent generic structure
         properties:
           event:
-            $ref: '#/components/schemas/ApiProductOrderAttributeValueChangeEventPayload'
+            $ref: '#/components/schemas/ApiProductOrderStateChangeEventPayload'
       discriminator:
         propertyName: '@type'
         mapping:
-          ApiProductOrderAttributeValueChangeEvent: '#/components/schemas/ApiProductOrderAttributeValueChangeEvent'
-    ApplicationCategoryType:
-      enum:
-      - agriculture
-      - artAndDesign
-      - autoAndVehicle
-      - beauty
-      - booksAndReference
-      - business
-      - construction
-      - defense
-      - developerTools
-      - education
-      - engineering
-      - eventsAndEntertainment
-      - finance
-      - foodAndDrink
-      - games
-      - healthAndFitness
-      - healthcare
-      - information
-      - kids
-      - librariesAndDemo
-      - lifestyle
-      - manufacturing
-      - mapsAndNavigation
-      - media
-      - medical
-      - mining
-      - musicAndAudio
-      - newsAndMagazines
-      - organizations
-      - other
-      - photoAndVideo
-      - productivity
-      - publicService
-      - realEstate
-      - shopping
-      - socialNetworkingAndCommunications
-      - sports
-      - tourism
-      - utilities
-      - trading
-      - transportation
-      - travelAndLocal
-      - water
-      - weather
-      type: string
-      description: Valid values for the category of the Application. Please refer to main Application stores in order to retrieve a more precise definition of the categories.
-    ApplicationOwnerRelatedOrganization:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: ApplicationOwnerRelatedOrganization represents an Organization that has a role within the ApplicationOwner, in the Open Gateway context. Typically a department inside the company.
-        properties:
-          name:
-            type: string
-            description: Organization name (department name for example)
-          contactMedium:
-            type: array
-            items:
-              $ref: '#/components/schemas/ContactMedium'
-            description: List of means for contacting the party, e.g. mobile phone, email address
-          organizationType:
-            $ref: '#/components/schemas/DpvOrganizationType'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApplicationOwnerRelatedOrganization: '#/components/schemas/ApplicationOwnerRelatedOrganization'
-    Error:
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          Error: '#/components/schemas/Error'
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        required:
-        - code
-        - reason
-        properties:
-          code:
-            type: string
-            description: Application relevant detail, defined in the API or a common list.
-          reason:
-            type: string
-            description: Explanation of the reason for the error which can be shown to a client user.
-          message:
-            type: string
-            description: More details and corrective actions related to the error which can be shown to a client user.
-          status:
-            type: string
-            description: HTTP Error code extension
-          referenceError:
-            type: string
-            description: URI of documentation describing the error.
-      description: Used when an API throws an Error, typically with a HTTP error response-code (3xx, 4xx, 5xx)
-    ApplicationOwnerCreateEventPayload:
-      type: object
-      description: ApplicationOwnerCreateEventPayload
-      properties:
-        applicationOwner:
-          $ref: '#/components/schemas/ApplicationOwner'
-    ApplicationAttributeValueChangeEventPayload:
-      type: object
-      description: ApplicationAttributeValueChangeEventPayload
-      properties:
-        application:
-          $ref: '#/components/schemas/Application'
-    ApiPermissionSet:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: The PermissionSet is a set of Permissions granted to a user (party, party role or resource). The set may be granted explicitly by an authorized user or may be acquired implicitly due to the role that the user is playing.
-        properties:
-          creationDate:
-            type: string
-            format: date-time
-            description: Date when the PermissionSet was created and assigned to a user
-          description:
-            type: string
-            description: Text describing the permission set
-          validFor:
-            $ref: '#/components/schemas/TimePeriod'
-          permission:
-            $ref: '#/components/schemas/ApiConsumerPermission'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApiPermissionSet: '#/components/schemas/ApiPermissionSet'
-    PartyRefOrPartyRoleRef:
-      type: object
-      description: ''
-      oneOf:
-      - $ref: '#/components/schemas/PartyRef'
-      - $ref: '#/components/schemas/PartyRoleRef'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          PartyRef: '#/components/schemas/PartyRef'
-          PartyRoleRef: '#/components/schemas/PartyRoleRef'
-    Quantity:
-      type: object
-      description: An amount in a given unit
-      properties:
-        amount:
-          type: number
-          format: float
-          default: 1
-          description: Numeric value in a given unit
-        units:
-          type: string
-          description: Unit
-    MonitorStateChangeEvent:
-      allOf:
-      - $ref: '#/components/schemas/Event'
-      - type: object
-        description: MonitorStateChangeEvent generic structure
-        properties:
-          event:
-            $ref: '#/components/schemas/MonitorStateChangeEventPayload'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          MonitorStateChangeEvent: '#/components/schemas/MonitorStateChangeEvent'
-    OrganizationIdentification:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: Represents our registration of information used as proof of identity by an organization
-        properties:
-          identificationId:
-            type: string
-            description: Identifier
-          issuingAuthority:
-            type: string
-            description: Authority which has issued the identifier (chamber of commerce...)
-          issuingDate:
-            type: string
-            format: date-time
-            description: Date at which the identifier was issued
-          identificationType:
-            type: string
-            description: Type of identification information used to identify the company in a country or internationally
-          validFor:
-            $ref: '#/components/schemas/TimePeriod'
-          attachment:
-            $ref: '#/components/schemas/AttachmentRefOrValue'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          OrganizationIdentification: '#/components/schemas/OrganizationIdentification'
-    DpvOrganizationType:
-      enum:
-      - dpv:AcademicScientificOrganisation
-      - dpv:ForProfitOrganisation
-      - dpv:GovernmentalOrganisation
-      - dpv:IndustryConsortium
-      - dpv:InternationalOrganisation
-      - dpv:NonGovernmentalOrganisation
-      - dpv:NonProfitOrganisation
-      - dpv:OrganisationalUnit
-      type: string
-      description: Valid values for a type of organization based on W3C Data Privacy Vocabulary v2 https://w3c.github.io/dpv/2.0/dpv.
-    ApiListAssetGroup:
-      allOf:
-      - $ref: '#/components/schemas/AssetGroup'
-      - type: object
-        description: Defines a group of API assets to which access can be controlled
-        properties:
-          apiProduct:
-            type: array
-            items:
-              $ref: '#/components/schemas/ProductRef'
-            description: The list of products for which permissions are given.
-    ApplicationOwnerRelatedIndividual:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: ApplicationOwnerRelatedIndividual represents an Individual that has a role within the ApplicationOwner, in the Open Gateway context. Typically an employee of the company.
-        properties:
-          familyName:
-            type: string
-            description: Contains the non-chosen or inherited name. Also known as last name in the Western context
-          givenName:
-            type: string
-            description: First name of the individual
-          contactMedium:
-            type: array
-            items:
-              $ref: '#/components/schemas/ContactMedium'
-            description: List of means for contacting the party, e.g. mobile phone, email address
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApplicationOwnerRelatedIndividual: '#/components/schemas/ApplicationOwnerRelatedIndividual'
-    Characteristic:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: 'Describes a given characteristic of an object or entity through a name/value pair. This is an abstract base class, the actual value is in one of the strongly-typed subclasses : StringCharacteristic, ObjectCharacteristic, FloatCharacteristic, BooleanCharacteristic, NumberCharacteristic, IntegerCharacteristic, StringArrayCharacteristic, ObjectArrayCharacteristic, BooleanArrayCharacteristic, NumberArrayCharacteristic, IntegerArrayCharacteristic...'
-        properties:
-          id:
-            type: string
-            description: Unique identifier of the characteristic
-          name:
-            type: string
-            description: Name of the characteristic
-          valueType:
-            type: string
-            description: Data type of the value of the characteristic
-          characteristicRelationship:
-            type: array
-            description: Collection of characteristic relationships
-            items:
-              $ref: '#/components/schemas/CharacteristicRelationship'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          Characteristic: '#/components/schemas/Characteristic'
-    MonitorStateChangeEventPayload:
-      type: object
-      description: MonitorStateChangeEventPayload generic structure
-      properties:
-        monitor:
-          $ref: '#/components/schemas/Monitor'
-    DCSProductOrderItem:
-      type: object
-      description: An identified part of the order. A product order is decomposed into one or more order items.
-      allOf:
-      - $ref: '#/components/schemas/GCProductOrderItem'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApiProductOrderItemAdd: '#/components/schemas/ApiProductOrderItemAdd'
-          ApiProductOrderItemModify: '#/components/schemas/ApiProductOrderItemModify'
-          ProductOrderItemDelete: '#/components/schemas/ProductOrderItemDelete'
+          ApiProductOrderStateChangeEvent: '#/components/schemas/ApiProductOrderStateChangeEvent'
     CharacteristicRelationship:
       allOf:
       - $ref: '#/components/schemas/Extensible'
@@ -774,147 +836,6 @@ components:
         propertyName: '@type'
         mapping:
           CharacteristicRelationship: '#/components/schemas/CharacteristicRelationship'
-    ApplicationOwnerPartyOrPartyRole:
-      type: object
-      description: Schema that permits to identify an Individual or an Organisation in the Open Gateway context.
-      oneOf:
-      - $ref: '#/components/schemas/ApplicationOwnerRelatedIndividual'
-      - $ref: '#/components/schemas/ApplicationOwnerRelatedOrganization'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApplicationOwnerRelatedIndividual: '#/components/schemas/ApplicationOwnerRelatedIndividual'
-          ApplicationOwnerRelatedOrganization: '#/components/schemas/ApplicationOwnerRelatedOrganization'
-    ApiDigitalIdentity:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: ApiDigitalIdentity is a class that allow to describe a digital identity for an individual or a resource or a specific party role. One of these three MUST be provided. If an individual is provided, this identity will be for all her/his partyRole. To avoid confusion it is recommended in this case to not provide partyRoleIdentified. DEPRECATED in the POST and PATCH, this attribute can't be valued by the API consumer in this context.
-        properties:
-          clientId:
-            type: string
-            description: 'OAuth2 Client ID: A public identifier for apps. Even though it is public, it is best that it is not guessable by third parties, so many implementations use something like a 32-character hex string. DEPRECATED in the POST and the PATCH, this attribute can''t be valued by the API consumer in this context.'
-          redirectUrl:
-            type: array
-            deprecated: true
-            items:
-              type: string
-            description: 'DEPRECATED : moved to Application schema. After a user successfully authorizes an application, the authorization server will redirect the user back to the application.'
-          jwksUri:
-            deprecated: true
-            type: string
-            description: 'DEPRECATED : moved to Application schema. JSON Web Key (JWK) is a data structure that represents a cryptographic key'
-          validFor:
-            $ref: '#/components/schemas/TimePeriod'
-          status:
-            type: string
-            description: Used to indicate the current lifecycle status of this digital identity (unknown, active, suspended, archived).
-          credential:
-            type: array
-            description: A list of credential/authentification method that are used for this digital identity.
-            items:
-              $ref: '#/components/schemas/OAuth2ClientCredential'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApiDigitalIdentity: '#/components/schemas/ApiDigitalIdentity'
-    ResourceOperationalStateType:
-      enum:
-      - enable
-      - disable
-      type: string
-      description: 'ResourceOperationalStateType enumerations; values defined by ITU X.731: ''disable'': The resource is totally inoperable and unable to provide service to the user(s); ''enable'': The resource is partially or fully operable and available for use.'
-    OAuth2ClientCredential:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: OAuth2ClientCredential describes the registration attributes in an OAuth registration process
-        properties:
-          clientSecret:
-            type: string
-            description: Secret that permits the Application to authenticate with OAuth2 method.
-          state:
-            type: string
-            description: Used to indicate the current lifecycle state of this credential (like active, inactive, expired).
-          validFor:
-            $ref: '#/components/schemas/TimePeriod'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          OAuth2ClientCredential: '#/components/schemas/OAuth2ClientCredential'
-    Monitor:
-      allOf:
-      - $ref: '#/components/schemas/Entity'
-      - type: object
-        description: Monitoring of resources
-        properties:
-          request:
-            $ref: '#/components/schemas/Request'
-          response:
-            $ref: '#/components/schemas/Response'
-          sourceHref:
-            type: string
-            description: The monitored resource href
-          state:
-            type: string
-            description: The Monitor state of the resource.  inProgress, inError, completed
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          Monitor: '#/components/schemas/Monitor'
-    ApplicationApprovalStatusChangeEventPayload:
-      type: object
-      description: ApplicationApprovalStatusChangeEventPayload
-      properties:
-        application:
-          $ref: '#/components/schemas/Application'
-    AttachmentRefOrValue:
-      type: object
-      description: The polymorphic attributes @type, @schemaLocation & @referredType are related to the Attachment entity and not the AttachmentRefOrValue class itself
-      oneOf:
-      - $ref: '#/components/schemas/Attachment'
-      - $ref: '#/components/schemas/AttachmentRef'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          Attachment: '#/components/schemas/Attachment'
-          AttachmentRef: '#/components/schemas/AttachmentRef'
-    GCProductOrderItem:
-      type: object
-      description: General Context ProductOrderItem that can be used as a Domain Specialization Order Item or as a non-specialised OrderItem.
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          DCSProductOrderItem: '#/components/schemas/DCSProductOrderItem'
-          GCProductOrderItem: '#/components/schemas/GCProductOrderItem'
-    ApiConsumerPermission:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: An ApiConsumerPermission allows an Application to consume an API.
-        properties:
-          managedAssetGroup:
-            $ref: '#/components/schemas/ApiListAssetGroup'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApiConsumerPermission: '#/components/schemas/ApiConsumerPermission'
-    ApplicationOwnerRelatedLocalRepresentative:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: ApplicationOwnerRelatedLocalRepresentative represents a Party representing the Organization within a geographic localization.
-        properties:
-          countryCode:
-            $ref: '#/components/schemas/ISO31661Alpha2StandardIdentifier'
-          representative:
-            $ref: '#/components/schemas/ApplicationOwnerRelatedIndividual'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApplicationOwnerRelatedLocalRepresentative: '#/components/schemas/ApplicationOwnerRelatedLocalRepresentative'
     ApprovalStatusType:
       enum:
       - pendingApproval
@@ -922,178 +843,33 @@ components:
       - rejected
       type: string
       description: Valid values for an ApprovalStatus in the context of an approval process.
-    ProductOrderStateType:
-      enum:
-      - acknowledged
-      - rejected
-      - pending
-      - held
-      - inProgress
-      - cancelled
-      - completed
-      - failed
-      - partial
-      - assessingCancellation
-      - pendingCancellation
-      - draft
-      - inProgress.accepted
-      type: string
-      description: Possible values for the state of the order
-    ApiProductOrderAttributeValueChangeEventPayload:
+    Extensible:
       type: object
-      description: ApiProductOrderAttributeValueChangeEventPayload
+      description: Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type
       properties:
-        productOrder:
-          $ref: '#/components/schemas/ApiProductOrder'
-    ApplicationOwnerCreateEvent:
+        '@type':
+          type: string
+          description: When sub-classing, this defines the sub-class Extensible name
+        '@baseType':
+          type: string
+          description: When sub-classing, this defines the super-class
+        '@schemaLocation':
+          type: string
+          description: A URI to a JSON-Schema file that defines additional attributes and relationships
+      required:
+      - '@type'
+    ApplicationApprovalStatusChangeEvent:
       allOf:
       - $ref: '#/components/schemas/Event'
       - type: object
-        description: ApplicationOwnerCreateEvent generic structure
+        description: ApplicationApprovalStatusChangeEvent generic structure
         properties:
           event:
-            $ref: '#/components/schemas/ApplicationOwnerCreateEventPayload'
+            $ref: '#/components/schemas/ApplicationApprovalStatusChangeEventPayload'
       discriminator:
         propertyName: '@type'
         mapping:
-          ApplicationOwnerCreateEvent: '#/components/schemas/ApplicationOwnerCreateEvent'
-    LogicalResourceRole:
-      type: object
-      description: A logical Resource Role is a role given to a logical resource in a given context.
-      properties:
-        grantedPermissionSet:
-          description: The PermissionSet is a set of Permissions granted to a user (party, party role, resource or resource role). The set may be granted explicitly by an authorized user or may be acquired implicitly due to the role that the user is playing.
-          type: array
-          items:
-            $ref: '#/components/schemas/ApiPermissionSet'
-    ApplicationOwnerAttributeValueChangeEventPayload:
-      type: object
-      description: ApplicationOwnerAttributeValueChangeEventPayload
-      properties:
-        applicationOwner:
-          $ref: '#/components/schemas/ApplicationOwner'
-    ApiProductOrderStateChangeEvent:
-      allOf:
-      - $ref: '#/components/schemas/Event'
-      - type: object
-        description: ApiProductOrderStateChangeEvent generic structure
-        properties:
-          event:
-            $ref: '#/components/schemas/ApiProductOrderStateChangeEventPayload'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApiProductOrderStateChangeEvent: '#/components/schemas/ApiProductOrderStateChangeEvent'
-    HeaderItem:
-      type: object
-      description: An item typically included in a request or response
-      properties:
-        name:
-          description: The name of the header item, e.g. locale
-          type: string
-        value:
-          description: The value of the header item, e.g. en-us
-          type: string
-    ApplicationOwner:
-      allOf:
-      - $ref: '#/components/schemas/Entity'
-      - type: object
-        description: Application Owner represents the role played by the organization that owns an Application that can consume API products. It's a specialization of a PartyRole in the Open Gateway context.
-        properties:
-          name:
-            type: string
-            description: A word, term, or phrase by which the ApplicationOwner is known and distinguished from other PartyRoles. It's the name of the ApplicationOwner unique entity.
-          description:
-            type: string
-            description: A description of the ApplicationOwner.
-          engagedParty:
-            $ref: '#/components/schemas/ApplicationOwnerOrganization'
-          channelPartner:
-            $ref: '#/components/schemas/PartyRoleRef'
-          approvalStatus:
-            $ref: '#/components/schemas/ApprovalStatusType'
-          approvalStatusReason:
-            type: string
-            description: The reason why the approval status changed.
-          status:
-            $ref: '#/components/schemas/ApplicationOwnerStatusType'
-          statusReason:
-            type: string
-            description: A string providing an explanation on the value of the Status lifecycle. For instance if the Status is Rejected, statusReason will provide the reason for rejection.
-          validFor:
-            $ref: '#/components/schemas/TimePeriod'
-          creationDate:
-            type: string
-            format: date-time
-            description: Date and time when the ApplicationOwner was created
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApplicationOwner: '#/components/schemas/ApplicationOwner'
-    ApplicationOwnerAttributeValueChangeEvent:
-      allOf:
-      - $ref: '#/components/schemas/Event'
-      - type: object
-        description: ApplicationOwnerAttributeValueChangeEvent generic structure
-        properties:
-          event:
-            $ref: '#/components/schemas/ApplicationOwnerAttributeValueChangeEventPayload'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApplicationOwnerAttributeValueChangeEvent: '#/components/schemas/ApplicationOwnerAttributeValueChangeEvent'
-    ApplicationCreateEventPayload:
-      type: object
-      description: ApplicationCreateEventPayload
-      properties:
-        application:
-          $ref: '#/components/schemas/Application'
-    ApplicationAttributeValueChangeEvent:
-      allOf:
-      - $ref: '#/components/schemas/Event'
-      - type: object
-        description: ApplicationAttributeValueChangeEvent generic structure
-        properties:
-          event:
-            $ref: '#/components/schemas/ApplicationAttributeValueChangeEventPayload'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApplicationAttributeValueChangeEvent: '#/components/schemas/ApplicationAttributeValueChangeEvent'
-    RelatedPartyRefOrPartyRoleRef:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: RelatedParty reference. A related party defines party or party role or its reference, linked to a specific entity
-        properties:
-          role:
-            description: Role played by the related party or party role in the context of the specific entity it is linked to. Such as 'initiator', 'customer',  'salesAgent', 'user'
-            type: string
-          partyOrPartyRole:
-            $ref: '#/components/schemas/PartyRefOrPartyRoleRef'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          RelatedPartyRefOrPartyRoleRef: '#/components/schemas/RelatedPartyRefOrPartyRoleRef'
-    Request:
-      type: object
-      description: A response to a request
-      properties:
-        method:
-          description: The protocol of the request, e.g. http
-          type: string
-        to:
-          description: The target of the request, e.g. a URL for an HTTP request
-          type: string
-        body:
-          description: The body of the request. For example for an HTTP request might contain content of a form .
-          type: object
-        header:
-          type: array
-          description: Items included in the header of the request. For example for an HTTP request might contain requested locale, basic authentication.
-          items:
-            $ref: '#/components/schemas/HeaderItem'
-          title: header
+          ApplicationApprovalStatusChangeEvent: '#/components/schemas/ApplicationApprovalStatusChangeEvent'
     Event:
       allOf:
       - $ref: '#/components/schemas/Extensible'
@@ -1152,224 +928,231 @@ components:
           event:
             description: The event linked to the involved resource object
             type: object
-    ApplicationCreateEvent:
-      allOf:
-      - $ref: '#/components/schemas/Event'
-      - type: object
-        description: ApplicationCreateEvent generic structure
-        properties:
-          event:
-            $ref: '#/components/schemas/ApplicationCreateEventPayload'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApplicationCreateEvent: '#/components/schemas/ApplicationCreateEvent'
-    ApiProductOrderCreateEvent:
-      allOf:
-      - $ref: '#/components/schemas/Event'
-      - type: object
-        description: ApiProductOrderCreateEvent generic structure
-        properties:
-          event:
-            $ref: '#/components/schemas/ApiProductOrderCreateEventPayload'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApiProductOrderCreateEvent: '#/components/schemas/ApiProductOrderCreateEvent'
-    EntityRef:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - $ref: '#/components/schemas/Addressable'
-      - type: object
-        description: Entity reference schema to be use for all entityRef class.
-        properties:
-          id:
-            type: string
-            description: The identifier of the referred entity.
-          href:
-            type: string
-            description: The URI of the referred entity.
-          name:
-            type: string
-            description: Name of the referred entity.
-          '@referredType':
-            type: string
-            description: The actual type of the target instance when needed for disambiguation.
-        required:
-        - id
-    Entity:
+    Quantity:
       type: object
-      description: Base entity schema for use in TMForum Open-APIs. Property.
+      description: An amount in a given unit
+      properties:
+        amount:
+          type: number
+          format: float
+          default: 1
+          description: Numeric value in a given unit
+        units:
+          type: string
+          description: Unit
+    DpvOrganizationType:
+      enum:
+      - dpv:AcademicScientificOrganisation
+      - dpv:ForProfitOrganisation
+      - dpv:GovernmentalOrganisation
+      - dpv:IndustryConsortium
+      - dpv:InternationalOrganisation
+      - dpv:NonGovernmentalOrganisation
+      - dpv:NonProfitOrganisation
+      - dpv:OrganisationalUnit
+      type: string
+      description: Valid values for a type of organization based on W3C Data Privacy Vocabulary v2 https://w3c.github.io/dpv/2.0/dpv.
+    ApplicationOwnerCreateEventPayload:
+      type: object
+      description: ApplicationOwnerCreateEventPayload
+      properties:
+        applicationOwner:
+          $ref: '#/components/schemas/ApplicationOwner'
+    DCSProductOrderItem:
+      type: object
+      description: An identified part of the order. A product order is decomposed into one or more order items.
       allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - $ref: '#/components/schemas/Addressable'
-    ExternalIdentifier:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: An identification of an entity that is owned by or originates in a software system different from the current system, for example a ProductOrder handed off from a commerce platform into an order handling system. The structure identifies the system itself, the nature of the entity within the system (e.g. class name) and the unique ID of the entity within the system. It is anticipated that multiple external IDs can be held for a single entity, e.g. if the entity passed through multiple systems on the way to the current system. In this case the consumer is expected to sequence the IDs in the array in reverse order of provenance, i.e. most recent system first in the list.
-        properties:
-          owner:
-            type: string
-            description: Name of the external system that owns the entity.
-            example: MagentoCommerce
-          externalIdentifierType:
-            type: string
-            description: Type of the identification, typically would be the type of the entity within the external system
-            example: ProductOrder
-          id:
-            type: string
-            description: identification of the entity within the external system.
+      - $ref: '#/components/schemas/GCProductOrderItem'
       discriminator:
         propertyName: '@type'
         mapping:
-          ExternalIdentifier: '#/components/schemas/ExternalIdentifier'
-    LightGeographicAddress:
+          ApiProductOrderItemAdd: '#/components/schemas/ApiProductOrderItemAdd'
+          ApiProductOrderItemModify: '#/components/schemas/ApiProductOrderItemModify'
+          ProductOrderItemDelete: '#/components/schemas/ProductOrderItemDelete'
+    LogicalResourceRole:
+      type: object
+      description: A logical Resource Role is a role given to a logical resource in a given context.
+      properties:
+        grantedPermissionSet:
+          description: The PermissionSet is a set of Permissions granted to a user (party, party role, resource or resource role). The set may be granted explicitly by an authorized user or may be acquired implicitly due to the role that the user is playing.
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiPermissionSet'
+    ApiDigitalIdentity:
       allOf:
       - $ref: '#/components/schemas/Extensible'
       - type: object
-        description: 'Structured textual way of describing how to find a Property in an urban area (country properties are often defined differently). Note : Address corresponds to SID UrbanPropertyAddress'
+        description: ApiDigitalIdentity is a class that allow to describe a digital identity for an individual or a resource or a specific party role. One of these three MUST be provided. If an individual is provided, this identity will be for all her/his partyRole. To avoid confusion it is recommended in this case to not provide partyRoleIdentified. DEPRECATED in the POST and PATCH, this attribute can't be valued by the API consumer in this context.
         properties:
-          streetNr:
+          clientId:
             type: string
-            description: Number identifying a specific property on a public street.
-          streetName:
+            description: 'OAuth2 Client ID: A public identifier for apps. Even though it is public, it is best that it is not guessable by third parties, so many implementations use something like a 32-character hex string. DEPRECATED in the POST and the PATCH, this attribute can''t be valued by the API consumer in this context.'
+          redirectUrl:
+            type: array
+            deprecated: true
+            items:
+              type: string
+            description: 'DEPRECATED : moved to Application schema. After a user successfully authorizes an application, the authorization server will redirect the user back to the application.'
+          jwksUri:
+            deprecated: true
             type: string
-            description: Name of the street
-          locality:
+            description: 'DEPRECATED : moved to Application schema. JSON Web Key (JWK) is a data structure that represents a cryptographic key'
+          validFor:
+            $ref: '#/components/schemas/TimePeriod'
+          status:
             type: string
-            description: An area of defined or undefined boundaries within a local authority or other legislatively defined area, usually rural or semi rural in nature, or a suburb, a bounded locality within a city, town or shire principally of urban character
-          city:
-            type: string
-            description: City that the address is in
-          stateOrProvince:
-            type: string
-            description: the State or Province that the address is in
-          countryCode:
-            $ref: '#/components/schemas/ISO31661Alpha2StandardIdentifier'
-          postcode:
-            type: string
-            description: descriptor for a postal delivery area, used to speed and simplify the delivery of mail (also know as zipcode)
-          geographicSubAddress:
-            $ref: '#/components/schemas/LightGeographicSubAddress'
+            description: Used to indicate the current lifecycle status of this digital identity (unknown, active, suspended, archived).
+          credential:
+            type: array
+            description: A list of credential/authentification method that are used for this digital identity.
+            items:
+              $ref: '#/components/schemas/OAuth2ClientCredential'
       discriminator:
         propertyName: '@type'
         mapping:
-          LightGeographicAddress: '#/components/schemas/LightGeographicAddress'
-    Response:
+          ApiDigitalIdentity: '#/components/schemas/ApiDigitalIdentity'
+    ApiPermissionSet:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: The PermissionSet is a set of Permissions granted to a user (party, party role or resource). The set may be granted explicitly by an authorized user or may be acquired implicitly due to the role that the user is playing.
+        properties:
+          creationDate:
+            type: string
+            format: date-time
+            description: Date when the PermissionSet was created and assigned to a user
+          description:
+            type: string
+            description: Text describing the permission set
+          validFor:
+            $ref: '#/components/schemas/TimePeriod'
+          permission:
+            $ref: '#/components/schemas/ApiConsumerPermission'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ApiPermissionSet: '#/components/schemas/ApiPermissionSet'
+    Request:
       type: object
       description: A response to a request
       properties:
-        statusCode:
-          description: The status of the response. For example for an HTTP response would be codes such as 200, 400, etc.
+        method:
+          description: The protocol of the request, e.g. http
+          type: string
+        to:
+          description: The target of the request, e.g. a URL for an HTTP request
           type: string
         body:
-          description: The body of the response.
+          description: The body of the request. For example for an HTTP request might contain content of a form .
           type: object
         header:
-          description: Items included in the header of the response. For example for an HTTP response might contain negotiated locale.
           type: array
+          description: Items included in the header of the request. For example for an HTTP request might contain requested locale, basic authentication.
           items:
             $ref: '#/components/schemas/HeaderItem'
           title: header
-    PartyRef:
-      type: object
-      description: A Party reference
+    OAuth2ClientCredential:
       allOf:
-      - $ref: '#/components/schemas/EntityRef'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          PartyRef: '#/components/schemas/PartyRef'
-    PartyRoleRef:
-      allOf:
-      - $ref: '#/components/schemas/EntityRef'
+      - $ref: '#/components/schemas/Extensible'
       - type: object
-        description: Party role reference. A party role represents the part played by a party in a given context.
+        description: OAuth2ClientCredential describes the registration attributes in an OAuth registration process
         properties:
-          partyId:
+          clientSecret:
             type: string
-            description: The identifier of the engaged party that is linked to the PartyRole object.
-          partyName:
+            description: Secret that permits the Application to authenticate with OAuth2 method.
+          state:
             type: string
-            description: The name of the engaged party that is linked to the PartyRole object.
+            description: Used to indicate the current lifecycle state of this credential (like active, inactive, expired).
+          validFor:
+            $ref: '#/components/schemas/TimePeriod'
       discriminator:
         propertyName: '@type'
         mapping:
-          PartyRoleRef: '#/components/schemas/PartyRoleRef'
-    ApplicationOwnerStatusType:
-      enum:
-      - active
-      - inactive
-      type: string
-      description: Used to track the lifecycle status of the ApplicationOwner in Channel Partner IT. So this attribute is allowed to be contributed by the Channel Partner and patchable.
-    Extensible:
-      type: object
-      description: Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type
-      properties:
-        '@type':
-          type: string
-          description: When sub-classing, this defines the sub-class Extensible name
-        '@baseType':
-          type: string
-          description: When sub-classing, this defines the super-class
-        '@schemaLocation':
-          type: string
-          description: A URI to a JSON-Schema file that defines additional attributes and relationships
-      required:
-      - '@type'
-    ApiProductOrderStateChangeEventPayload:
-      type: object
-      description: ApiProductOrderStateChangeEventPayload
-      properties:
-        productOrder:
-          $ref: '#/components/schemas/ApiProductOrder'
-    Addressable:
-      type: object
-      description: Base schema for addressable entities
-      properties:
-        href:
-          type: string
-          description: Hyperlink reference
-        id:
-          type: string
-          description: unique identifier
-    ProductRef:
-      type: object
-      description: A Product reference
+          OAuth2ClientCredential: '#/components/schemas/OAuth2ClientCredential'
+    ApplicationOwnerCreateEvent:
       allOf:
-      - $ref: '#/components/schemas/EntityRef'
+      - $ref: '#/components/schemas/Event'
+      - type: object
+        description: ApplicationOwnerCreateEvent generic structure
+        properties:
+          event:
+            $ref: '#/components/schemas/ApplicationOwnerCreateEventPayload'
       discriminator:
         propertyName: '@type'
         mapping:
-          ProductRef: '#/components/schemas/ProductRef'
-    LogicalResource:
+          ApplicationOwnerCreateEvent: '#/components/schemas/ApplicationOwnerCreateEvent'
+    ApiProductOrderAttributeValueChangeEvent:
+      allOf:
+      - $ref: '#/components/schemas/Event'
+      - type: object
+        description: ApiProductOrderAttributeValueChangeEvent generic structure
+        properties:
+          event:
+            $ref: '#/components/schemas/ApiProductOrderAttributeValueChangeEventPayload'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ApiProductOrderAttributeValueChangeEvent: '#/components/schemas/ApiProductOrderAttributeValueChangeEvent'
+    RelatedPartyRefOrPartyRoleRef:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: RelatedParty reference. A related party defines party or party role or its reference, linked to a specific entity
+        properties:
+          role:
+            description: Role played by the related party or party role in the context of the specific entity it is linked to. Such as 'initiator', 'customer',  'salesAgent', 'user'
+            type: string
+          partyOrPartyRole:
+            $ref: '#/components/schemas/PartyRefOrPartyRoleRef'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          RelatedPartyRefOrPartyRoleRef: '#/components/schemas/RelatedPartyRefOrPartyRoleRef'
+    LightGeographicSubAddress:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: Representation of a GeographicSubAddress. It is used for addressing within a property in an urban area (country properties are often defined differently). It may refer to a building, a building cluster, or a floor of a multistory building.
+        properties:
+          buildingName:
+            type: string
+            description: allows for buildings that have well-known names
+          levelNumber:
+            type: string
+            description: used where a level type may be repeated e.g. BASEMENT 1, BASEMENT 2
+          levelType:
+            type: string
+            description: describes level types within a building
+          privateStreetName:
+            type: string
+            description: private streets internal to a property (e.g. a university) may have internal names that are not recorded by the land title office.
+          privateStreetNumber:
+            type: string
+            description: private streets numbers internal to a private street
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          LightGeographicSubAddress: '#/components/schemas/LightGeographicSubAddress'
+    Monitor:
       allOf:
       - $ref: '#/components/schemas/Entity'
       - type: object
-        description: Logic resource is a type of resource that describes the common set of attributes shared by all concrete logical resources (e.g. TPE, MSISDN, IP Addresses) in the inventory.
+        description: Monitoring of resources
         properties:
-          description:
+          request:
+            $ref: '#/components/schemas/Request'
+          response:
+            $ref: '#/components/schemas/Response'
+          sourceHref:
             type: string
-            description: free-text description of the resource
-          name:
+            description: The monitored resource href
+          state:
             type: string
-            description: the name of the resource
-          operationalState:
-            $ref: '#/components/schemas/ResourceOperationalStateType'
-          resourceVersion:
-            type: string
-            description: A field that identifies the specific version of an instance of a resource.
-          externalIdentifier:
-            type: array
-            description: An identification of this resource that is owned by or originates in a software system different from the current system. The structure identifies the system itself, the nature of the resource within the system and the unique ID of the resource within the system. It is anticipated that multiple external IDs can be held for a single resource, e.g. if the resource passed through multiple systems on the way to the current system.
-            items:
-              $ref: '#/components/schemas/ExternalIdentifier'
+            description: The Monitor state of the resource.  inProgress, inError, completed
       discriminator:
         propertyName: '@type'
         mapping:
-          Application: '#/components/schemas/Application'
-          LogicalResource: '#/components/schemas/LogicalResource'
+          Monitor: '#/components/schemas/Monitor'
     ContactMedium:
       allOf:
       - $ref: '#/components/schemas/Extensible'
@@ -1397,6 +1180,228 @@ components:
           PhoneContactMedium: '#/components/schemas/PhoneContactMedium'
           SocialContactMedium: '#/components/schemas/SocialContactMedium'
           WebFormContactMedium: '#/components/schemas/WebFormContactMedium'
+    ApplicationOwnerAttributeValueChangeEvent:
+      allOf:
+      - $ref: '#/components/schemas/Event'
+      - type: object
+        description: ApplicationOwnerAttributeValueChangeEvent generic structure
+        properties:
+          event:
+            $ref: '#/components/schemas/ApplicationOwnerAttributeValueChangeEventPayload'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ApplicationOwnerAttributeValueChangeEvent: '#/components/schemas/ApplicationOwnerAttributeValueChangeEvent'
+    ApplicationOwnerRelatedLocalRepresentative:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: ApplicationOwnerRelatedLocalRepresentative represents a Party representing the Organization within a geographic localization.
+        properties:
+          countryCode:
+            $ref: '#/components/schemas/ISO31661Alpha2StandardIdentifier'
+          representative:
+            $ref: '#/components/schemas/ApplicationOwnerRelatedIndividual'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ApplicationOwnerRelatedLocalRepresentative: '#/components/schemas/ApplicationOwnerRelatedLocalRepresentative'
+    HeaderItem:
+      type: object
+      description: An item typically included in a request or response
+      properties:
+        name:
+          description: The name of the header item, e.g. locale
+          type: string
+        value:
+          description: The value of the header item, e.g. en-us
+          type: string
+    ExternalIdentifier:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: An identification of an entity that is owned by or originates in a software system different from the current system, for example a ProductOrder handed off from a commerce platform into an order handling system. The structure identifies the system itself, the nature of the entity within the system (e.g. class name) and the unique ID of the entity within the system. It is anticipated that multiple external IDs can be held for a single entity, e.g. if the entity passed through multiple systems on the way to the current system. In this case the consumer is expected to sequence the IDs in the array in reverse order of provenance, i.e. most recent system first in the list.
+        properties:
+          owner:
+            type: string
+            description: Name of the external system that owns the entity.
+            example: MagentoCommerce
+          externalIdentifierType:
+            type: string
+            description: Type of the identification, typically would be the type of the entity within the external system
+            example: ProductOrder
+          id:
+            type: string
+            description: identification of the entity within the external system.
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ExternalIdentifier: '#/components/schemas/ExternalIdentifier'
+    PartyRoleRef:
+      allOf:
+      - $ref: '#/components/schemas/EntityRef'
+      - type: object
+        description: Party role reference. A party role represents the part played by a party in a given context.
+        properties:
+          partyId:
+            type: string
+            description: The identifier of the engaged party that is linked to the PartyRole object.
+          partyName:
+            type: string
+            description: The name of the engaged party that is linked to the PartyRole object.
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          PartyRoleRef: '#/components/schemas/PartyRoleRef'
+    MonitorStateChangeEvent:
+      allOf:
+      - $ref: '#/components/schemas/Event'
+      - type: object
+        description: MonitorStateChangeEvent generic structure
+        properties:
+          event:
+            $ref: '#/components/schemas/MonitorStateChangeEventPayload'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          MonitorStateChangeEvent: '#/components/schemas/MonitorStateChangeEvent'
+    ProductRef:
+      type: object
+      description: A Product reference
+      allOf:
+      - $ref: '#/components/schemas/EntityRef'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ProductRef: '#/components/schemas/ProductRef'
+    OrganizationIdentification:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: Represents our registration of information used as proof of identity by an organization
+        properties:
+          identificationId:
+            type: string
+            description: Identifier
+          issuingAuthority:
+            type: string
+            description: Authority which has issued the identifier (chamber of commerce...)
+          issuingDate:
+            type: string
+            format: date-time
+            description: Date at which the identifier was issued
+          identificationType:
+            type: string
+            description: Type of identification information used to identify the company in a country or internationally
+          validFor:
+            $ref: '#/components/schemas/TimePeriod'
+          attachment:
+            $ref: '#/components/schemas/AttachmentRefOrValue'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          OrganizationIdentification: '#/components/schemas/OrganizationIdentification'
+    ApplicationOwnerRelatedIndividual:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: ApplicationOwnerRelatedIndividual represents an Individual that has a role within the ApplicationOwner, in the Open Gateway context. Typically an employee of the company.
+        properties:
+          familyName:
+            type: string
+            description: Contains the non-chosen or inherited name. Also known as last name in the Western context
+          givenName:
+            type: string
+            description: First name of the individual
+          contactMedium:
+            type: array
+            items:
+              $ref: '#/components/schemas/ContactMedium'
+            description: List of means for contacting the party, e.g. mobile phone, email address
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ApplicationOwnerRelatedIndividual: '#/components/schemas/ApplicationOwnerRelatedIndividual'
+    ApplicationOwnerStatusType:
+      enum:
+      - active
+      - inactive
+      type: string
+      description: Used to track the lifecycle status of the ApplicationOwner in Channel Partner IT. So this attribute is allowed to be contributed by the Channel Partner and patchable.
+    Entity:
+      type: object
+      description: Base entity schema for use in TMForum Open-APIs. Property.
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - $ref: '#/components/schemas/Addressable'
+    GCProductOrderItem:
+      type: object
+      description: General Context ProductOrderItem that can be used as a Domain Specialization Order Item or as a non-specialised OrderItem.
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          DCSProductOrderItem: '#/components/schemas/DCSProductOrderItem'
+          GCProductOrderItem: '#/components/schemas/GCProductOrderItem'
+    MonitorStateChangeEventPayload:
+      type: object
+      description: MonitorStateChangeEventPayload generic structure
+      properties:
+        monitor:
+          $ref: '#/components/schemas/Monitor'
+    AttachmentRef:
+      allOf:
+      - $ref: '#/components/schemas/EntityRef'
+      - type: object
+        description: Attachment reference. An attachment complements the description of an element (for instance a product) through video, pictures
+        properties:
+          description:
+            type: string
+            description: A narrative text describing the content of the attachment
+          url:
+            description: Link to the attachment media/content
+            type: string
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          AttachmentRef: '#/components/schemas/AttachmentRef'
+    EntityRef:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - $ref: '#/components/schemas/Addressable'
+      - type: object
+        description: Entity reference schema to be use for all entityRef class.
+        properties:
+          id:
+            type: string
+            description: The identifier of the referred entity.
+          href:
+            type: string
+            description: The URI of the referred entity.
+          name:
+            type: string
+            description: Name of the referred entity.
+          '@referredType':
+            type: string
+            description: The actual type of the target instance when needed for disambiguation.
+        required:
+        - id
+    AgreementRef:
+      type: object
+      description: Agreement reference. An agreement represents a contract or arrangement, either written or verbal and sometimes enforceable by law, such as a service level agreement or a customer price agreement. An agreement involves a number of other business entities, such as products, services, and resources and/or their specifications.
+      allOf:
+      - $ref: '#/components/schemas/EntityRef'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          AgreementRef: '#/components/schemas/AgreementRef'
+    ApplicationOwnerAttributeValueChangeEventPayload:
+      type: object
+      description: ApplicationOwnerAttributeValueChangeEventPayload
+      properties:
+        applicationOwner:
+          $ref: '#/components/schemas/ApplicationOwner'
     ApplicationOwnerApprovalStatusChangeEvent:
       allOf:
       - $ref: '#/components/schemas/Event'
@@ -1409,124 +1414,185 @@ components:
         propertyName: '@type'
         mapping:
           ApplicationOwnerApprovalStatusChangeEvent: '#/components/schemas/ApplicationOwnerApprovalStatusChangeEvent'
-  responses:
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            basic:
-              summary: Error example
-              value:
-                '@type': Error
-                code: ERR001
-                reason: Missing information
-                message: Please provide the additional example information
-                referenceError: https://host/errors
-  requestBodies:
+    Response:
+      type: object
+      description: A response to a request
+      properties:
+        statusCode:
+          description: The status of the response. For example for an HTTP response would be codes such as 200, 400, etc.
+          type: string
+        body:
+          description: The body of the response.
+          type: object
+        header:
+          description: Items included in the header of the response. For example for an HTTP response might contain negotiated locale.
+          type: array
+          items:
+            $ref: '#/components/schemas/HeaderItem'
+          title: header
     ApplicationCreateEvent:
-      description: Application create Event payload
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApplicationCreateEvent'
-          examples:
-            ApplicationCreateEvent:
-              $ref: '#/components/examples/ApplicationCreateEvent_request'
-      required: true
-    ApiProductOrderAttributeValueChangeEvent:
-      description: ApiProductOrder attributeValueChange Event payload
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiProductOrderAttributeValueChangeEvent'
-          examples:
-            ApiProductOrderAttributeValueChangeEvent:
-              $ref: '#/components/examples/ApiProductOrderAttributeValueChangeEvent_request'
-      required: true
-    ApplicationOwnerCreateEvent:
-      description: ApplicationOwner create Event payload
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApplicationOwnerCreateEvent'
-          examples:
-            ApplicationOwnerCreateEvent:
-              $ref: '#/components/examples/ApplicationOwnerCreateEvent_request'
-      required: true
-    ApplicationAttributeValueChangeEvent:
-      description: Application attributeValueChange Event payload
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApplicationAttributeValueChangeEvent'
-          examples:
-            ApplicationAttributeValueChangeEvent:
-              $ref: '#/components/examples/ApplicationAttributeValueChangeEvent_request'
-      required: true
-    MonitorStateChangeEvent:
-      description: Monitor stateChange Event payload
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MonitorStateChangeEvent'
-          examples:
-            MonitorStateChangeEvent:
-              $ref: '#/components/examples/MonitorStateChangeEvent_request'
-      required: true
-    ApplicationOwnerApprovalStatusChangeEvent:
-      description: ApplicationOwner approvalStatusChange Event payload
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApplicationOwnerApprovalStatusChangeEvent'
-          examples:
-            ApplicationOwnerApprovalStatusChangeEvent:
-              $ref: '#/components/examples/ApplicationOwnerApprovalStatusChangeEvent_request'
-      required: true
-    ApplicationApprovalStatusChangeEvent:
-      description: Application approvalStatusChange Event payload
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApplicationApprovalStatusChangeEvent'
-          examples:
-            ApplicationApprovalStatusChangeEvent:
-              $ref: '#/components/examples/ApplicationApprovalStatusChangeEvent_request'
-      required: true
-    ApplicationOwnerAttributeValueChangeEvent:
-      description: ApplicationOwner attributeValueChange Event payload
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApplicationOwnerAttributeValueChangeEvent'
-          examples:
-            ApplicationOwnerAttributeValueChangeEvent:
-              $ref: '#/components/examples/ApplicationOwnerAttributeValueChangeEvent_request'
-      required: true
-    ApiProductOrderStateChangeEvent:
-      description: ApiProductOrder stateChange Event payload
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiProductOrderStateChangeEvent'
-          examples:
-            ApiProductOrderStateChangeEvent:
-              $ref: '#/components/examples/ApiProductOrderStateChangeEvent_request'
-      required: true
-    ApiProductOrderCreateEvent:
-      description: ApiProductOrder create Event payload
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiProductOrderCreateEvent'
-          examples:
-            ApiProductOrderCreateEvent:
-              $ref: '#/components/examples/ApiProductOrderCreateEvent_request'
-      required: true
+      allOf:
+      - $ref: '#/components/schemas/Event'
+      - type: object
+        description: ApplicationCreateEvent generic structure
+        properties:
+          event:
+            $ref: '#/components/schemas/ApplicationCreateEventPayload'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ApplicationCreateEvent: '#/components/schemas/ApplicationCreateEvent'
+    Error:
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          Error: '#/components/schemas/Error'
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        required:
+        - code
+        - reason
+        properties:
+          code:
+            type: string
+            description: Application relevant detail, defined in the API or a common list.
+          reason:
+            type: string
+            description: Explanation of the reason for the error which can be shown to a client user.
+          message:
+            type: string
+            description: More details and corrective actions related to the error which can be shown to a client user.
+          status:
+            type: string
+            description: HTTP Error code extension
+          referenceError:
+            type: string
+            description: URI of documentation describing the error.
+      description: Used when an API throws an Error, typically with a HTTP error response-code (3xx, 4xx, 5xx)
+    ProductOrderStateType:
+      enum:
+      - acknowledged
+      - rejected
+      - pending
+      - held
+      - inProgress
+      - cancelled
+      - completed
+      - failed
+      - partial
+      - assessingCancellation
+      - pendingCancellation
+      - draft
+      - inProgress.accepted
+      type: string
+      description: Possible values for the state of the order
+    ApiConsumerPermission:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: An ApiConsumerPermission allows an Application to consume an API.
+        properties:
+          managedAssetGroup:
+            $ref: '#/components/schemas/ApiListAssetGroup'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ApiConsumerPermission: '#/components/schemas/ApiConsumerPermission'
+    ApiListAssetGroup:
+      allOf:
+      - $ref: '#/components/schemas/AssetGroup'
+      - type: object
+        description: Defines a group of API assets to which access can be controlled
+        properties:
+          apiProduct:
+            type: array
+            items:
+              $ref: '#/components/schemas/ProductRef'
+            description: The list of products for which permissions are given.
   examples:
+    ApplicationApprovalStatusChangeEvent_request:
+      value:
+        correlationId: 126-54f
+        description: Event for a application ApprovalStatus change.
+        domain: Open Gateway Onboarding
+        eventId: '125'
+        eventTime: '2024-12-02T14:00:00.00Z'
+        eventType: ApplicationApprovalStatusChangeEvent
+        priority: '1'
+        timeOccurred: '2024-12-02T14:00:00.00Z'
+        title: ApplicationApprovalStatusChangeEvent
+        event:
+          application:
+            '@type': Application
+            '@baseType': LogicalResource
+            id: f1cba17d-789a-4037-b3e3-2c96e887576c
+            href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/f1cba17d-789a-4037-b3e3-2c96e887576c
+            approvalStatus: approved
+        '@baseType': Event
+        '@type': ApplicationApprovalStatusChangeEvent
+      description: Message example for an ApplicationApprovalStatusChangeEvent event
+    MonitorStateChangeEvent_request:
+      value:
+        correlationId: 987-46i
+        description: Event for a monitor state change.
+        domain: Open Gateway Onboarding
+        eventId: '987'
+        eventTime: '2024-12-02T14:00:00.00Z'
+        eventType: MonitorStateChangeEvent
+        priority: '1'
+        timeOccurred: '2024-12-02T14:00:00.00Z'
+        title: MonitorStateChangeEvent
+        event:
+          monitor:
+            '@type': Monitor
+            id: 77795e7f-5213-4b9c-b672-6838a6b76152
+            href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/monitor/77795e7f-5213-4b9c-b672-6838a6b76152
+            state: Completed
+        '@baseType': Event
+        '@type': MonitorStateChangeEvent
+      description: Message example for an MonitorStateChangeEvent event
+    ApplicationOwnerApprovalStatusChangeEvent_request:
+      value:
+        correlationId: 126-54f
+        description: Event for a applicationOwner approvalStatus change.
+        domain: Open Gateway Onboarding
+        eventId: '125'
+        eventTime: '2024-12-01T13:10:00.00Z'
+        eventType: ApplicationOwnerApprovalStatusChangeEvent
+        priority: '1'
+        timeOccurred: '2024-12-01T13:10:00.00Z'
+        title: ApplicationOwnerApprovalStatusChangeEvent
+        event:
+          applicationOwner:
+            '@type': ApplicationOwner
+            id: e05b75dc-f843-40d9-8d16-112275a28385
+            href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/applicationOwner/e05b75dc-f843-40d9-8d16-112275a28385
+            approvalStatus: approved
+        '@baseType': Event
+        '@type': ApplicationOwnerApprovalStatusChangeEvent
+      description: Message example for an ApplicationOwnerApprovalStatusChangeEvent event
+    ApplicationAttributeValueChangeEvent_request:
+      value:
+        correlationId: 126-54f
+        description: Event for a application attribute value change.
+        domain: Open Gateway Onboarding
+        eventId: '125'
+        eventTime: '2024-12-02T15:00:00.00Z'
+        eventType: ApplicationAttributeValueChangeEvent
+        priority: '1'
+        timeOccurred: '2024-12-02T15:00:00.00Z'
+        title: ApplicationAttributeValueChangeEvent
+        event:
+          application:
+            '@type': Application
+            '@baseType': LogicalResource
+            id: f1cba17d-789a-4037-b3e3-2c96e887576c
+            href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/f1cba17d-789a-4037-b3e3-2c96e887576c
+            description: Evolve Quest awarded mobile application.
+        '@baseType': Event
+        '@type': ApplicationAttributeValueChangeEvent
+      description: Message example for an ApplicationAttributeValueChangeEvent event
     ApplicationOwnerAttributeValueChangeEvent_request:
       value:
         correlationId: 126-54f
@@ -1547,6 +1613,119 @@ components:
         '@baseType': Event
         '@type': ApplicationOwnerAttributeValueChangeEvent
       description: Message example for an ApplicationOwnerAttributeValueChangeEvent event
+    ApiProductOrderAttributeValueChangeEvent_request:
+      value:
+        correlationId: 126-54f
+        description: Event for a productOrder attribute value change.
+        domain: Open Gateway Onboarding
+        eventId: '125'
+        eventTime: '2025-02-02T12:01:00.00Z'
+        eventType: ApiProductOrderAttributeValueChangeEvent
+        priority: '1'
+        timeOccurred: '2025-02-02T12:01:00.00Z'
+        title: ApiProductOrderAttributeValueChangeEvent
+        event:
+          productOrder:
+            '@type': ApiProductOrder
+            id: 86387671-0997-461b-99c7-d624ffb0640c
+            href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/apiProductOrder/86387671-0997-461b-99c7-d624ffb0640c
+            state: completed
+            completionDate: '2025-02-02T12:01:00.00Z'
+        '@baseType': Event
+        '@type': ApiProductOrderAttributeValueChangeEvent
+      description: Message example for an ApiProductOrderAttributeValueChangeEvent event
+    ApiProductOrderStateChangeEvent_request:
+      value:
+        correlationId: 126-54f
+        description: Event for a productOrder state change.
+        domain: Open Gateway Onboarding
+        eventId: '125'
+        eventTime: '2025-02-02T12:01:00.00Z'
+        eventType: ApiProductOrderStateChangeEvent
+        priority: '1'
+        timeOccurred: '2025-02-02T12:01:00.00Z'
+        title: ApiProductOrderStateChangeEvent
+        event:
+          productOrder:
+            '@type': ApiProductOrder
+            id: 86387671-0997-461b-99c7-d624ffb0640c
+            href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/apiProductOrder/86387671-0997-461b-99c7-d624ffb0640c
+            state: completed
+            completionDate: '2025-02-02T12:01:00.00Z'
+        '@baseType': Event
+        '@type': ApiProductOrderStateChangeEvent
+      description: Message example for an ApiProductOrderStateChangeEvent event
+    ApplicationCreateEvent_request:
+      value:
+        correlationId: 126-54f
+        description: Event for a application creation.
+        domain: Open Gateway Onboarding
+        eventId: '125'
+        eventTime: '2024-12-02T14:10:00.00Z'
+        eventType: ApplicationCreateEvent
+        priority: '1'
+        timeOccurred: '2024-12-02T14:10:00.00Z'
+        title: ApplicationCreateEvent
+        event:
+          application:
+            '@type': Application
+            '@baseType': LogicalResource
+            id: '102'
+            href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/102
+            name: Evolve West
+            creationDate: '2024-12-02T14:10:00.00Z'
+            commercialName: Evolve West
+            logoUrl: https://channelpartner.com/opengateway/application/evolvequest/logo.jpg
+            privacyPolicyURL: https://channelpartner.com/opengateway/application/evolvequest/privacyPolicy.html
+            description: Evolve West mobile application
+            redirectUrl:
+            - https://channelpartner.com/opengateway/application/evolvequest/redirect
+            jwksUri: https://channelpartner.com/opengateway/application/evolvequest/jwk
+            category: games
+            operationalState: disable
+            approvalStatus: pendingApproval
+            digitalIdentity:
+              '@type': ApiDigitalIdentity
+              clientId: evolve_quest_channelPartner15
+              validFor:
+                startDateTime: '2024-12-02T14:11:00.00Z'
+            apiConsumerRole:
+            - grantedPermissionSet:
+              - '@type': ApiPermissionSet
+                creationDate: '2025-04-02T15:00:00.00Z'
+                permission:
+                  '@type': ApiConsumerPermission
+                  managedAssetGroup:
+                    '@type': ApiListAssetGroup
+                    '@baseType': AssetGroup
+                    apiProduct:
+                    - '@type': ProductRef
+                      id: '123'
+                      '@referredType': ApiProduct
+                validFor:
+                  startDateTime: '2025-04-02T15:00:00.00Z'
+            applicationOwner:
+              '@type': PartyRoleRef
+              id: e05b75dc-f843-40d9-8d16-112275a28385
+              '@referredType': PartyRole
+            privacyRightsRequestContact:
+            - '@type': WebFormContactMedium
+              '@baseType': ContactMedium
+              id: '1'
+              preferred: false
+              url: https://contact.evolvequest.com
+            - '@type': EmailContactMedium
+              '@baseType': ContactMedium
+              id: '2'
+              preferred: true
+              emailAddress: contact@evolvequest.com
+            channelPartner:
+              '@type': PartyRoleRef
+              id: '15'
+              '@referredType': PartyRole
+        '@baseType': Event
+        '@type': ApplicationCreateEvent
+      description: Message example for ApplicationCreateEvent event
     ApiProductOrderCreateEvent_request:
       value:
         correlationId: 126-54f
@@ -1663,47 +1842,6 @@ components:
         '@baseType': Event
         '@type': ApiProductOrderCreateEvent
       description: Message example for an ApiProductOrderCreateEvent event
-    ApplicationAttributeValueChangeEvent_request:
-      value:
-        correlationId: 126-54f
-        description: Event for a application attribute value change.
-        domain: Open Gateway Onboarding
-        eventId: '125'
-        eventTime: '2024-12-02T15:00:00.00Z'
-        eventType: ApplicationAttributeValueChangeEvent
-        priority: '1'
-        timeOccurred: '2024-12-02T15:00:00.00Z'
-        title: ApplicationAttributeValueChangeEvent
-        event:
-          application:
-            '@type': Application
-            '@baseType': LogicalResource
-            id: f1cba17d-789a-4037-b3e3-2c96e887576c
-            href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/f1cba17d-789a-4037-b3e3-2c96e887576c
-            description: Evolve Quest awarded mobile application.
-        '@baseType': Event
-        '@type': ApplicationAttributeValueChangeEvent
-      description: Message example for an ApplicationAttributeValueChangeEvent event
-    MonitorStateChangeEvent_request:
-      value:
-        correlationId: 987-46i
-        description: Event for a monitor state change.
-        domain: Open Gateway Onboarding
-        eventId: '987'
-        eventTime: '2024-12-02T14:00:00.00Z'
-        eventType: MonitorStateChangeEvent
-        priority: '1'
-        timeOccurred: '2024-12-02T14:00:00.00Z'
-        title: MonitorStateChangeEvent
-        event:
-          monitor:
-            '@type': Monitor
-            id: 77795e7f-5213-4b9c-b672-6838a6b76152
-            href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/monitor/77795e7f-5213-4b9c-b672-6838a6b76152
-            state: Completed
-        '@baseType': Event
-        '@type': MonitorStateChangeEvent
-      description: Message example for an MonitorStateChangeEvent event
     ApplicationOwnerCreateEvent_request:
       value:
         correlationId: 126-54f
@@ -1815,157 +1953,19 @@ components:
         '@baseType': Event
         '@type': ApplicationOwnerCreateEvent
       description: Message example for ApplicationOwnerCreateEvent event
-    ApplicationCreateEvent_request:
-      value:
-        correlationId: 126-54f
-        description: Event for a application creation.
-        domain: Open Gateway Onboarding
-        eventId: '125'
-        eventTime: '2024-12-02T14:10:00.00Z'
-        eventType: ApplicationCreateEvent
-        priority: '1'
-        timeOccurred: '2024-12-02T14:10:00.00Z'
-        title: ApplicationCreateEvent
-        event:
-          application:
-            '@type': Application
-            '@baseType': LogicalResource
-            id: '102'
-            href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/102
-            name: Evolve West
-            creationDate: '2024-12-02T14:10:00.00Z'
-            commercialName: Evolve West
-            logoUrl: https://channelpartner.com/opengateway/application/evolvequest/logo.jpg
-            privacyPolicyURL: https://channelpartner.com/opengateway/application/evolvequest/privacyPolicy.html
-            description: Evolve West mobile application
-            redirectUrl:
-            - https://channelpartner.com/opengateway/application/evolvequest/redirect
-            jwksUri: https://channelpartner.com/opengateway/application/evolvequest/jwk
-            category: games
-            operationalState: disable
-            approvalStatus: pendingApproval
-            digitalIdentity:
-              '@type': ApiDigitalIdentity
-              clientId: evolve_quest_channelPartner15
-              validFor:
-                startDateTime: '2024-12-02T14:11:00.00Z'
-            apiConsumerRole:
-            - grantedPermissionSet:
-              - '@type': ApiPermissionSet
-                creationDate: '2025-04-02T15:00:00.00Z'
-                permission:
-                  '@type': ApiConsumerPermission
-                  managedAssetGroup:
-                    '@type': ApiListAssetGroup
-                    '@baseType': AssetGroup
-                    apiProduct:
-                    - '@type': ProductRef
-                      id: '123'
-                      '@referredType': ApiProduct
-                validFor:
-                  startDateTime: '2025-04-02T15:00:00.00Z'
-            applicationOwner:
-              '@type': PartyRoleRef
-              id: e05b75dc-f843-40d9-8d16-112275a28385
-              '@referredType': PartyRole
-            privacyRightsRequestContact:
-            - '@type': WebFormContactMedium
-              '@baseType': ContactMedium
-              id: '1'
-              preferred: false
-              url: https://contact.evolvequest.com
-            - '@type': EmailContactMedium
-              '@baseType': ContactMedium
-              id: '2'
-              preferred: true
-              emailAddress: contact@evolvequest.com
-            channelPartner:
-              '@type': PartyRoleRef
-              id: '15'
-              '@referredType': PartyRole
-        '@baseType': Event
-        '@type': ApplicationCreateEvent
-      description: Message example for ApplicationCreateEvent event
-    ApplicationOwnerApprovalStatusChangeEvent_request:
-      value:
-        correlationId: 126-54f
-        description: Event for a applicationOwner approvalStatus change.
-        domain: Open Gateway Onboarding
-        eventId: '125'
-        eventTime: '2024-12-01T13:10:00.00Z'
-        eventType: ApplicationOwnerApprovalStatusChangeEvent
-        priority: '1'
-        timeOccurred: '2024-12-01T13:10:00.00Z'
-        title: ApplicationOwnerApprovalStatusChangeEvent
-        event:
-          applicationOwner:
-            '@type': ApplicationOwner
-            id: e05b75dc-f843-40d9-8d16-112275a28385
-            href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/applicationOwner/e05b75dc-f843-40d9-8d16-112275a28385
-            approvalStatus: approved
-        '@baseType': Event
-        '@type': ApplicationOwnerApprovalStatusChangeEvent
-      description: Message example for an ApplicationOwnerApprovalStatusChangeEvent event
-    ApiProductOrderAttributeValueChangeEvent_request:
-      value:
-        correlationId: 126-54f
-        description: Event for a productOrder attribute value change.
-        domain: Open Gateway Onboarding
-        eventId: '125'
-        eventTime: '2025-02-02T12:01:00.00Z'
-        eventType: ApiProductOrderAttributeValueChangeEvent
-        priority: '1'
-        timeOccurred: '2025-02-02T12:01:00.00Z'
-        title: ApiProductOrderAttributeValueChangeEvent
-        event:
-          productOrder:
-            '@type': ApiProductOrder
-            id: 86387671-0997-461b-99c7-d624ffb0640c
-            href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/apiProductOrder/86387671-0997-461b-99c7-d624ffb0640c
-            state: completed
-            completionDate: '2025-02-02T12:01:00.00Z'
-        '@baseType': Event
-        '@type': ApiProductOrderAttributeValueChangeEvent
-      description: Message example for an ApiProductOrderAttributeValueChangeEvent event
-    ApplicationApprovalStatusChangeEvent_request:
-      value:
-        correlationId: 126-54f
-        description: Event for a application ApprovalStatus change.
-        domain: Open Gateway Onboarding
-        eventId: '125'
-        eventTime: '2024-12-02T14:00:00.00Z'
-        eventType: ApplicationApprovalStatusChangeEvent
-        priority: '1'
-        timeOccurred: '2024-12-02T14:00:00.00Z'
-        title: ApplicationApprovalStatusChangeEvent
-        event:
-          application:
-            '@type': Application
-            '@baseType': LogicalResource
-            id: f1cba17d-789a-4037-b3e3-2c96e887576c
-            href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/f1cba17d-789a-4037-b3e3-2c96e887576c
-            approvalStatus: approved
-        '@baseType': Event
-        '@type': ApplicationApprovalStatusChangeEvent
-      description: Message example for an ApplicationApprovalStatusChangeEvent event
-    ApiProductOrderStateChangeEvent_request:
-      value:
-        correlationId: 126-54f
-        description: Event for a productOrder state change.
-        domain: Open Gateway Onboarding
-        eventId: '125'
-        eventTime: '2025-02-02T12:01:00.00Z'
-        eventType: ApiProductOrderStateChangeEvent
-        priority: '1'
-        timeOccurred: '2025-02-02T12:01:00.00Z'
-        title: ApiProductOrderStateChangeEvent
-        event:
-          productOrder:
-            '@type': ApiProductOrder
-            id: 86387671-0997-461b-99c7-d624ffb0640c
-            href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/apiProductOrder/86387671-0997-461b-99c7-d624ffb0640c
-            state: completed
-            completionDate: '2025-02-02T12:01:00.00Z'
-        '@baseType': Event
-        '@type': ApiProductOrderStateChangeEvent
-      description: Message example for an ApiProductOrderStateChangeEvent event
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            basic:
+              summary: Error example
+              value:
+                '@type': Error
+                code: ERR001
+                reason: Missing information
+                message: Please provide the additional example information
+                referenceError: https://host/errors

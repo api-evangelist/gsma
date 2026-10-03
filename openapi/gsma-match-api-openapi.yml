@@ -140,196 +140,7 @@ paths:
         '422':
           $ref: '#/components/responses/Generic422'
 components:
-  parameters:
-    x-correlator:
-      name: x-correlator
-      in: header
-      description: Correlation id for the different services
-      schema:
-        type: string
-        pattern: ^[a-zA-Z0-9-]{0,55}$
-        example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
-  responses:
-    Generic403:
-      description: Forbidden
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 403
-                code:
-                  enum:
-                  - PERMISSION_DENIED
-                  - INVALID_TOKEN_CONTEXT
-                  - KNOW_YOUR_CUSTOMER.ID_DOCUMENT_REQUIRED
-                  - KNOW_YOUR_CUSTOMER.ID_DOCUMENT_MISMATCH
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
-            GENERIC_403_INVALID_TOKEN_CONTEXT:
-              description: Reflect some inconsistency between information in some field of the API and the related OAuth2 Token
-              value:
-                status: 403
-                code: INVALID_TOKEN_CONTEXT
-                message: phoneNumber is not consistent with access token.
-            KNOW_YOUR_CUSTOMER.ID_DOCUMENT_REQUIRED:
-              description: The idDocument is required by the implementation
-              value:
-                status: 403
-                code: KNOW_YOUR_CUSTOMER.ID_DOCUMENT_REQUIRED
-                message: The idDocument is required to perform the properties validation
-            KNOW_YOUR_CUSTOMER.ID_DOCUMENT_MISMATCH:
-              description: idDocument mismatch
-              value:
-                status: 403
-                code: KNOW_YOUR_CUSTOMER.ID_DOCUMENT_MISMATCH
-                message: The idDocument needs to match the one associated with the provided phoneNumber
-    Generic404:
-      description: Not found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 404
-                code:
-                  enum:
-                  - NOT_FOUND
-                  - IDENTIFIER_NOT_FOUND
-          examples:
-            GENERIC_404_NOT_FOUND:
-              description: Resource is not found
-              value:
-                status: 404
-                code: NOT_FOUND
-            GENERIC_404_IDENTIFIER_NOT_FOUND:
-              description: The phone number is not associated with a CSP customer account
-              value:
-                status: 404
-                code: IDENTIFIER_NOT_FOUND
-                message: The phone number provided is not associated with a customer account
-    Generic401:
-      description: Unauthorized
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 401
-                code:
-                  enum:
-                  - UNAUTHENTICATED
-                  - AUTHENTICATION_REQUIRED
-          examples:
-            GENERIC_401_UNAUTHENTICATED:
-              description: Request cannot be authenticated
-              value:
-                status: 401
-                code: UNAUTHENTICATED
-                message: Request not authenticated due to missing, invalid, or expired credentials.
-            GENERIC_401_AUTHENTICATION_REQUIRED:
-              description: New authentication is needed, authentication is no longer valid
-              value:
-                status: 401
-                code: AUTHENTICATION_REQUIRED
-                message: New authentication is required.
-    Generic422:
-      description: Unprocessable Content
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 422
-                code:
-                  enum:
-                  - SERVICE_NOT_APPLICABLE
-                  - MISSING_IDENTIFIER
-          examples:
-            GENERIC_422_SERVICE_NOT_APPLICABLE:
-              description: Service is not applicable for the provided phone number
-              value:
-                status: 422
-                code: SERVICE_NOT_APPLICABLE
-                message: The service is not applicable for the provided phone number
-            GENERIC_422_MISSING_IDENTIFIER:
-              description: No phone number has been provided either explicitly or associated with the access token
-              value:
-                status: 422
-                code: MISSING_IDENTIFIER
-                message: No phone number has been provided
-    Generic400:
-      description: Bad Request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 400
-                code:
-                  enum:
-                  - INVALID_ARGUMENT
-                  - KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION
-          examples:
-            GENERIC_400_INVALID_ARGUMENT:
-              description: Invalid Argument. Generic Syntax Exception
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param.
-            KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION:
-              description: Indicated param combination is invalid
-              value:
-                status: 400
-                code: KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION
-                message: Indicated parameter combination is invalid
   schemas:
-    MatchResult:
-      type: string
-      enum:
-      - 'true'
-      - 'false'
-      - not_available
     ErrorInfo:
       type: object
       required:
@@ -346,78 +157,17 @@ components:
         message:
           type: string
           description: Detailed error description
-    KYC_MatchRequestBody:
-      type: object
-      description: Payload to validate the customer data.
-      properties:
-        phoneNumber:
-          type: string
-          description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
-          pattern: ^\+[1-9][0-9]{4,14}$
-          example: '+123456789'
-        idDocument:
-          type: string
-          description: Id number associated to the official identity document in the country. It may contain alphanumeric characters.
-        name:
-          type: string
-          description: Complete name of the customer, usually composed of first/given name and last/family/sur- name in a country.  Depending on the country, the order of first/give name and last/family/sur- name varies, and middle name could be included.  It can use givenName, middleNames, familyName and/or familyNameAtBirth. For example, in ESP, name+familyName; in NLD, it can be name+middleNames+familyName or name+middleNames+familyNameAtBirth, etc.
-        givenName:
-          type: string
-          description: First/given name or compound first/given name of the customer.
-        familyName:
-          type: string
-          description: Last name, family name, or surname of the customer.
-        nameKanaHankaku:
-          type: string
-          description: Complete name of the customer in Hankaku-Kana format (reading of name) for Japan.
-        nameKanaZenkaku:
-          type: string
-          description: Complete name of the customer in Zenkaku-Kana format (reading of name) for Japan.
-        middleNames:
-          type: string
-          description: Middle name/s of the customer.
-        familyNameAtBirth:
-          type: string
-          description: Last/family/sur- name at birth of the customer.
-        address:
-          type: string
-          description: Complete address of the customer.  For some countries, it is built following the usual concatenation of parameters in a country, but for other countries, this is not the case.  For some countries, it can use streetName, streetNumber and/or houseNumberExtension. For example, in ESP, streetName+streetNumber; in NLD, it can be streetName+streetNumber or streetName+streetNumber+houseNumberExtension.
-        streetName:
-          type: string
-          description: Name of the street of the customer's address. It should not include the type of the street.
-        streetNumber:
-          type: string
-          description: The street number of the customer's address.  Number identifying a specific property on the 'streetName'.
-        postalCode:
-          type: string
-          description: Zip code or postal code
-        region:
-          type: string
-          description: Region/prefecture of the customer's address
-        locality:
-          type: string
-          description: Locality of the customer's address
-        country:
-          type: string
-          description: Country of the customer's address. Format ISO 3166-1 alpha-2
-        houseNumberExtension:
-          type: string
-          description: Specific identifier of the house needed depending on the property type. For example, number of apartment in an apartment building.
-        birthdate:
-          type: string
-          format: date
-          description: The birthdate of the customer, in RFC 3339 / ISO 8601 calendar date format (YYYY-MM-DD).
-        email:
-          type: string
-          format: email
-          description: Email address of the customer in the RFC specified format (local-part@domain).
-        gender:
-          type: string
-          description: Gender of the customer (Male/Female/Other).
-          enum:
-          - MALE
-          - FEMALE
-          - OTHER
+    MatchResult:
+      type: string
+      enum:
+      - 'true'
+      - 'false'
+      - not_available
+    MatchScoreResult:
+      type: integer
+      description: Indicates the similarity score assigned to the input value when it does not exactly match the value stored in the operator's system. This property shall only be returned when the value of the corresponding match field is `false`.
+      minimum: 0
+      maximum: 100
     KYC_MatchResponse:
       type: object
       properties:
@@ -523,11 +273,261 @@ components:
           allOf:
           - $ref: '#/components/schemas/MatchResult'
           - description: Indicates whether the gender of the customer matches with the one on the Operator's system.
-    MatchScoreResult:
-      type: integer
-      description: Indicates the similarity score assigned to the input value when it does not exactly match the value stored in the operator's system. This property shall only be returned when the value of the corresponding match field is `false`.
-      minimum: 0
-      maximum: 100
+    KYC_MatchRequestBody:
+      type: object
+      description: Payload to validate the customer data.
+      properties:
+        phoneNumber:
+          type: string
+          description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+          pattern: ^\+[1-9][0-9]{4,14}$
+          example: '+123456789'
+        idDocument:
+          type: string
+          description: Id number associated to the official identity document in the country. It may contain alphanumeric characters.
+        name:
+          type: string
+          description: Complete name of the customer, usually composed of first/given name and last/family/sur- name in a country.  Depending on the country, the order of first/give name and last/family/sur- name varies, and middle name could be included.  It can use givenName, middleNames, familyName and/or familyNameAtBirth. For example, in ESP, name+familyName; in NLD, it can be name+middleNames+familyName or name+middleNames+familyNameAtBirth, etc.
+        givenName:
+          type: string
+          description: First/given name or compound first/given name of the customer.
+        familyName:
+          type: string
+          description: Last name, family name, or surname of the customer.
+        nameKanaHankaku:
+          type: string
+          description: Complete name of the customer in Hankaku-Kana format (reading of name) for Japan.
+        nameKanaZenkaku:
+          type: string
+          description: Complete name of the customer in Zenkaku-Kana format (reading of name) for Japan.
+        middleNames:
+          type: string
+          description: Middle name/s of the customer.
+        familyNameAtBirth:
+          type: string
+          description: Last/family/sur- name at birth of the customer.
+        address:
+          type: string
+          description: Complete address of the customer.  For some countries, it is built following the usual concatenation of parameters in a country, but for other countries, this is not the case.  For some countries, it can use streetName, streetNumber and/or houseNumberExtension. For example, in ESP, streetName+streetNumber; in NLD, it can be streetName+streetNumber or streetName+streetNumber+houseNumberExtension.
+        streetName:
+          type: string
+          description: Name of the street of the customer's address. It should not include the type of the street.
+        streetNumber:
+          type: string
+          description: The street number of the customer's address.  Number identifying a specific property on the 'streetName'.
+        postalCode:
+          type: string
+          description: Zip code or postal code
+        region:
+          type: string
+          description: Region/prefecture of the customer's address
+        locality:
+          type: string
+          description: Locality of the customer's address
+        country:
+          type: string
+          description: Country of the customer's address. Format ISO 3166-1 alpha-2
+        houseNumberExtension:
+          type: string
+          description: Specific identifier of the house needed depending on the property type. For example, number of apartment in an apartment building.
+        birthdate:
+          type: string
+          format: date
+          description: The birthdate of the customer, in RFC 3339 / ISO 8601 calendar date format (YYYY-MM-DD).
+        email:
+          type: string
+          format: email
+          description: Email address of the customer in the RFC specified format (local-part@domain).
+        gender:
+          type: string
+          description: Gender of the customer (Male/Female/Other).
+          enum:
+          - MALE
+          - FEMALE
+          - OTHER
+  parameters:
+    x-correlator:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        type: string
+        pattern: ^[a-zA-Z0-9-]{0,55}$
+        example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
+  responses:
+    Generic403:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 403
+                code:
+                  enum:
+                  - PERMISSION_DENIED
+                  - INVALID_TOKEN_CONTEXT
+                  - KNOW_YOUR_CUSTOMER.ID_DOCUMENT_REQUIRED
+                  - KNOW_YOUR_CUSTOMER.ID_DOCUMENT_MISMATCH
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+            GENERIC_403_INVALID_TOKEN_CONTEXT:
+              description: Reflect some inconsistency between information in some field of the API and the related OAuth2 Token
+              value:
+                status: 403
+                code: INVALID_TOKEN_CONTEXT
+                message: phoneNumber is not consistent with access token.
+            KNOW_YOUR_CUSTOMER.ID_DOCUMENT_REQUIRED:
+              description: The idDocument is required by the implementation
+              value:
+                status: 403
+                code: KNOW_YOUR_CUSTOMER.ID_DOCUMENT_REQUIRED
+                message: The idDocument is required to perform the properties validation
+            KNOW_YOUR_CUSTOMER.ID_DOCUMENT_MISMATCH:
+              description: idDocument mismatch
+              value:
+                status: 403
+                code: KNOW_YOUR_CUSTOMER.ID_DOCUMENT_MISMATCH
+                message: The idDocument needs to match the one associated with the provided phoneNumber
+    Generic401:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 401
+                code:
+                  enum:
+                  - UNAUTHENTICATED
+                  - AUTHENTICATION_REQUIRED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials.
+            GENERIC_401_AUTHENTICATION_REQUIRED:
+              description: New authentication is needed, authentication is no longer valid
+              value:
+                status: 401
+                code: AUTHENTICATION_REQUIRED
+                message: New authentication is required.
+    Generic400:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+                  - KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+            KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION:
+              description: Indicated param combination is invalid
+              value:
+                status: 400
+                code: KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION
+                message: Indicated parameter combination is invalid
+    Generic404:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 404
+                code:
+                  enum:
+                  - NOT_FOUND
+                  - IDENTIFIER_NOT_FOUND
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              description: The phone number is not associated with a CSP customer account
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: The phone number provided is not associated with a customer account
+    Generic422:
+      description: Unprocessable Content
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 422
+                code:
+                  enum:
+                  - SERVICE_NOT_APPLICABLE
+                  - MISSING_IDENTIFIER
+          examples:
+            GENERIC_422_SERVICE_NOT_APPLICABLE:
+              description: Service is not applicable for the provided phone number
+              value:
+                status: 422
+                code: SERVICE_NOT_APPLICABLE
+                message: The service is not applicable for the provided phone number
+            GENERIC_422_MISSING_IDENTIFIER:
+              description: No phone number has been provided either explicitly or associated with the access token
+              value:
+                status: 422
+                code: MISSING_IDENTIFIER
+                message: No phone number has been provided
   headers:
     x-correlator:
       description: Correlation id for the different services

@@ -1,19 +1,16 @@
 openapi: 3.2.0
 info:
-  title: Gsma Get Device Identifiers API
+  title: Get Device Identifiers API
+  version: 0.3.0
+  description: '# Summary
+
+
+    The Mobile Device Identifier API returns details of the physical mobile device currently being used by a specified mobile subscriber.'
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  x-refined-note:
-  - x-camara-commonalities differs across the merged source definitions and was not carried
-  version: '1.0'
-  description: 'Operations tagged Get Device Identifiers across 2 of this provider''s published API definitions: gsma-open-gateway-device-identifier-openapi.yml, open-gateway-get-device-identifiers-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+  x-camara-commonalities: 0.6
 servers:
-- url: '{apiRoot}/device-identifier/v0.2'
-  variables:
-    apiRoot:
-      default: https://example.com:443
-      description: API root, to be defined by the service provider
 - url: '{apiRoot}/device-identifier/v0.3'
   variables:
     apiRoot:
@@ -33,12 +30,7 @@ paths:
       - openId:
         - device-identifier:retrieve-identifier
       parameters:
-      - in: header
-        name: x-correlator
-        description: Correlation id for the different services
-        required: false
-        schema:
-          type: string
+      - $ref: '#/components/parameters/x-correlator'
       requestBody:
         description: Parameters to create a new session
         required: true
@@ -70,12 +62,6 @@ paths:
           $ref: '#/components/responses/422UnprocessableContent'
         '429':
           $ref: '#/components/responses/429TooManyRequests'
-    servers:
-    - url: '{apiRoot}/device-identifier/v0.2'
-      variables:
-        apiRoot:
-          default: https://example.com:443
-          description: API root, to be defined by the service provider
   /retrieve-type:
     post:
       summary: Get details about the type of device being used by a given mobile subscriber
@@ -86,14 +72,7 @@ paths:
       - openId:
         - device-identifier:retrieve-type
       parameters:
-      - in: header
-        name: x-correlator
-        description: Correlation id for the different services
-        required: false
-        schema:
-          type: string
-          pattern: ^[a-zA-Z0-9-]{0,55}$
-          example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
+      - $ref: '#/components/parameters/x-correlator'
       requestBody:
         description: Parameters to create a new session
         required: true
@@ -125,12 +104,6 @@ paths:
           $ref: '#/components/responses/422UnprocessableContent'
         '429':
           $ref: '#/components/responses/429TooManyRequests'
-    servers:
-    - url: '{apiRoot}/device-identifier/v0.2'
-      variables:
-        apiRoot:
-          default: https://example.com:443
-          description: API root, to be defined by the service provider
   /retrieve-ppid:
     post:
       summary: Get a pseudonymous identifier for device being used by a given mobile subscriber
@@ -164,265 +137,50 @@ paths:
         '400':
           $ref: '#/components/responses/400BadRequest'
         '401':
-          $ref: '#/components/responses/401Unauthorized_2'
+          $ref: '#/components/responses/401Unauthorized'
         '403':
           $ref: '#/components/responses/403Forbidden'
         '404':
           $ref: '#/components/responses/404NotFound'
         '422':
-          $ref: '#/components/responses/422UnprocessableContent_2'
+          $ref: '#/components/responses/422UnprocessableContent'
         '429':
           $ref: '#/components/responses/429TooManyRequests'
-    servers:
-    - url: '{apiRoot}/device-identifier/v0.3'
-      variables:
-        apiRoot:
-          default: http://localhost:9091
-          description: API root, defined by the service provider, e.g. `api.example.com` or `api.example.com/somepath`
 components:
-  examples:
-    IdentifyDeviceByMultipleIdentifiers:
-      description: Identifying device by multiple device identifiers
-      value:
-        device:
-          phoneNumber: '+123456789'
-          ipv4Address:
-            publicAddress: 84.125.93.10
-            publicPort: 59765
-          networkAccessIdentifier: 123456789@domain.com
-    IdentifyDeviceByIPAddress:
-      description: Identifying device by IP address
-      value:
-        device:
-          ipv4Address:
-            publicAddress: 84.125.93.10
-            publicPort: 59765
-    IdentifyDeviceByPhoneNumber:
-      description: Identifying device by phone number
-      value:
-        device:
-          phoneNumber: '+123456789'
-    IdentifyDeviceBy3LeggedToken:
-      description: Empty JSON when device is identified by access token
-      value: {}
-  schemas:
-    PhoneNumber:
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
-      type: string
-      pattern: ^\+[1-9][0-9]{4,14}$
-      example: '+123456789'
-    DeviceIdentifier:
-      description: 'The individual physical mobile device identifier, as expressed by the IMEI and IMEISV
-
-        '
-      type: object
-      properties:
-        imeisv:
-          type: string
-          description: IMEISV of the device
-          example: '49015420323751800'
-        imei:
-          type: string
-          description: IMEI of the device
-          example: '4901542032375181'
-    DeviceIpv6Address:
-      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
-
-        '
-      type: string
-      format: ipv6
-      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
-    Device:
-      description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
-
-        The developer can choose to provide the below specified device identifiers:
-
-        * `ipv4Address`
-
-        * `ipv6Address`
-
-        * `phoneNumber`
-
-        * `networkAccessIdentifier`
-
-        NOTE 1: The MNO might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different MNOs. In this case the identifiers MUST belong to the same device.
-
-        NOTE 2: For the current Commonalities release, we are enforcing that the networkAccessIdentifier is only part of the schema for future-proofing, and CAMARA does not currently allow its use. After the CAMARA meta-release work is concluded and the relevant issues are resolved, its use will need to be explicitly documented in the guidelines.
-
-        '
-      type: object
-      properties:
-        phoneNumber:
-          $ref: '#/components/schemas/PhoneNumber'
-        networkAccessIdentifier:
-          $ref: '#/components/schemas/NetworkAccessIdentifier'
-        ipv4Address:
-          $ref: '#/components/schemas/DeviceIpv4Addr'
-        ipv6Address:
-          $ref: '#/components/schemas/DeviceIpv6Address'
-      minProperties: 1
-    ErrorInfo:
-      description: Common CAMARA error response object
-      type: object
-      properties:
-        code:
-          type: string
-          description: A short, human-readable summary of the problem type
-        status:
-          type: integer
-          description: The HTTP status code
-        message:
-          type: string
-          description: This parameter appears when there was an error. Human readable explanation specific to this occurrence of the problem
-      required:
-      - code
-      - status
-      - message
-    SingleIpv4Addr:
-      description: A single IPv4 address with no subnet mask
-      type: string
-      format: ipv4
-      example: 84.125.93.10
-    DeviceType:
-      description: 'The physical device type, as expressed by Type Approval Code, manufacturer name and model name
-
-        '
-      type: object
-      properties:
-        tac:
-          type: string
-          description: IMEI TAC of the device
-          example: '49015420'
-        model:
-          type: string
-          description: Model of the device
-          example: '3110'
-        manufacturer:
-          type: string
-          description: Manufacturer of the device
-          example: Nokia
-    NetworkAccessIdentifier:
-      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
-      type: string
-      example: 123456789@domain.com
-    Port:
-      description: TCP or UDP port number
-      type: integer
-      minimum: 1024
-      maximum: 65535
-    RequestBody:
-      description: Common request body to allow optional Device object to be passed
-      type: object
-      properties:
-        device:
-          $ref: '#/components/schemas/Device'
-    LastChecked:
-      description: 'The last time that the information returned (e.g. IMEI) was confirmed to be correct by the mobile operator for the provided identifier (e.g. phone number)
-
-        '
-      properties:
-        lastChecked:
-          description: Date and time that the information was last confirmed by the mobile operator to be correct
-          type: string
-          format: date-time
-          example: '2024-02-20T10:41:38.657Z'
-    DeviceIpv4Addr:
-      type: object
-      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
-
-
-        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
-
-
-        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
-
-
-        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
-
-        '
-      properties:
-        publicAddress:
-          $ref: '#/components/schemas/SingleIpv4Addr'
-        privateAddress:
-          $ref: '#/components/schemas/SingleIpv4Addr'
-        publicPort:
-          $ref: '#/components/schemas/Port'
-      anyOf:
-      - required:
-        - publicAddress
-        - privateAddress
-      - required:
-        - publicAddress
-        - publicPort
-      example:
-        publicAddress: 84.125.93.10
-        publicPort: 59765
-    DevicePPID:
-      description: 'The individual physical mobile device identifier, expressed as a PPID (Pairwise Pseudonymous Identifier)
-
-        '
-      type: object
-      properties:
-        ppid:
-          type: string
-          description: A PPID for the identified physical device
-          example: b083f65ccdad365d7489fff24b6d5074b30c12b6d81db3404d25964ffd908813
-    XCorrelator:
-      type: string
-      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
-      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
-    ErrorInfo_2:
-      type: object
-      required:
-      - status
-      - code
-      - message
-      properties:
-        status:
-          type: integer
-          description: HTTP response status code
-        code:
-          type: string
-          description: A human-readable code to describe the error
-        message:
-          type: string
-          description: A human-readable description of what the event represents
-    DeviceResponse:
-      description: 'An identifier for the end-user equipment able to connect to the network that the response refers to. This parameter is only returned when the API consumer includes the `device` parameter in their request (i.e. they are using a two-legged access token), and is relevant when more than one device identifier is specified, as only one of those device identifiers is allowed in the response.
-
-
-        If the API consumer provides more than one device identifier in their request, the API provider must return a single identifier which is the one they are using to fulfil the request, even if the identifiers do not match the same device. API provider does not perform any logic to validate/correlate that the indicated device identifiers match the same device. No error should be returned if the identifiers are otherwise valid to prevent API consumers correlating different identifiers with a given end user.
-
-        '
-      allOf:
-      - $ref: '#/components/schemas/Device'
-      - maxProperties: 1
-    Port_2:
-      description: TCP or UDP port number
-      type: integer
-      minimum: 0
-      maximum: 65535
-    CommonResponseBody:
-      description: 'Common parameters to be included in all responses
-
-        '
-      properties:
-        device:
-          description: The device subscription identifier that was used to identify the device whose identifier is being returned. If this property is not present, then the device subscription identifier specified in the request was used.
-          allOf:
-          - $ref: '#/components/schemas/DeviceResponse'
-          - example:
-              phoneNumber: '+123456789'
-        lastChecked:
-          description: 'Date and time that the information was last confirmed by the mobile operator to be correct. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-
-            '
-          type: string
-          format: date-time
-          example: '2024-02-20T10:41:38.657Z'
   responses:
-    422UnprocessableContent:
-      description: Unprocessable Content
+    200RetrieveType:
+      description: A device identifier has been found for the specified subscriber
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/X-Correlator'
+      content:
+        application/json:
+          schema:
+            required:
+            - lastChecked
+            - tac
+            allOf:
+            - $ref: '#/components/schemas/CommonResponseBody'
+            - $ref: '#/components/schemas/DeviceType'
+          examples:
+            Successful Type Retrieval:
+              description: Device type has been successfully retrieved when the device subcsription was identified by a 3-legged access token or single device subscription identifier
+              value:
+                lastChecked: '2024-02-20T10:41:38.657Z'
+                tac: '49015420'
+                model: '3110'
+                manufacturer: Nokia
+            Successful Type Retrieval With Device Disambiguation:
+              description: Device type has been successfully retrieved when a 2-legged access token and multiple device subscription identifiers were provided
+              value:
+                device:
+                  phoneNumber: '+123456789'
+                lastChecked: '2024-02-20T10:41:38.657Z'
+                tac: '49015420'
+                model: '3110'
+                manufacturer: Nokia
+    401Unauthorized:
+      description: Unauthorized
       headers:
         x-correlator:
           $ref: '#/components/headers/X-Correlator'
@@ -435,47 +193,19 @@ components:
               properties:
                 status:
                   enum:
-                  - 422
+                  - 401
                 code:
                   enum:
-                  - IDENTIFIER_MISMATCH
-                  - SERVICE_NOT_APPLICABLE
-                  - MISSING_IDENTIFIER
-                  - UNSUPPORTED_IDENTIFIER
-                  - UNNECESSARY_IDENTIFIER
+                  - UNAUTHENTICATED
           examples:
-            Identifiers Do Not Match:
-              description: Multiple identifiers provided which do not all identify the same device
+            Unauthenticated Request:
+              description: Request cannot be authenticated and a new authentication is required
               value:
-                status: 422
-                code: IDENTIFIER_MISMATCH
-                message: Provided identifiers are not consistent.
-            Service Not Applicable For Device:
-              description: The service is not applicable for the identified device
-              value:
-                status: 422
-                code: SERVICE_NOT_APPLICABLE
-                message: The service is not applicable for the identified device.
-            Unsupported Identifier:
-              description: None of the provided identifiers is supported by the implementation
-              value:
-                status: 422
-                code: UNSUPPORTED_IDENTIFIER
-                message: None of the provided identifiers is supported by the implementation.
-            Unnecessary Identifier:
-              description: An explicit identifier has been provided for the device when this is already identified by the access token
-              value:
-                status: 422
-                code: UNNECESSARY_IDENTIFIER
-                message: An explicit identifier has been provided for the device when this is already identified by the access token
-            Missing Identifier:
-              description: An identifier is not included in the request and the device cannot be identified from the 2-legged access token
-              value:
-                status: 422
-                code: MISSING_IDENTIFIER
-                message: An identifier is not included in the request and the device cannot be identified from the 2-legged access token
-    404NotFound:
-      description: Not found
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
+    429TooManyRequests:
+      description: Too Many Requests
       headers:
         x-correlator:
           $ref: '#/components/headers/X-Correlator'
@@ -488,17 +218,24 @@ components:
               properties:
                 status:
                   enum:
-                  - 404
+                  - 429
                 code:
                   enum:
-                  - IDENTIFIER_NOT_FOUND
+                  - QUOTA_EXCEEDED
+                  - TOO_MANY_REQUESTS
           examples:
-            Device Cannot Be Found:
-              description: The provided identifier cannot be matched to a device known to the API provider
+            Too Many Requests:
+              description: Access to the API has been temporarily blocked due to quota or spike arrest limits being reached
               value:
-                status: 404
-                code: IDENTIFIER_NOT_FOUND
-                message: The provided identifier cannot be matched to a device.
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Rate limit reached
+            Quota Exceeded:
+              description: Request is rejected due to exceeding a business quota limit
+              value:
+                status: 429
+                code: QUOTA_EXCEEDED
+                message: Out of resource quota
     400BadRequest:
       description: Bad Request
       headers:
@@ -556,8 +293,8 @@ components:
                 status: 400
                 code: OUT_OF_RANGE
                 message: 'Invalid value: ipv4Address.publicPort'
-    429TooManyRequests:
-      description: Too Many Requests
+    404NotFound:
+      description: Not found
       headers:
         x-correlator:
           $ref: '#/components/headers/X-Correlator'
@@ -570,120 +307,27 @@ components:
               properties:
                 status:
                   enum:
-                  - 429
+                  - 404
                 code:
                   enum:
-                  - QUOTA_EXCEEDED
-                  - TOO_MANY_REQUESTS
+                  - IDENTIFIER_NOT_FOUND
           examples:
-            Too Many Requests:
-              description: Access to the API has been temporarily blocked due to quota or spike arrest limits being reached
+            Device Cannot Be Found:
+              description: The provided identifier cannot be matched to a device known to the API provider
               value:
-                status: 429
-                code: TOO_MANY_REQUESTS
-                message: Rate limit reached
-            Quota Exceeded:
-              description: Request is rejected due to exceeding a business quota limit
-              value:
-                status: 429
-                code: QUOTA_EXCEEDED
-                message: Out of resource quota
-    401Unauthorized:
-      description: Unauthorized
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/X-Correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 401
-                code:
-                  enum:
-                  - UNAUTHENTICATED
-                  - AUTHENTICATION_REQUIRED
-          examples:
-            Unauthenticated Request:
-              description: The request cannot be authenticated, as the access token is missing, not a valid token, or has been revoked
-              value:
-                status: 401
-                code: UNAUTHENTICATED
-                message: Request not authenticated due to missing, invalid, or expired credentials.
-            Re-Authentication Required:
-              description: A new authentication is needed, as the access token has expired
-              value:
-                status: 401
-                code: AUTHENTICATION_REQUIRED
-                message: A new authentication is needed, as the access token has expired.
-    200RetrieveIdentifier:
-      description: An device identifier has been found for the specified subscriber
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/X-Correlator'
-      content:
-        application/json:
-          schema:
-            required:
-            - lastChecked
-            - imei
-            allOf:
-            - $ref: '#/components/schemas/LastChecked'
-            - $ref: '#/components/schemas/DeviceIdentifier'
-            - $ref: '#/components/schemas/DeviceType'
-    200RetrieveType:
-      description: An device identifier has been found for the specified subscriber
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/X-Correlator'
-      content:
-        application/json:
-          schema:
-            required:
-            - lastChecked
-            - tac
-            allOf:
-            - $ref: '#/components/schemas/LastChecked'
-            - $ref: '#/components/schemas/DeviceType'
-    403Forbidden:
-      description: Forbidden
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/X-Correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 403
-                code:
-                  enum:
-                  - PERMISSION_DENIED
-          examples:
-            Permision Denied:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
-    422UnprocessableContent_2:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: The provided identifier cannot be matched to a device.
+    422UnprocessableContent:
       description: Unprocessable Content
       headers:
         x-correlator:
-          $ref: '#/components/headers/X-Correlator_2'
+          $ref: '#/components/headers/X-Correlator'
       content:
         application/json:
           schema:
             allOf:
-            - $ref: '#/components/schemas/ErrorInfo_2'
+            - $ref: '#/components/schemas/ErrorInfo'
             - type: object
               properties:
                 status:
@@ -720,11 +364,36 @@ components:
                 status: 422
                 code: MISSING_IDENTIFIER
                 message: An identifier is not included in the request and the device cannot be identified from the 2-legged access token
+    403Forbidden:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/X-Correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 403
+                code:
+                  enum:
+                  - PERMISSION_DENIED
+          examples:
+            Permision Denied:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
     200RetrievePPID:
       description: A pseudonymous device identifier has been found for the specified mobile subscriber
       headers:
         x-correlator:
-          $ref: '#/components/headers/X-Correlator_2'
+          $ref: '#/components/headers/X-Correlator'
       content:
         application/json:
           schema:
@@ -747,36 +416,11 @@ components:
                   phoneNumber: '+123456789'
                 lastChecked: '2024-02-20T10:41:38.657Z'
                 ppid: b083f65ccdad365d7489fff24b6d5074b30c12b6d81db3404d25964ffd908813
-    401Unauthorized_2:
-      description: Unauthorized
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/X-Correlator_2'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo_2'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 401
-                code:
-                  enum:
-                  - UNAUTHENTICATED
-          examples:
-            Unauthenticated Request:
-              description: Request cannot be authenticated and a new authentication is required
-              value:
-                status: 401
-                code: UNAUTHENTICATED
-                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
-    200RetrieveIdentifier_2:
+    200RetrieveIdentifier:
       description: An device identifier has been found for the specified subscriber
       headers:
         x-correlator:
-          $ref: '#/components/headers/X-Correlator_2'
+          $ref: '#/components/headers/X-Correlator'
       content:
         application/json:
           schema:
@@ -808,50 +452,6 @@ components:
                 tac: '49015420'
                 model: '3110'
                 manufacturer: Nokia
-    200RetrieveType_2:
-      description: A device identifier has been found for the specified subscriber
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/X-Correlator_2'
-      content:
-        application/json:
-          schema:
-            required:
-            - lastChecked
-            - tac
-            allOf:
-            - $ref: '#/components/schemas/CommonResponseBody'
-            - $ref: '#/components/schemas/DeviceType'
-          examples:
-            Successful Type Retrieval:
-              description: Device type has been successfully retrieved when the device subcsription was identified by a 3-legged access token or single device subscription identifier
-              value:
-                lastChecked: '2024-02-20T10:41:38.657Z'
-                tac: '49015420'
-                model: '3110'
-                manufacturer: Nokia
-            Successful Type Retrieval With Device Disambiguation:
-              description: Device type has been successfully retrieved when a 2-legged access token and multiple device subscription identifiers were provided
-              value:
-                device:
-                  phoneNumber: '+123456789'
-                lastChecked: '2024-02-20T10:41:38.657Z'
-                tac: '49015420'
-                model: '3110'
-                manufacturer: Nokia
-  headers:
-    X-Correlator:
-      description: Correlation id for the different services
-      required: false
-      schema:
-        type: string
-        pattern: ^[a-zA-Z0-9-]{0,55}$
-        example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
-    X-Correlator_2:
-      description: Correlation id for the different services
-      required: false
-      schema:
-        $ref: '#/components/schemas/XCorrelator'
   parameters:
     x-correlator:
       name: x-correlator
@@ -859,14 +459,225 @@ components:
       description: Correlation id for the different services
       schema:
         $ref: '#/components/schemas/XCorrelator'
+  schemas:
+    RequestBody:
+      description: Common request body to allow optional Device object to be passed
+      type: object
+      properties:
+        device:
+          $ref: '#/components/schemas/Device'
+    NetworkAccessIdentifier:
+      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+      type: string
+      example: 123456789@domain.com
+    XCorrelator:
+      type: string
+      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
+      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
+    ErrorInfo:
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: A human-readable code to describe the error
+        message:
+          type: string
+          description: A human-readable description of what the event represents
+    DevicePPID:
+      description: 'The individual physical mobile device identifier, expressed as a PPID (Pairwise Pseudonymous Identifier)
+
+        '
+      type: object
+      properties:
+        ppid:
+          type: string
+          description: A PPID for the identified physical device
+          example: b083f65ccdad365d7489fff24b6d5074b30c12b6d81db3404d25964ffd908813
+    DeviceIpv4Addr:
+      type: object
+      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
+
+
+        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
+
+
+        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
+
+
+        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
+
+        '
+      properties:
+        publicAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr'
+        privateAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr'
+        publicPort:
+          $ref: '#/components/schemas/Port'
+      anyOf:
+      - required:
+        - publicAddress
+        - privateAddress
+      - required:
+        - publicAddress
+        - publicPort
+      example:
+        publicAddress: 84.125.93.10
+        publicPort: 59765
+    DeviceIpv6Address:
+      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
+
+        '
+      type: string
+      format: ipv6
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+    DeviceIdentifier:
+      description: 'The individual physical mobile device identifier, as expressed by the IMEI and IMEISV
+
+        '
+      type: object
+      properties:
+        imeisv:
+          type: string
+          description: IMEISV of the device
+          example: '49015420323751800'
+        imei:
+          type: string
+          description: IMEI of the device
+          example: '4901542032375181'
+    CommonResponseBody:
+      description: 'Common parameters to be included in all responses
+
+        '
+      properties:
+        device:
+          description: The device subscription identifier that was used to identify the device whose identifier is being returned. If this property is not present, then the device subscription identifier specified in the request was used.
+          allOf:
+          - $ref: '#/components/schemas/DeviceResponse'
+          - example:
+              phoneNumber: '+123456789'
+        lastChecked:
+          description: 'Date and time that the information was last confirmed by the mobile operator to be correct. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+
+            '
+          type: string
+          format: date-time
+          example: '2024-02-20T10:41:38.657Z'
+    SingleIpv4Addr:
+      description: A single IPv4 address with no subnet mask
+      type: string
+      format: ipv4
+      example: 84.125.93.10
+    Port:
+      description: TCP or UDP port number
+      type: integer
+      minimum: 0
+      maximum: 65535
+    DeviceType:
+      description: 'The physical device type, as expressed by Type Approval Code, manufacturer name and model name
+
+        '
+      type: object
+      properties:
+        tac:
+          type: string
+          description: IMEI TAC of the device
+          example: '49015420'
+        model:
+          type: string
+          description: Model of the device
+          example: '3110'
+        manufacturer:
+          type: string
+          description: Manufacturer of the device
+          example: Nokia
+    PhoneNumber:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+123456789'
+    DeviceResponse:
+      description: 'An identifier for the end-user equipment able to connect to the network that the response refers to. This parameter is only returned when the API consumer includes the `device` parameter in their request (i.e. they are using a two-legged access token), and is relevant when more than one device identifier is specified, as only one of those device identifiers is allowed in the response.
+
+
+        If the API consumer provides more than one device identifier in their request, the API provider must return a single identifier which is the one they are using to fulfil the request, even if the identifiers do not match the same device. API provider does not perform any logic to validate/correlate that the indicated device identifiers match the same device. No error should be returned if the identifiers are otherwise valid to prevent API consumers correlating different identifiers with a given end user.
+
+        '
+      allOf:
+      - $ref: '#/components/schemas/Device'
+      - maxProperties: 1
+    Device:
+      description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
+
+        The developer can choose to provide the below specified device identifiers:
+
+        * `ipv4Address`
+
+        * `ipv6Address`
+
+        * `phoneNumber`
+
+        * `networkAccessIdentifier`
+
+        NOTE 1: The MNO might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different MNOs. In this case the identifiers MUST belong to the same device.
+
+        NOTE 2: For the current Commonalities release, we are enforcing that the networkAccessIdentifier is only part of the schema for future-proofing, and CAMARA does not currently allow its use. After the CAMARA meta-release work is concluded and the relevant issues are resolved, its use will need to be explicitly documented in the guidelines.
+
+        '
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+        networkAccessIdentifier:
+          $ref: '#/components/schemas/NetworkAccessIdentifier'
+        ipv4Address:
+          $ref: '#/components/schemas/DeviceIpv4Addr'
+        ipv6Address:
+          $ref: '#/components/schemas/DeviceIpv6Address'
+      minProperties: 1
+  headers:
+    X-Correlator:
+      description: Correlation id for the different services
+      required: false
+      schema:
+        $ref: '#/components/schemas/XCorrelator'
+  examples:
+    IdentifyDeviceByMultipleIdentifiers:
+      description: Identifying device by multiple device identifiers
+      value:
+        device:
+          phoneNumber: '+123456789'
+          ipv4Address:
+            publicAddress: 84.125.93.10
+            publicPort: 59765
+          networkAccessIdentifier: 123456789@domain.com
+    IdentifyDeviceByPhoneNumber:
+      description: Identifying device by phone number
+      value:
+        device:
+          phoneNumber: '+123456789'
+    IdentifyDeviceByIPAddress:
+      description: Identifying device by IP address
+      value:
+        device:
+          ipv4Address:
+            publicAddress: 84.125.93.10
+            publicPort: 59765
+    IdentifyDeviceBy3LeggedToken:
+      description: Empty JSON when device is identified by access token
+      value: {}
   securitySchemes:
     openId:
       description: Common security scheme for all CAMARA APIs
       type: openIdConnect
-      openIdConnectUrl: .well-known/openid-configuration
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
 externalDocs:
   description: Product documentation at CAMARA
   url: https://github.com/camaraproject/DeviceIdentifier
-x-refined-from:
-- gsma-open-gateway-device-identifier-openapi.yml
-- open-gateway-get-device-identifiers-api-openapi.yml

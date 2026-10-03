@@ -59,32 +59,6 @@ paths:
       - openId:
         - number-verification:verify
 components:
-  schemas:
-    NumberVerificationMatchResponse:
-      type: object
-      description: Number verification result
-      required:
-      - devicePhoneNumberVerified
-      properties:
-        devicePhoneNumberVerified:
-          $ref: '#/components/schemas/DevicePhoneNumberVerified'
-    NumberVerificationRequestBody:
-      type: object
-      description: Payload to verify the phone number.
-      minProperties: 1
-      maxProperties: 1
-      properties:
-        phoneNumber:
-          $ref: ../common/CAMARA_common.yaml#/components/schemas/PhoneNumber
-        hashedPhoneNumber:
-          description: Hashed phone number. SHA-256 (in hexadecimal representation) of the mobile phone number in **E.164 format (starting with country code)**. Prefixed with '+'.
-          type: string
-          pattern: ^[a-fA-F0-9]{64}$
-          maxLength: 64
-          example: 32f67ab4e4312618b09cd23ed8ce41b13e095fe52b73b2e8da8ef49830e50dba
-    DevicePhoneNumberVerified:
-      description: Number verification. True, if it matches
-      type: boolean
   responses:
     PhoneNumberVerificationPermissionDenied403:
       description: "Client does not have sufficient permission.\nIn addition to regular scenario of `PERMISSION_DENIED`, other scenarios may exist:\n  - Client authentication was not via mobile network. In order to check the authentication method, AMR parameter value in the 3-legged user's access token can be used and make sure that the authentication was not either by SMS+OTP nor username/password (`{\"code\": \"NUMBER_VERIFICATION.USER_NOT_AUTHENTICATED_BY_MOBILE_NETWORK\",\"message\": \"Client must authenticate via the mobile network to use this service\"}`)\n"
@@ -117,6 +91,32 @@ components:
                 status: 403
                 code: NUMBER_VERIFICATION.USER_NOT_AUTHENTICATED_BY_MOBILE_NETWORK
                 message: Client must authenticate via the mobile network to use this service
+  schemas:
+    NumberVerificationRequestBody:
+      type: object
+      description: Payload to verify the phone number.
+      minProperties: 1
+      maxProperties: 1
+      properties:
+        phoneNumber:
+          $ref: ../common/CAMARA_common.yaml#/components/schemas/PhoneNumber
+        hashedPhoneNumber:
+          description: Hashed phone number. SHA-256 (in hexadecimal representation) of the mobile phone number in **E.164 format (starting with country code)**. Prefixed with '+'.
+          type: string
+          pattern: ^[a-fA-F0-9]{64}$
+          maxLength: 64
+          example: 32f67ab4e4312618b09cd23ed8ce41b13e095fe52b73b2e8da8ef49830e50dba
+    DevicePhoneNumberVerified:
+      description: Number verification. True, if it matches
+      type: boolean
+    NumberVerificationMatchResponse:
+      type: object
+      description: Number verification result
+      required:
+      - devicePhoneNumberVerified
+      properties:
+        devicePhoneNumberVerified:
+          $ref: '#/components/schemas/DevicePhoneNumberVerified'
   securitySchemes:
     openId:
       description: OpenID Connect authentication.

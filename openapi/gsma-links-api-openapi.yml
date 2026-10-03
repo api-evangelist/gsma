@@ -704,27 +704,6 @@ paths:
               $ref: '#/components/headers/X-Date'
 components:
   parameters:
-    X-User-Credential-2:
-      name: X-User-Credential-2
-      in: header
-      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
-      required: false
-      schema:
-        type: string
-    X-User-Bearer:
-      name: X-User-Bearer
-      in: header
-      description: Used to pass user’s access token when OAuth 2.0/OIDC authorisation framework is used for end-user authentication.
-      required: false
-      schema:
-        type: string
-    X-User-Credential-1:
-      name: X-User-Credential-1
-      in: header
-      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
-      required: false
-      schema:
-        type: string
     X-Date:
       name: X-Date
       in: header
@@ -733,39 +712,6 @@ components:
       schema:
         type: string
         format: date-time
-    linkReference:
-      name: linkReference
-      in: path
-      description: Path variable to uniquely identify a link.
-      required: true
-      schema:
-        type: string
-        maxLength: 256
-        minLength: 1
-    accountId:
-      name: accountId
-      in: path
-      description: 'Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference.'
-      required: true
-      schema:
-        type: string
-        pattern: ^((accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+))(\$(accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+)){0,2}$
-    X-Callback-URL:
-      name: X-Callback-URL
-      in: header
-      description: The URL supplied by the client that will be used to return the callback in the form of a HTTP PUT.
-      required: false
-      schema:
-        type: string
-        format: uri
-    X-Channel:
-      name: X-Channel
-      in: header
-      description: String containing the channel that was used to originate the request. For example USSD, Web, App.
-      required: false
-      schema:
-        type: string
-        maxLength: 256
     X-CorrelationID:
       name: X-CorrelationID
       in: header
@@ -781,10 +727,10 @@ components:
       required: false
       schema:
         type: string
-    X-Content-Hash:
-      name: X-Content-Hash
+    X-User-Bearer:
+      name: X-User-Bearer
       in: header
-      description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
+      description: Used to pass user’s access token when OAuth 2.0/OIDC authorisation framework is used for end-user authentication.
       required: false
       schema:
         type: string
@@ -799,30 +745,14 @@ components:
         - lei
         - swiftbic
         - organisationid
-    X-Client-Id:
-      name: X-Client-Id
-      in: header
-      description: Used to pass pre-shared client's identifier to the server.
-      required: false
-      schema:
-        type: string
-        maxLength: 256
-    X-API-Key:
-      name: X-API-Key
-      in: header
-      description: Used to pass pre-shared client's API key to the server.
-      required: false
-      schema:
-        type: string
-    identifier:
-      name: identifier
+    accountId:
+      name: accountId
       in: path
-      description: Path variable that contains the account identifier.
+      description: 'Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference.'
       required: true
       schema:
         type: string
-        maxLength: 256
-        minLength: 1
+        pattern: ^((accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+))(\$(accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+)){0,2}$
     identifierType:
       name: identifierType
       in: path
@@ -851,6 +781,76 @@ components:
         - username
         - emailaddress
         - mandatereference
+    linkReference:
+      name: linkReference
+      in: path
+      description: Path variable to uniquely identify a link.
+      required: true
+      schema:
+        type: string
+        maxLength: 256
+        minLength: 1
+    identifier:
+      name: identifier
+      in: path
+      description: Path variable that contains the account identifier.
+      required: true
+      schema:
+        type: string
+        maxLength: 256
+        minLength: 1
+    X-API-Key:
+      name: X-API-Key
+      in: header
+      description: Used to pass pre-shared client's API key to the server.
+      required: false
+      schema:
+        type: string
+    X-Callback-URL:
+      name: X-Callback-URL
+      in: header
+      description: The URL supplied by the client that will be used to return the callback in the form of a HTTP PUT.
+      required: false
+      schema:
+        type: string
+        format: uri
+    X-Content-Hash:
+      name: X-Content-Hash
+      in: header
+      description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
+      required: false
+      schema:
+        type: string
+    X-User-Credential-2:
+      name: X-User-Credential-2
+      in: header
+      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    X-Client-Id:
+      name: X-Client-Id
+      in: header
+      description: Used to pass pre-shared client's identifier to the server.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    X-User-Credential-1:
+      name: X-User-Credential-1
+      in: header
+      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    X-Channel:
+      name: X-Channel
+      in: header
+      description: String containing the channel that was used to originate the request. For example USSD, Web, App.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
   schemas:
     customData:
       type: object
@@ -868,84 +868,64 @@ components:
           description: Identifies the value of the additional field.
           minLength: 1
           maxLength: 256
-    status:
-      type: string
-      enum:
-      - active
-      - inactive
-    requestStateObject:
+    responseLink:
       type: object
       required:
-      - notificationMethod
-      - serverCorrelationId
+      - linkReference
+      - sourceAccountIdentifiers
       - status
+      - mode
       properties:
-        serverCorrelationId:
-          type: string
-          description: A unique identifier issued by the provider to enable the client to identify the RequestState resource on subsequent polling requests. Must be supplied as a UUID.
-          minLength: 1
-          maxLength: 256
-          pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-        objectReference:
-          type: string
-          description: Provides a reference to the subject resource, e.g. transaction reference.
-          minLength: 0
-          maxLength: 256
-        status:
-          type: string
-          enum:
-          - pending
-          - completed
-          - failed
-          description: Indicates the status of the request.
-        notificationMethod:
-          type: string
-          enum:
-          - callback
-          - polling
-          description: Indicates whether a callback will be issued or whether the client will need to poll.
-        pendingReason:
-          type: string
-          description: A textual description that can be provided to describe the reason for a pending status.
-          minLength: 0
-          maxLength: 256
-        expiryTime:
-          type: string
-          format: date-time
-          description: Indicate the time by which the provider will fail the request if completion criteria have not been met. For an example, a debit party failing to authorise within the allowed period.
-        pollLimit:
-          type: number
-          format: int32
-          description: Indicates the number of poll attempts for the given requeststate resource that will be allowed by the provider.
-          exclusiveMinimum: 0
-        error:
-          description: If the asynchronous processing failed, details of the error will be returned here.
+        linkReference:
+          $ref: '#/components/schemas/linkReference'
+        sourceAccountIdentifiers:
+          $ref: '#/components/schemas/debitPartyArray'
+        mode:
+          description: Indicates the Link mode of operation. This can be set to 'pull' (The link can be used by the client to debit the target account held by the provider), 'push' (The link can be used by the client to credit the target account held by the provider) or 'both'.
           allOf:
-          - $ref: '#/components/schemas/errorObject'
-    party:
+          - $ref: '#/components/schemas/mode'
+        status:
+          description: Indicates the status of the Link.
+          allOf:
+          - $ref: '#/components/schemas/status'
+        requestingOrganisation:
+          $ref: '#/components/schemas/requestingOrganisation'
+        creationDate:
+          $ref: '#/components/schemas/creationDate'
+        modificationDate:
+          $ref: '#/components/schemas/modificationDate'
+        requestDate:
+          $ref: '#/components/schemas/requestDate'
+        customData:
+          $ref: '#/components/schemas/customDataArray'
+    debitPartyArray:
+      type: array
+      description: A collection of key/value pairs that enable the party to be identified. Keys include MSISDN and Wallet Identifier.
+      items:
+        $ref: '#/components/schemas/party'
+      maxItems: 10
+      minItems: 1
+    requestGenericPatch:
       type: object
       required:
-      - key
+      - op
+      - path
       - value
       properties:
-        key:
+        op:
+          description: Indicates the Patch operation to be performed. 'replace' is used to update a field and 'add' is used to add a new field.
           type: string
-          description: Provides the account identifier type.
-          minLength: 1
+          enum:
+          - replace
+          - add
+        path:
+          description: Specify the field to be updated or added preceded by '/'.
+          type: string
           maxLength: 256
-          example: msisdn
         value:
+          description: Specify the value of the field to be updated or added.
           type: string
-          description: Provides the account identifier type value.
-          minLength: 1
           maxLength: 256
-          example: '+33555123456'
-    customDataArray:
-      type: array
-      description: A collection of key/value pairs. These can be used to populate provider specific fields.
-      items:
-        $ref: '#/components/schemas/customData'
-      maxItems: 20
     errorObject:
       type: object
       required:
@@ -1017,139 +997,74 @@ components:
           description: Diagnostic information in the form of key/value pairs relating to the error.
           allOf:
           - $ref: '#/components/schemas/metadataArray'
-    requestDate:
-      type: string
-      format: date-time
-      description: The date and time of the request as supplied by the client.
-    requestGenericPatch:
+    requestStateObject:
       type: object
       required:
-      - op
-      - path
-      - value
+      - notificationMethod
+      - serverCorrelationId
+      - status
       properties:
-        op:
-          description: Indicates the Patch operation to be performed. 'replace' is used to update a field and 'add' is used to add a new field.
+        serverCorrelationId:
+          type: string
+          description: A unique identifier issued by the provider to enable the client to identify the RequestState resource on subsequent polling requests. Must be supplied as a UUID.
+          minLength: 1
+          maxLength: 256
+          pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+        objectReference:
+          type: string
+          description: Provides a reference to the subject resource, e.g. transaction reference.
+          minLength: 0
+          maxLength: 256
+        status:
           type: string
           enum:
-          - replace
-          - add
-        path:
-          description: Specify the field to be updated or added preceded by '/'.
+          - pending
+          - completed
+          - failed
+          description: Indicates the status of the request.
+        notificationMethod:
           type: string
-          maxLength: 256
-        value:
-          description: Specify the value of the field to be updated or added.
+          enum:
+          - callback
+          - polling
+          description: Indicates whether a callback will be issued or whether the client will need to poll.
+        pendingReason:
           type: string
+          description: A textual description that can be provided to describe the reason for a pending status.
+          minLength: 0
           maxLength: 256
-    debitPartyArray:
+        expiryTime:
+          type: string
+          format: date-time
+          description: Indicate the time by which the provider will fail the request if completion criteria have not been met. For an example, a debit party failing to authorise within the allowed period.
+        pollLimit:
+          type: number
+          format: int32
+          description: Indicates the number of poll attempts for the given requeststate resource that will be allowed by the provider.
+          exclusiveMinimum: 0
+        error:
+          description: If the asynchronous processing failed, details of the error will be returned here.
+          allOf:
+          - $ref: '#/components/schemas/errorObject'
+    customDataArray:
       type: array
-      description: A collection of key/value pairs that enable the party to be identified. Keys include MSISDN and Wallet Identifier.
+      description: A collection of key/value pairs. These can be used to populate provider specific fields.
       items:
-        $ref: '#/components/schemas/party'
-      maxItems: 10
-      minItems: 1
+        $ref: '#/components/schemas/customData'
+      maxItems: 20
+    modificationDate:
+      type: string
+      format: date-time
+      description: Date and time when the object was modified by the API Provider.
     linkReference:
       type: string
       description: Indicates the Link reference. This enables a linked account to be uniquely identified.
       minLength: 1
       maxLength: 256
-    requestGenericPatchArray:
-      type: array
-      description: Collection of updates that are to be processed.
-      items:
-        $ref: '#/components/schemas/requestGenericPatch'
-      minItems: 1
-      maxItems: 10
     creationDate:
       type: string
       format: date-time
       description: Date and time when the object was created by the API Provider.
-    mode:
-      type: string
-      enum:
-      - push
-      - pull
-      - both
-    metadata:
-      type: object
-      required:
-      - key
-      - value
-      properties:
-        key:
-          type: string
-          description: Identifies the type of additional field.
-          minLength: 1
-          maxLength: 256
-        value:
-          type: string
-          description: Identifies the value of the additional field.
-          minLength: 1
-          maxLength: 256
-    modificationDate:
-      type: string
-      format: date-time
-      description: Date and time when the object was modified by the API Provider.
-    responseLink:
-      type: object
-      required:
-      - linkReference
-      - sourceAccountIdentifiers
-      - status
-      - mode
-      properties:
-        linkReference:
-          $ref: '#/components/schemas/linkReference'
-        sourceAccountIdentifiers:
-          $ref: '#/components/schemas/debitPartyArray'
-        mode:
-          description: Indicates the Link mode of operation. This can be set to 'pull' (The link can be used by the client to debit the target account held by the provider), 'push' (The link can be used by the client to credit the target account held by the provider) or 'both'.
-          allOf:
-          - $ref: '#/components/schemas/mode'
-        status:
-          description: Indicates the status of the Link.
-          allOf:
-          - $ref: '#/components/schemas/status'
-        requestingOrganisation:
-          $ref: '#/components/schemas/requestingOrganisation'
-        creationDate:
-          $ref: '#/components/schemas/creationDate'
-        modificationDate:
-          $ref: '#/components/schemas/modificationDate'
-        requestDate:
-          $ref: '#/components/schemas/requestDate'
-        customData:
-          $ref: '#/components/schemas/customDataArray'
-    genericUpdateSuccess:
-      type: object
-      required:
-      - result
-      properties:
-        result:
-          type: string
-          description: The success message provided in a callback to communicate the success of an update operation.
-          enum:
-          - success
-    requestingOrganisation:
-      type: object
-      description: An object that details the originating organisation of the request.
-      required:
-      - requestingOrganisationIdentifierType
-      - requestingOrganisationIdentifier
-      properties:
-        requestingOrganisationIdentifierType:
-          type: string
-          description: Identifies the identifier type of the requesting organisation.
-          enum:
-          - lei
-          - swiftbic
-          - organisationid
-        requestingOrganisationIdentifier:
-          type: string
-          description: Contains the requesting organisation identifier.
-          minLength: 1
-          maxLength: 256
     requestLink:
       type: object
       required:
@@ -1173,12 +1088,97 @@ components:
           $ref: '#/components/schemas/requestDate'
         customData:
           $ref: '#/components/schemas/customDataArray'
+    requestingOrganisation:
+      type: object
+      description: An object that details the originating organisation of the request.
+      required:
+      - requestingOrganisationIdentifierType
+      - requestingOrganisationIdentifier
+      properties:
+        requestingOrganisationIdentifierType:
+          type: string
+          description: Identifies the identifier type of the requesting organisation.
+          enum:
+          - lei
+          - swiftbic
+          - organisationid
+        requestingOrganisationIdentifier:
+          type: string
+          description: Contains the requesting organisation identifier.
+          minLength: 1
+          maxLength: 256
+    requestDate:
+      type: string
+      format: date-time
+      description: The date and time of the request as supplied by the client.
     metadataArray:
       type: array
       description: A collection of key/value pairs. These can be used to populate additional properties that describe administrative information regarding the resource.
       items:
         $ref: '#/components/schemas/metadata'
       maxItems: 20
+    party:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Provides the account identifier type.
+          minLength: 1
+          maxLength: 256
+          example: msisdn
+        value:
+          type: string
+          description: Provides the account identifier type value.
+          minLength: 1
+          maxLength: 256
+          example: '+33555123456'
+    metadata:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Identifies the type of additional field.
+          minLength: 1
+          maxLength: 256
+        value:
+          type: string
+          description: Identifies the value of the additional field.
+          minLength: 1
+          maxLength: 256
+    status:
+      type: string
+      enum:
+      - active
+      - inactive
+    genericUpdateSuccess:
+      type: object
+      required:
+      - result
+      properties:
+        result:
+          type: string
+          description: The success message provided in a callback to communicate the success of an update operation.
+          enum:
+          - success
+    mode:
+      type: string
+      enum:
+      - push
+      - pull
+      - both
+    requestGenericPatchArray:
+      type: array
+      description: Collection of updates that are to be processed.
+      items:
+        $ref: '#/components/schemas/requestGenericPatch'
+      minItems: 1
+      maxItems: 10
   requestBodies:
     genericUpdateSuccess:
       required: true
@@ -1187,20 +1187,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/genericUpdateSuccess'
-    updateLink:
-      required: true
-      description: Represents the request body of a Link Callback.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/responseLink'
-    requestLink:
-      required: true
-      description: Represents the request body of a Link.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/requestLink'
     genericPatch:
       required: true
       description: Represents the request body of a batch of generic Patch operation.
@@ -1215,6 +1201,20 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/errorObject'
+    updateLink:
+      required: true
+      description: Represents the request body of a Link Callback.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseLink'
+    requestLink:
+      required: true
+      description: Represents the request body of a Link.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestLink'
   headers:
     X-Date:
       required: false

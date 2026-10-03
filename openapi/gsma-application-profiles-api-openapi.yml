@@ -193,136 +193,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    jitter:
-      description: 'The jitter requirement aims to limit the maximum variation in
-
-        round-trip packet delay for the 99th percentile of traffic, following
-
-        ITU Y.1540 standards. It considers only acknowledged packets in a
-
-        session, which are packets that receive a confirmation of receipt from
-
-        the recipient (e.g., using TCP). This requirement helps maintain
-
-        consistent latency, essential for real-time applications such as VoIP,
-
-        video calls, and gaming.
-
-        '
-      allOf:
-      - $ref: '#/components/schemas/Duration'
-    TimeUnitEnum:
-      type: string
-      enum:
-      - Days
-      - Hours
-      - Minutes
-      - Seconds
-      - Milliseconds
-      - Microseconds
-      - Nanoseconds
-    targetMinDownstreamRate:
-      description: 'This is the target minimum downstream rate.
-
-        '
-      allOf:
-      - $ref: '#/components/schemas/Rate'
-    ErrorInfo:
-      type: object
-      description: Error information
-      required:
-      - status
-      - code
-      - message
-      properties:
-        status:
-          type: integer
-          description: HTTP status code returned along with this error response
-        code:
-          type: string
-          description: Code given to this error
-        message:
-          type: string
-          description: Detailed error description
-    RateUnitEnum:
-      type: string
-      enum:
-      - bps
-      - kbps
-      - Mbps
-      - Gbps
-      - Tbps
-    Duration:
-      type: object
-      properties:
-        value:
-          type: integer
-          example: 12
-          format: int32
-          minimum: 1
-        unit:
-          allOf:
-          - $ref: '#/components/schemas/TimeUnitEnum'
-          - example: Minutes
-    NetworkQualityThresholds:
-      type: object
-      properties:
-        packetDelayBudget:
-          $ref: '#/components/schemas/packetDelayBudget'
-        targetMinDownstreamRate:
-          $ref: '#/components/schemas/targetMinDownstreamRate'
-        targetMinUpstreamRate:
-          $ref: '#/components/schemas/targetMinUpstreamRate'
-        packetlossErrorRate:
-          $ref: '#/components/schemas/packetErrorLossRate'
-        jitter:
-          $ref: '#/components/schemas/jitter'
-    targetMinUpstreamRate:
-      description: 'This is the target minimum upstream rate.
-
-        '
-      allOf:
-      - $ref: '#/components/schemas/Rate'
-    packetDelayBudget:
-      description: 'The packet delay budget is the maximum allowable one-way latency
-
-        between the customer''s device and the gateway from the operator''s
-
-        network to other networks. By limiting the delay, the network
-
-        can provide an acceptable level of performance for various services,
-
-        such as voice calls, video streaming, and data. The end-to-end or
-
-        round trip latency will be about two times this value plus the latency
-
-        not controlled by the operator
-
-        '
-      allOf:
-      - $ref: '#/components/schemas/Duration'
-    Rate:
-      type: object
-      properties:
-        value:
-          type: integer
-          example: 10
-          format: int32
-          minimum: 0
-          maximum: 1024
-        unit:
-          $ref: '#/components/schemas/RateUnitEnum'
-    ApplicationProfile:
-      type: object
-      required:
-      - applicationProfileId
-      - networkQualityThresholds
-      properties:
-        applicationProfileId:
-          type: string
-          format: uuid
-        networkQualityThresholds:
-          $ref: '#/components/schemas/NetworkQualityThresholds'
     ApplicationProfileRequest:
       type: object
       required:
@@ -365,12 +235,159 @@ components:
       minimum: 1
       maximum: 10
       example: 3
-  headers:
-    x-correlator:
-      description: Correlation id for the different services
-      schema:
-        type: string
+    jitter:
+      description: 'The jitter requirement aims to limit the maximum variation in
+
+        round-trip packet delay for the 99th percentile of traffic, following
+
+        ITU Y.1540 standards. It considers only acknowledged packets in a
+
+        session, which are packets that receive a confirmation of receipt from
+
+        the recipient (e.g., using TCP). This requirement helps maintain
+
+        consistent latency, essential for real-time applications such as VoIP,
+
+        video calls, and gaming.
+
+        '
+      allOf:
+      - $ref: '#/components/schemas/Duration'
+    ErrorInfo:
+      type: object
+      description: Error information
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP status code returned along with this error response
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+    Rate:
+      type: object
+      properties:
+        value:
+          type: integer
+          example: 10
+          format: int32
+          minimum: 0
+          maximum: 1024
+        unit:
+          $ref: '#/components/schemas/RateUnitEnum'
+    Duration:
+      type: object
+      properties:
+        value:
+          type: integer
+          example: 12
+          format: int32
+          minimum: 1
+        unit:
+          allOf:
+          - $ref: '#/components/schemas/TimeUnitEnum'
+          - example: Minutes
+    RateUnitEnum:
+      type: string
+      enum:
+      - bps
+      - kbps
+      - Mbps
+      - Gbps
+      - Tbps
+    packetDelayBudget:
+      description: 'The packet delay budget is the maximum allowable one-way latency
+
+        between the customer''s device and the gateway from the operator''s
+
+        network to other networks. By limiting the delay, the network
+
+        can provide an acceptable level of performance for various services,
+
+        such as voice calls, video streaming, and data. The end-to-end or
+
+        round trip latency will be about two times this value plus the latency
+
+        not controlled by the operator
+
+        '
+      allOf:
+      - $ref: '#/components/schemas/Duration'
+    targetMinUpstreamRate:
+      description: 'This is the target minimum upstream rate.
+
+        '
+      allOf:
+      - $ref: '#/components/schemas/Rate'
+    NetworkQualityThresholds:
+      type: object
+      properties:
+        packetDelayBudget:
+          $ref: '#/components/schemas/packetDelayBudget'
+        targetMinDownstreamRate:
+          $ref: '#/components/schemas/targetMinDownstreamRate'
+        targetMinUpstreamRate:
+          $ref: '#/components/schemas/targetMinUpstreamRate'
+        packetlossErrorRate:
+          $ref: '#/components/schemas/packetErrorLossRate'
+        jitter:
+          $ref: '#/components/schemas/jitter'
+    TimeUnitEnum:
+      type: string
+      enum:
+      - Days
+      - Hours
+      - Minutes
+      - Seconds
+      - Milliseconds
+      - Microseconds
+      - Nanoseconds
+    targetMinDownstreamRate:
+      description: 'This is the target minimum downstream rate.
+
+        '
+      allOf:
+      - $ref: '#/components/schemas/Rate'
+    ApplicationProfile:
+      type: object
+      required:
+      - applicationProfileId
+      - networkQualityThresholds
+      properties:
+        applicationProfileId:
+          type: string
+          format: uuid
+        networkQualityThresholds:
+          $ref: '#/components/schemas/NetworkQualityThresholds'
   responses:
+    Generic401:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials.
+            GENERIC_401_AUTHENTICATION_REQUIRED:
+              description: New authentication is needed, authentication is no longer valid
+              value:
+                status: 401
+                code: AUTHENTICATION_REQUIRED
+                message: New authentication is required.
     Generic503:
       description: Service Unavailable
       headers:
@@ -403,28 +420,6 @@ components:
                 status: 500
                 code: INTERNAL
                 message: Unknown server error. Typically a server bug.
-    Generic401:
-      description: Unauthorized
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_401_UNAUTHENTICATED:
-              description: Request cannot be authenticated
-              value:
-                status: 401
-                code: UNAUTHENTICATED
-                message: Request not authenticated due to missing, invalid, or expired credentials.
-            GENERIC_401_AUTHENTICATION_REQUIRED:
-              description: New authentication is needed, authentication is no longer valid
-              value:
-                status: 401
-                code: AUTHENTICATION_REQUIRED
-                message: New authentication is required.
     Generic403:
       description: Forbidden
       headers:
@@ -447,28 +442,6 @@ components:
                 status: 403
                 code: INVALID_TOKEN_CONTEXT
                 message: '{{field}} is not consistent with access token.'
-    Generic404:
-      description: Not found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_404_NOT_FOUND:
-              description: Resource is not found
-              value:
-                status: 404
-                code: NOT_FOUND
-                message: The specified resource is not found.
-            GENERIC_404_DEVICE_NOT_FOUND:
-              description: Device identifier not found
-              value:
-                status: 404
-                code: DEVICE_NOT_FOUND
-                message: Device identifier not found.
     Generic400:
       description: Bad Request
       headers:
@@ -491,6 +464,33 @@ components:
                 status: 400
                 code: OUT_OF_RANGE
                 message: Client specified an invalid range.
+    Generic404:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
+            GENERIC_404_DEVICE_NOT_FOUND:
+              description: Device identifier not found
+              value:
+                status: 404
+                code: DEVICE_NOT_FOUND
+                message: Device identifier not found.
+  headers:
+    x-correlator:
+      description: Correlation id for the different services
+      schema:
+        type: string
   securitySchemes:
     openId:
       description: OpenID Provider Configuration Information
