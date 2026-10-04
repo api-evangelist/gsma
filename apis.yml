@@ -1238,7 +1238,8 @@ apis:
   description: Operations for ApiProductOrder Resource
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
-  tags:
+  tags: []
+  tags_raw:
   - apiProductOrder
   properties:
   - type: OpenAPI
@@ -1970,7 +1971,8 @@ apis:
   description: Operations for ApplicationOwner Resource
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
-  tags:
+  tags: []
+  tags_raw:
   - applicationOwner
   properties:
   - type: OpenAPI
@@ -3189,6 +3191,8 @@ apis:
   humanURL: https://developer.mobilemoneyapi.io/api-versions-1.2/
   baseURL: https://sandbox.mobilemoneyapi.io/simulator/v1.2/passthrough/mm
   tags:
+  - Monitors
+  tags_raw:
   - Monitor
   properties:
   - type: OpenAPI
