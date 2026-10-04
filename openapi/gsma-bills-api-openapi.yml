@@ -1649,255 +1649,23 @@ paths:
             X-Date:
               $ref: '#/components/headers/X-Date'
 components:
-  headers:
-    X-Records-Available-Count:
-      required: false
-      description: Integer containing number of records that are available to be returned.
-      schema:
-        type: integer
-        format: int32
-    X-Records-Returned-Count:
-      required: false
-      description: Integer containing number of records that are returned.
-      schema:
-        type: integer
-        format: int32
-    X-Date:
-      required: false
-      description: The date and time that the response message was sent.
-      schema:
-        type: string
-        format: date-time
-  parameters:
-    X-Date:
-      name: X-Date
-      in: header
-      description: Header parameter to indicate the date and time that the message was originated. It is used for basic message integrity checks, to ensure the request is not stale. Note that the header was previously referenced as 'Date' in version 1.0 of the Mobile Money API.
-      required: false
-      schema:
-        type: string
-        format: date-time
-    X-CorrelationID:
-      name: X-CorrelationID
-      in: header
-      description: Header parameter to uniquely identify the request. Must be supplied as a UUID.
-      required: false
-      schema:
-        type: string
-        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-    X-Account-Holding-Institution-Identifier:
-      name: X-Account-Holding-Institution-Identifier
-      in: header
-      description: A header variable that identifies the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier-Type header.
-      required: false
-      schema:
-        type: string
-    X-Account-Holding-Institution-Identifier-Type:
-      name: X-Account-Holding-Institution-Identifier-Type
-      in: header
-      description: A header variable that identifies the type of the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier header.
-      required: false
-      schema:
-        type: string
-        enum:
-        - lei
-        - swiftbic
-        - organisationid
-    X-User-Bearer:
-      name: X-User-Bearer
-      in: header
-      description: Used to pass user’s access token when OAuth 2.0/OIDC authorisation framework is used for end-user authentication.
-      required: false
-      schema:
-        type: string
-    accountId:
-      name: accountId
-      in: path
-      description: 'Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference.'
-      required: true
-      schema:
-        type: string
-        pattern: ^((accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+))(\$(accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+)){0,2}$
-    identifierType:
-      name: identifierType
-      in: path
-      required: true
-      description: Path variable to specify the type of the identifier that is used to identify the account.
-      schema:
-        type: string
-        enum:
-        - accountid
-        - msisdn
-        - walletid
-        - linkref
-        - consumerno
-        - serviceprovider
-        - storeid
-        - accountcategory
-        - bankaccountno
-        - accountrank
-        - identityalias
-        - iban
-        - swiftbic
-        - sortcode
-        - organisationid
-        - bankname
-        - bankaccounttitle
-        - username
-        - emailaddress
-        - mandatereference
-    toDateTime:
-      name: toDateTime
-      in: query
-      description: Indicates the maximum creation date for which records should be returned.
-      required: false
-      schema:
-        type: string
-        format: date-time
-    fromDateTime:
-      name: fromDateTime
-      in: query
-      description: Indicates the minimum creation date for which records should be returned.
-      required: false
-      schema:
-        type: string
-        format: date-time
-    offset:
-      name: offset
-      in: query
-      description: Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60.
-      required: false
-      schema:
-        type: integer
-        format: int32
-    billReference:
-      name: billReference
-      in: path
-      description: Path variable to uniquely identify a bill.
-      required: true
-      schema:
-        type: string
-        maxLength: 256
-        minLength: 1
-    limit:
-      name: limit
-      in: query
-      description: Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request.
-      required: false
-      schema:
-        type: integer
-        format: int32
-    identifier:
-      name: identifier
-      in: path
-      description: Path variable that contains the account identifier.
-      required: true
-      schema:
-        type: string
-        maxLength: 256
-        minLength: 1
-    X-Callback-URL:
-      name: X-Callback-URL
-      in: header
-      description: The URL supplied by the client that will be used to return the callback in the form of a HTTP PUT.
-      required: false
-      schema:
-        type: string
-        format: uri
-    serviceProvider:
-      name: serviceProvider
-      in: path
-      description: The identifier for the Bill Payment Service Provider.
-      required: true
-      schema:
-        type: string
-        minLength: 1
-        maxLength: 256
-    X-API-Key:
-      name: X-API-Key
-      in: header
-      description: Used to pass pre-shared client's API key to the server.
-      required: false
-      schema:
-        type: string
-    X-Content-Hash:
-      name: X-Content-Hash
-      in: header
-      description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
-      required: false
-      schema:
-        type: string
-    X-User-Credential-2:
-      name: X-User-Credential-2
-      in: header
-      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
-      required: false
-      schema:
-        type: string
-    X-Client-Id:
-      name: X-Client-Id
-      in: header
-      description: Used to pass pre-shared client's identifier to the server.
-      required: false
-      schema:
-        type: string
-        maxLength: 256
-    X-User-Credential-1:
-      name: X-User-Credential-1
-      in: header
-      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
-      required: false
-      schema:
-        type: string
-    X-Channel:
-      name: X-Channel
-      in: header
-      description: String containing the channel that was used to originate the request. For example USSD, Web, App.
-      required: false
-      schema:
-        type: string
-        maxLength: 256
-  requestBodies:
-    requestBillPayment2:
-      required: true
-      description: Represents the request body of a bill payment.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/requestBillPayment2'
-    requestBillPayment:
-      required: true
-      description: Represents the request body of a bill payment.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/requestBillPayment'
-    updateError:
-      required: true
-      description: Represents the request body of error callback.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/errorObject'
-    updateBillPayment2:
-      required: true
-      description: Represents the request body of a bill payment callback.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/responseBillPayment2'
-    updateBillPayment:
-      required: true
-      description: Represents the request body of a bill payment callback.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/responseBillPayment'
   schemas:
-    serviceProvider:
-      type: string
-      description: Service Provider Reference Code.
-      maxLength: 256
+    metadata:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Identifies the type of additional field.
+          minLength: 1
+          maxLength: 256
+        value:
+          type: string
+          description: Identifies the value of the additional field.
+          minLength: 1
+          maxLength: 256
     responseBills:
       type: object
       properties:
@@ -1933,200 +1701,10 @@ components:
           $ref: '#/components/schemas/customDataArray'
         metadata:
           $ref: '#/components/schemas/metadataArray'
-    billDescription:
+    companyName:
       type: string
-      description: Description of the bill that is to be paid
-      minLength: 0
+      description: Display Name for the Service Provider.
       maxLength: 256
-    customData:
-      type: object
-      required:
-      - key
-      - value
-      properties:
-        key:
-          type: string
-          description: Identifies the type of additional field.
-          minLength: 1
-          maxLength: 256
-        value:
-          type: string
-          description: Identifies the value of the additional field.
-          minLength: 1
-          maxLength: 256
-    errorObject:
-      type: object
-      required:
-      - errorCategory
-      - errorCode
-      properties:
-        errorCategory:
-          type: string
-          description: The category grouping for the error.
-          enum:
-          - businessRule
-          - validation
-          - authorisation
-          - identification
-          - internal
-          - serviceUnavailable
-        errorCode:
-          type: string
-          description: The harmonised error code identifying the reason for error.
-          enum:
-          - genericError
-          - dailyVolumeLimitExceeded
-          - dailyValueLimitExceeded
-          - weeklyVolumeLimitExceeded
-          - weeklyValueLimitExceeded
-          - monthlyVolumeLimitExceeded
-          - monthlyValueLimitExceeded
-          - accountMaxTotalVolumeExceeded
-          - accountMaxTotalValueExceeded
-          - lessThanTransactionMinValue
-          - greaterThanTransactionMaxValue
-          - maxBalanceExceeded
-          - samePartiesError
-          - duplicateRequest
-          - insufficientFunds
-          - incorrectState
-          - underPaymentNotAllowed
-          - overPaymentNotAllowed
-          - rateLimitError
-          - transactionTypeError
-          - noMandateAuthority
-          - linkViolation
-          - countryofOriginNotPermitted
-          - nationalityNotPermitted
-          - idDocumentNotSupported
-          - issuingCountryNotSupported
-          - quoteHasExpired
-          - identifierError
-          - lengthError
-          - formatError
-          - negativeValue
-          - currencyNotSupported
-          - mandatoryValueNotSupplied
-          - invalidOffset
-          - clientAuthorisationError
-          - requestDeclined
-          - servicingPartyAuthorisationError
-          - requestingPartyAuthorisationError
-        errordescription:
-          type: string
-          description: A textual description of the error.
-          minLength: 0
-          maxLength: 256
-        errorDateTime:
-          type: string
-          format: date-time
-          description: The timestamp indicating when the error occurred.
-        errorParameters:
-          description: Diagnostic information in the form of key/value pairs relating to the error.
-          allOf:
-          - $ref: '#/components/schemas/metadataArray'
-    requestBillPayment2:
-      type: object
-      required:
-      - currency
-      - amountPaid
-      properties:
-        serviceProviderPaymentReference:
-          $ref: '#/components/schemas/serviceProviderPaymentReference'
-        requestingOrganisationTransactionReference:
-          $ref: '#/components/schemas/requestingOrganisationTransactionReference'
-        paymentType:
-          description: Describes the type of Bill Payment, i.e. whether a full or partial payment.
-          allOf:
-          - $ref: '#/components/schemas/paymentType'
-        amountPaid:
-          description: Amount of the Bill that is being paid.
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          example: '15.00'
-        currency:
-          description: Currency of the amount that is being paid.
-          allOf:
-          - $ref: '#/components/schemas/currency'
-        customerReference:
-          $ref: '#/components/schemas/customerReference'
-        requestingOrganisation:
-          $ref: '#/components/schemas/requestingOrganisationBillPay'
-        requestDate:
-          $ref: '#/components/schemas/requestDate'
-        customData:
-          $ref: '#/components/schemas/customDataArray'
-        metadata:
-          $ref: '#/components/schemas/metadataArray'
-        paidAmount:
-          description: Amount of the Bill that is being paid.
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          deprecated: true
-    serviceProviderType:
-      type: string
-      description: Type of Service Provider that accepts payments.
-      maxLength: 256
-    requestingOrganisationBillPay:
-      type: string
-      description: The originating mobile money provider or financial institution that holds the wallet/account of the payer.
-      minLength: 0
-      maxLength: 256
-    requestStateObject:
-      type: object
-      required:
-      - notificationMethod
-      - serverCorrelationId
-      - status
-      properties:
-        serverCorrelationId:
-          type: string
-          description: A unique identifier issued by the provider to enable the client to identify the RequestState resource on subsequent polling requests. Must be supplied as a UUID.
-          minLength: 1
-          maxLength: 256
-          pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-        objectReference:
-          type: string
-          description: Provides a reference to the subject resource, e.g. transaction reference.
-          minLength: 0
-          maxLength: 256
-        status:
-          type: string
-          enum:
-          - pending
-          - completed
-          - failed
-          description: Indicates the status of the request.
-        notificationMethod:
-          type: string
-          enum:
-          - callback
-          - polling
-          description: Indicates whether a callback will be issued or whether the client will need to poll.
-        pendingReason:
-          type: string
-          description: A textual description that can be provided to describe the reason for a pending status.
-          minLength: 0
-          maxLength: 256
-        expiryTime:
-          type: string
-          format: date-time
-          description: Indicate the time by which the provider will fail the request if completion criteria have not been met. For an example, a debit party failing to authorise within the allowed period.
-        pollLimit:
-          type: number
-          format: int32
-          description: Indicates the number of poll attempts for the given requeststate resource that will be allowed by the provider.
-          exclusiveMinimum: 0
-        error:
-          description: If the asynchronous processing failed, details of the error will be returned here.
-          allOf:
-          - $ref: '#/components/schemas/errorObject'
-    customDataArray:
-      type: array
-      description: A collection of key/value pairs. These can be used to populate provider specific fields.
-      items:
-        $ref: '#/components/schemas/customData'
-      maxItems: 20
     requestBillPayment:
       type: object
       required:
@@ -2167,96 +1745,33 @@ components:
           allOf:
           - $ref: '#/components/schemas/amount'
           deprecated: true
-    modificationDate:
-      type: string
-      format: date-time
-      description: Date and time when the object was modified by the API Provider.
-    creationDate:
-      type: string
-      format: date-time
-      description: Date and time when the object was created by the API Provider.
-    companyName:
-      type: string
-      description: Display Name for the Service Provider.
-      maxLength: 256
-    billReference:
-      type: string
-      description: Reference number for the Bill that the payer can use when making a payment.
-      minLength: 0
-      maxLength: 256
-    customerReference:
-      type: string
-      description: Textual reference provided by the customer paying the bill.
-      minLength: 0
-      maxLength: 256
-    billPaymentStatus:
-      type: string
-      description: Indicates the status of the bill payment as stored by the API provider.
-      minLength: 0
-      maxLength: 256
-    serviceProviderComment:
-      type: string
-      description: Allows the Service Provider to include specific information regarding the bill payment.
-      minLength: 0
-      maxLength: 256
-    requestDate:
-      type: string
-      format: date-time
-      description: The date and time of the request as supplied by the client.
-    metadataArray:
-      type: array
-      description: A collection of key/value pairs. These can be used to populate additional properties that describe administrative information regarding the resource.
-      items:
-        $ref: '#/components/schemas/metadata'
-      maxItems: 20
-    metadata:
-      type: object
-      required:
-      - key
-      - value
-      properties:
-        key:
-          type: string
-          description: Identifies the type of additional field.
-          minLength: 1
-          maxLength: 256
-        value:
-          type: string
-          description: Identifies the value of the additional field.
-          minLength: 1
-          maxLength: 256
-    serviceProviderNotification:
-      type: string
-      description: Allows the Service Provider to include specific information that will be included on the notification to the customer by the mobile money provider.
-      minLength: 0
-      maxLength: 256
-    supplementaryBillReferenceDetails:
-      type: object
-      required:
-      - paymentReferenceType
-      - paymentReferenceValue
-      properties:
-        paymentReferenceType:
-          type: string
-          description: Identifies the type of the additional payment reference.
-          minLength: 1
-          maxLength: 256
-        paymentReferenceValue:
-          type: string
-          description: Identifies the value of the additional payment reference.
-          minLength: 1
-          maxLength: 256
-    dueDate:
-      type: string
-      format: date
-      description: Date on which the Bill is due to be paid.
-      example: '2018-11-20'
     supplementaryBillReferenceDetailsArray:
       type: array
       description: In some cases, a single reference is not sufficient to identify a bill. This key-value collection enables further reference information to be supplied.
       items:
         $ref: '#/components/schemas/supplementaryBillReferenceDetails'
       maxItems: 20
+    metadataArray:
+      type: array
+      description: A collection of key/value pairs. These can be used to populate additional properties that describe administrative information regarding the resource.
+      items:
+        $ref: '#/components/schemas/metadata'
+      maxItems: 20
+    serviceProvider:
+      type: string
+      description: Service Provider Reference Code.
+      maxLength: 256
+    paymentType:
+      type: string
+      enum:
+      - partialpayment
+      - fullpayment
+    amount:
+      type: string
+      minLength: 1
+      maxLength: 23
+      pattern: ^([0]|([1-9][0-9]{0,17}))([.][0-9]{0,3}[0-9])?$
+      example: '15.21'
     responseBillCompanies:
       type: object
       required:
@@ -2276,88 +1791,6 @@ components:
           items:
             $ref: '#/components/schemas/metadata'
           maxItems: 20
-    serviceProviderSubType:
-      type: string
-      description: Sub-Type of Service Provider.
-      maxLength: 256
-    amount:
-      type: string
-      minLength: 1
-      maxLength: 23
-      pattern: ^([0]|([1-9][0-9]{0,17}))([.][0-9]{0,3}[0-9])?$
-      example: '15.21'
-    serviceProviderPaymentReference:
-      type: string
-      description: Reference for the payment generated by the service provider.
-      minLength: 0
-      maxLength: 256
-    responseBillPayment:
-      type: object
-      required:
-      - currency
-      - amountPaid
-      - billPaymentStatus
-      properties:
-        serviceProviderPaymentReference:
-          $ref: '#/components/schemas/serviceProviderPaymentReference'
-        requestingOrganisationTransactionReference:
-          $ref: '#/components/schemas/requestingOrganisationTransactionReference'
-        customerReference:
-          $ref: '#/components/schemas/customerReference'
-        paymentType:
-          description: Describes the type of Bill Payment, i.e. whether a full or partial payment.
-          allOf:
-          - $ref: '#/components/schemas/paymentType'
-        billPaymentStatus:
-          $ref: '#/components/schemas/billPaymentStatus'
-        amountPaid:
-          description: Amount of the Bill that is being paid
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          example: '15.00'
-        currency:
-          description: Currency of the amount that is being paid.
-          allOf:
-          - $ref: '#/components/schemas/currency'
-        requestingOrganisation:
-          $ref: '#/components/schemas/requestingOrganisationBillPay'
-        supplementaryBillReferenceDetails:
-          $ref: '#/components/schemas/supplementaryBillReferenceDetailsArray'
-        serviceProviderComment:
-          $ref: '#/components/schemas/serviceProviderComment'
-        serviceProviderNotification:
-          $ref: '#/components/schemas/serviceProviderNotification'
-        requestDate:
-          $ref: '#/components/schemas/requestDate'
-        creationDate:
-          $ref: '#/components/schemas/creationDate'
-        modificationDate:
-          $ref: '#/components/schemas/modificationDate'
-        customData:
-          $ref: '#/components/schemas/customDataArray'
-        metadata:
-          $ref: '#/components/schemas/metadataArray'
-        paidAmount:
-          description: Amount of the Bill that is being paid
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          deprecated: true
-    paymentType:
-      type: string
-      enum:
-      - partialpayment
-      - fullpayment
-    requestingOrganisationTransactionReference:
-      type: string
-      description: A reference provided by the requesting organisation that is to be associated with the transaction.
-      minLength: 0
-      maxLength: 256
-    billStatus:
-      type: string
-      enum:
-      - unpaid
-      - paid
-      - partialpaid
     currency:
       type: string
       enum:
@@ -2539,6 +1972,179 @@ components:
       - ZAR
       - ZMW
       - ZWL
+    errorObject:
+      type: object
+      required:
+      - errorCategory
+      - errorCode
+      properties:
+        errorCategory:
+          type: string
+          description: The category grouping for the error.
+          enum:
+          - businessRule
+          - validation
+          - authorisation
+          - identification
+          - internal
+          - serviceUnavailable
+        errorCode:
+          type: string
+          description: The harmonised error code identifying the reason for error.
+          enum:
+          - genericError
+          - dailyVolumeLimitExceeded
+          - dailyValueLimitExceeded
+          - weeklyVolumeLimitExceeded
+          - weeklyValueLimitExceeded
+          - monthlyVolumeLimitExceeded
+          - monthlyValueLimitExceeded
+          - accountMaxTotalVolumeExceeded
+          - accountMaxTotalValueExceeded
+          - lessThanTransactionMinValue
+          - greaterThanTransactionMaxValue
+          - maxBalanceExceeded
+          - samePartiesError
+          - duplicateRequest
+          - insufficientFunds
+          - incorrectState
+          - underPaymentNotAllowed
+          - overPaymentNotAllowed
+          - rateLimitError
+          - transactionTypeError
+          - noMandateAuthority
+          - linkViolation
+          - countryofOriginNotPermitted
+          - nationalityNotPermitted
+          - idDocumentNotSupported
+          - issuingCountryNotSupported
+          - quoteHasExpired
+          - identifierError
+          - lengthError
+          - formatError
+          - negativeValue
+          - currencyNotSupported
+          - mandatoryValueNotSupplied
+          - invalidOffset
+          - clientAuthorisationError
+          - requestDeclined
+          - servicingPartyAuthorisationError
+          - requestingPartyAuthorisationError
+        errordescription:
+          type: string
+          description: A textual description of the error.
+          minLength: 0
+          maxLength: 256
+        errorDateTime:
+          type: string
+          format: date-time
+          description: The timestamp indicating when the error occurred.
+        errorParameters:
+          description: Diagnostic information in the form of key/value pairs relating to the error.
+          allOf:
+          - $ref: '#/components/schemas/metadataArray'
+    supplementaryBillReferenceDetails:
+      type: object
+      required:
+      - paymentReferenceType
+      - paymentReferenceValue
+      properties:
+        paymentReferenceType:
+          type: string
+          description: Identifies the type of the additional payment reference.
+          minLength: 1
+          maxLength: 256
+        paymentReferenceValue:
+          type: string
+          description: Identifies the value of the additional payment reference.
+          minLength: 1
+          maxLength: 256
+    requestingOrganisationTransactionReference:
+      type: string
+      description: A reference provided by the requesting organisation that is to be associated with the transaction.
+      minLength: 0
+      maxLength: 256
+    requestStateObject:
+      type: object
+      required:
+      - notificationMethod
+      - serverCorrelationId
+      - status
+      properties:
+        serverCorrelationId:
+          type: string
+          description: A unique identifier issued by the provider to enable the client to identify the RequestState resource on subsequent polling requests. Must be supplied as a UUID.
+          minLength: 1
+          maxLength: 256
+          pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+        objectReference:
+          type: string
+          description: Provides a reference to the subject resource, e.g. transaction reference.
+          minLength: 0
+          maxLength: 256
+        status:
+          type: string
+          enum:
+          - pending
+          - completed
+          - failed
+          description: Indicates the status of the request.
+        notificationMethod:
+          type: string
+          enum:
+          - callback
+          - polling
+          description: Indicates whether a callback will be issued or whether the client will need to poll.
+        pendingReason:
+          type: string
+          description: A textual description that can be provided to describe the reason for a pending status.
+          minLength: 0
+          maxLength: 256
+        expiryTime:
+          type: string
+          format: date-time
+          description: Indicate the time by which the provider will fail the request if completion criteria have not been met. For an example, a debit party failing to authorise within the allowed period.
+        pollLimit:
+          type: number
+          format: int32
+          description: Indicates the number of poll attempts for the given requeststate resource that will be allowed by the provider.
+          exclusiveMinimum: 0
+        error:
+          description: If the asynchronous processing failed, details of the error will be returned here.
+          allOf:
+          - $ref: '#/components/schemas/errorObject'
+    dueDate:
+      type: string
+      format: date
+      description: Date on which the Bill is due to be paid.
+      example: '2018-11-20'
+    serviceProviderPaymentReference:
+      type: string
+      description: Reference for the payment generated by the service provider.
+      minLength: 0
+      maxLength: 256
+    serviceProviderType:
+      type: string
+      description: Type of Service Provider that accepts payments.
+      maxLength: 256
+    billReference:
+      type: string
+      description: Reference number for the Bill that the payer can use when making a payment.
+      minLength: 0
+      maxLength: 256
+    serviceProviderNotification:
+      type: string
+      description: Allows the Service Provider to include specific information that will be included on the notification to the customer by the mobile money provider.
+      minLength: 0
+      maxLength: 256
+    modificationDate:
+      type: string
+      format: date-time
+      description: Date and time when the object was modified by the API Provider.
+    serviceProviderSubType:
+      type: string
+      description: Sub-Type of Service Provider.
+      maxLength: 256
     responseBillPayment2:
       type: object
       required:
@@ -2588,3 +2194,397 @@ components:
           allOf:
           - $ref: '#/components/schemas/amount'
           deprecated: true
+    serviceProviderComment:
+      type: string
+      description: Allows the Service Provider to include specific information regarding the bill payment.
+      minLength: 0
+      maxLength: 256
+    customerReference:
+      type: string
+      description: Textual reference provided by the customer paying the bill.
+      minLength: 0
+      maxLength: 256
+    responseBillPayment:
+      type: object
+      required:
+      - currency
+      - amountPaid
+      - billPaymentStatus
+      properties:
+        serviceProviderPaymentReference:
+          $ref: '#/components/schemas/serviceProviderPaymentReference'
+        requestingOrganisationTransactionReference:
+          $ref: '#/components/schemas/requestingOrganisationTransactionReference'
+        customerReference:
+          $ref: '#/components/schemas/customerReference'
+        paymentType:
+          description: Describes the type of Bill Payment, i.e. whether a full or partial payment.
+          allOf:
+          - $ref: '#/components/schemas/paymentType'
+        billPaymentStatus:
+          $ref: '#/components/schemas/billPaymentStatus'
+        amountPaid:
+          description: Amount of the Bill that is being paid
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          example: '15.00'
+        currency:
+          description: Currency of the amount that is being paid.
+          allOf:
+          - $ref: '#/components/schemas/currency'
+        requestingOrganisation:
+          $ref: '#/components/schemas/requestingOrganisationBillPay'
+        supplementaryBillReferenceDetails:
+          $ref: '#/components/schemas/supplementaryBillReferenceDetailsArray'
+        serviceProviderComment:
+          $ref: '#/components/schemas/serviceProviderComment'
+        serviceProviderNotification:
+          $ref: '#/components/schemas/serviceProviderNotification'
+        requestDate:
+          $ref: '#/components/schemas/requestDate'
+        creationDate:
+          $ref: '#/components/schemas/creationDate'
+        modificationDate:
+          $ref: '#/components/schemas/modificationDate'
+        customData:
+          $ref: '#/components/schemas/customDataArray'
+        metadata:
+          $ref: '#/components/schemas/metadataArray'
+        paidAmount:
+          description: Amount of the Bill that is being paid
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          deprecated: true
+    billStatus:
+      type: string
+      enum:
+      - unpaid
+      - paid
+      - partialpaid
+    requestingOrganisationBillPay:
+      type: string
+      description: The originating mobile money provider or financial institution that holds the wallet/account of the payer.
+      minLength: 0
+      maxLength: 256
+    customDataArray:
+      type: array
+      description: A collection of key/value pairs. These can be used to populate provider specific fields.
+      items:
+        $ref: '#/components/schemas/customData'
+      maxItems: 20
+    requestDate:
+      type: string
+      format: date-time
+      description: The date and time of the request as supplied by the client.
+    billPaymentStatus:
+      type: string
+      description: Indicates the status of the bill payment as stored by the API provider.
+      minLength: 0
+      maxLength: 256
+    requestBillPayment2:
+      type: object
+      required:
+      - currency
+      - amountPaid
+      properties:
+        serviceProviderPaymentReference:
+          $ref: '#/components/schemas/serviceProviderPaymentReference'
+        requestingOrganisationTransactionReference:
+          $ref: '#/components/schemas/requestingOrganisationTransactionReference'
+        paymentType:
+          description: Describes the type of Bill Payment, i.e. whether a full or partial payment.
+          allOf:
+          - $ref: '#/components/schemas/paymentType'
+        amountPaid:
+          description: Amount of the Bill that is being paid.
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          example: '15.00'
+        currency:
+          description: Currency of the amount that is being paid.
+          allOf:
+          - $ref: '#/components/schemas/currency'
+        customerReference:
+          $ref: '#/components/schemas/customerReference'
+        requestingOrganisation:
+          $ref: '#/components/schemas/requestingOrganisationBillPay'
+        requestDate:
+          $ref: '#/components/schemas/requestDate'
+        customData:
+          $ref: '#/components/schemas/customDataArray'
+        metadata:
+          $ref: '#/components/schemas/metadataArray'
+        paidAmount:
+          description: Amount of the Bill that is being paid.
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          deprecated: true
+    customData:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Identifies the type of additional field.
+          minLength: 1
+          maxLength: 256
+        value:
+          type: string
+          description: Identifies the value of the additional field.
+          minLength: 1
+          maxLength: 256
+    creationDate:
+      type: string
+      format: date-time
+      description: Date and time when the object was created by the API Provider.
+    billDescription:
+      type: string
+      description: Description of the bill that is to be paid
+      minLength: 0
+      maxLength: 256
+  parameters:
+    identifierType:
+      name: identifierType
+      in: path
+      required: true
+      description: Path variable to specify the type of the identifier that is used to identify the account.
+      schema:
+        type: string
+        enum:
+        - accountid
+        - msisdn
+        - walletid
+        - linkref
+        - consumerno
+        - serviceprovider
+        - storeid
+        - accountcategory
+        - bankaccountno
+        - accountrank
+        - identityalias
+        - iban
+        - swiftbic
+        - sortcode
+        - organisationid
+        - bankname
+        - bankaccounttitle
+        - username
+        - emailaddress
+        - mandatereference
+    fromDateTime:
+      name: fromDateTime
+      in: query
+      description: Indicates the minimum creation date for which records should be returned.
+      required: false
+      schema:
+        type: string
+        format: date-time
+    X-Date:
+      name: X-Date
+      in: header
+      description: Header parameter to indicate the date and time that the message was originated. It is used for basic message integrity checks, to ensure the request is not stale. Note that the header was previously referenced as 'Date' in version 1.0 of the Mobile Money API.
+      required: false
+      schema:
+        type: string
+        format: date-time
+    X-Content-Hash:
+      name: X-Content-Hash
+      in: header
+      description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
+      required: false
+      schema:
+        type: string
+    X-Client-Id:
+      name: X-Client-Id
+      in: header
+      description: Used to pass pre-shared client's identifier to the server.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    identifier:
+      name: identifier
+      in: path
+      description: Path variable that contains the account identifier.
+      required: true
+      schema:
+        type: string
+        maxLength: 256
+        minLength: 1
+    X-User-Credential-2:
+      name: X-User-Credential-2
+      in: header
+      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    X-CorrelationID:
+      name: X-CorrelationID
+      in: header
+      description: Header parameter to uniquely identify the request. Must be supplied as a UUID.
+      required: false
+      schema:
+        type: string
+        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+    X-Callback-URL:
+      name: X-Callback-URL
+      in: header
+      description: The URL supplied by the client that will be used to return the callback in the form of a HTTP PUT.
+      required: false
+      schema:
+        type: string
+        format: uri
+    X-API-Key:
+      name: X-API-Key
+      in: header
+      description: Used to pass pre-shared client's API key to the server.
+      required: false
+      schema:
+        type: string
+    accountId:
+      name: accountId
+      in: path
+      description: 'Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference.'
+      required: true
+      schema:
+        type: string
+        pattern: ^((accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+))(\$(accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+)){0,2}$
+    offset:
+      name: offset
+      in: query
+      description: Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60.
+      required: false
+      schema:
+        type: integer
+        format: int32
+    X-Account-Holding-Institution-Identifier-Type:
+      name: X-Account-Holding-Institution-Identifier-Type
+      in: header
+      description: A header variable that identifies the type of the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier header.
+      required: false
+      schema:
+        type: string
+        enum:
+        - lei
+        - swiftbic
+        - organisationid
+    X-Channel:
+      name: X-Channel
+      in: header
+      description: String containing the channel that was used to originate the request. For example USSD, Web, App.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    billReference:
+      name: billReference
+      in: path
+      description: Path variable to uniquely identify a bill.
+      required: true
+      schema:
+        type: string
+        maxLength: 256
+        minLength: 1
+    limit:
+      name: limit
+      in: query
+      description: Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request.
+      required: false
+      schema:
+        type: integer
+        format: int32
+    X-User-Credential-1:
+      name: X-User-Credential-1
+      in: header
+      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    toDateTime:
+      name: toDateTime
+      in: query
+      description: Indicates the maximum creation date for which records should be returned.
+      required: false
+      schema:
+        type: string
+        format: date-time
+    X-User-Bearer:
+      name: X-User-Bearer
+      in: header
+      description: Used to pass user’s access token when OAuth 2.0/OIDC authorisation framework is used for end-user authentication.
+      required: false
+      schema:
+        type: string
+    serviceProvider:
+      name: serviceProvider
+      in: path
+      description: The identifier for the Bill Payment Service Provider.
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 256
+    X-Account-Holding-Institution-Identifier:
+      name: X-Account-Holding-Institution-Identifier
+      in: header
+      description: A header variable that identifies the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier-Type header.
+      required: false
+      schema:
+        type: string
+  headers:
+    X-Records-Returned-Count:
+      required: false
+      description: Integer containing number of records that are returned.
+      schema:
+        type: integer
+        format: int32
+    X-Date:
+      required: false
+      description: The date and time that the response message was sent.
+      schema:
+        type: string
+        format: date-time
+    X-Records-Available-Count:
+      required: false
+      description: Integer containing number of records that are available to be returned.
+      schema:
+        type: integer
+        format: int32
+  requestBodies:
+    requestBillPayment:
+      required: true
+      description: Represents the request body of a bill payment.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestBillPayment'
+    updateError:
+      required: true
+      description: Represents the request body of error callback.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorObject'
+    updateBillPayment:
+      required: true
+      description: Represents the request body of a bill payment callback.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseBillPayment'
+    updateBillPayment2:
+      required: true
+      description: Represents the request body of a bill payment callback.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseBillPayment2'
+    requestBillPayment2:
+      required: true
+      description: Represents the request body of a bill payment.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestBillPayment2'

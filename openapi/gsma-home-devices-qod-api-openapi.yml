@@ -68,6 +68,176 @@ paths:
         '504':
           $ref: '#/components/responses/Generic504'
 components:
+  responses:
+    Generic504:
+      description: Gateway Timeout
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 504
+            code: TIMEOUT
+            message: Request timeout exceeded
+    setQosServiceUnavailable503:
+      description: Service Unavailable
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            Unavailable:
+              value:
+                status: 503
+                code: UNAVAILABLE
+                message: Service Unavailable
+            RouterOffline:
+              value:
+                status: 503
+                code: HOME_DEVICES_QOD.ROUTER_OFFLINE
+                message: Router is not online. Try it later
+    Generic401:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 401
+            code: UNAUTHENTICATED
+            message: Request not authenticated due to missing, invalid, or expired credentials
+    Generic400:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 400
+            code: INVALID_ARGUMENT
+            message: Client specified an invalid argument, request body or query param
+    Generic500:
+      description: Internal Server Error
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 500
+            code: INTERNAL
+            message: Server error
+    setQosPermissionDenied403:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            PermissionDenied:
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action
+            InvalidTokenContext:
+              value:
+                status: 403
+                code: INVALID_TOKEN_CONTEXT
+                message: User home network cannot be deducted from access token context
+    setQosConflict409:
+      description: Conflict
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            Conflict:
+              value:
+                status: 409
+                code: CONFLICT
+                message: Conflict with the current state of the target resource
+            TooManyDevices:
+              value:
+                status: 409
+                code: HOME_DEVICES_QOD.TOO_MANY_DEVICES
+                message: Exceeded the maximum quantity of devices with non-default QoS behaviour
+            RssiBelowThreshold:
+              value:
+                status: 409
+                code: HOME_DEVICES_QOD.RSSI_BELOW_THRESHOLD
+                message: RSSI from device is below allowed threshold
+            QosTooHigh:
+              value:
+                status: 409
+                code: HOME_DEVICES_QOD.QOS_TOO_HIGH
+                message: Requested QoS is higher than the maximum QoS allowed
+            OccupancyAboveThreshold:
+              value:
+                status: 409
+                code: HOME_DEVICES_QOD.OCCUPANCY_ABOVE_THRESHOLD
+                message: The occupancy is above the allowed threshold
+            NotConnectedToRequiredInterface:
+              value:
+                status: 409
+                code: HOME_DEVICES_QOD.NOT_CONNECTED_TO_REQUIRED_INTERFACE
+                message: Device is not connected to the required interface (e.g. WiFi 5GHz interface)
+            NotSupportedRequiredInterface:
+              value:
+                status: 409
+                code: HOME_DEVICES_QOD.NOT_SUPPORTED_REQUIRED_INTERFACE
+                message: Device does not support required interface (e.g. WiFi 5GHz interface)
+            QosAlreadySetToDefault:
+              value:
+                status: 409
+                code: HOME_DEVICES_QOD.QOS_ALREADY_SET_TO_DEFAULT
+                message: Device QoS is already set to default value
+    setQosNotFound404:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            NotFound:
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found
+            NoDeviceMatch:
+              value:
+                status: 404
+                code: DEVICE_NOT_FOUND
+                message: No connected device found for the input criteria provided
+  parameters:
+    x-correlator:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        type: string
   schemas:
     ErrorInfo:
       type: object
@@ -133,176 +303,6 @@ components:
           format: ipv4
           description: Internal IP address of the connected device in the LAN.
           example: 192.168.1.27
-  responses:
-    Generic500:
-      description: Internal Server Error
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 500
-            code: INTERNAL
-            message: Server error
-    setQosNotFound404:
-      description: Not found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            NotFound:
-              value:
-                status: 404
-                code: NOT_FOUND
-                message: The specified resource is not found
-            NoDeviceMatch:
-              value:
-                status: 404
-                code: DEVICE_NOT_FOUND
-                message: No connected device found for the input criteria provided
-    setQosPermissionDenied403:
-      description: Forbidden
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            PermissionDenied:
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action
-            InvalidTokenContext:
-              value:
-                status: 403
-                code: INVALID_TOKEN_CONTEXT
-                message: User home network cannot be deducted from access token context
-    Generic401:
-      description: Unauthorized
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 401
-            code: UNAUTHENTICATED
-            message: Request not authenticated due to missing, invalid, or expired credentials
-    Generic400:
-      description: Bad Request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 400
-            code: INVALID_ARGUMENT
-            message: Client specified an invalid argument, request body or query param
-    Generic504:
-      description: Gateway Timeout
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 504
-            code: TIMEOUT
-            message: Request timeout exceeded
-    setQosConflict409:
-      description: Conflict
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            Conflict:
-              value:
-                status: 409
-                code: CONFLICT
-                message: Conflict with the current state of the target resource
-            TooManyDevices:
-              value:
-                status: 409
-                code: HOME_DEVICES_QOD.TOO_MANY_DEVICES
-                message: Exceeded the maximum quantity of devices with non-default QoS behaviour
-            RssiBelowThreshold:
-              value:
-                status: 409
-                code: HOME_DEVICES_QOD.RSSI_BELOW_THRESHOLD
-                message: RSSI from device is below allowed threshold
-            QosTooHigh:
-              value:
-                status: 409
-                code: HOME_DEVICES_QOD.QOS_TOO_HIGH
-                message: Requested QoS is higher than the maximum QoS allowed
-            OccupancyAboveThreshold:
-              value:
-                status: 409
-                code: HOME_DEVICES_QOD.OCCUPANCY_ABOVE_THRESHOLD
-                message: The occupancy is above the allowed threshold
-            NotConnectedToRequiredInterface:
-              value:
-                status: 409
-                code: HOME_DEVICES_QOD.NOT_CONNECTED_TO_REQUIRED_INTERFACE
-                message: Device is not connected to the required interface (e.g. WiFi 5GHz interface)
-            NotSupportedRequiredInterface:
-              value:
-                status: 409
-                code: HOME_DEVICES_QOD.NOT_SUPPORTED_REQUIRED_INTERFACE
-                message: Device does not support required interface (e.g. WiFi 5GHz interface)
-            QosAlreadySetToDefault:
-              value:
-                status: 409
-                code: HOME_DEVICES_QOD.QOS_ALREADY_SET_TO_DEFAULT
-                message: Device QoS is already set to default value
-    setQosServiceUnavailable503:
-      description: Service Unavailable
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            Unavailable:
-              value:
-                status: 503
-                code: UNAVAILABLE
-                message: Service Unavailable
-            RouterOffline:
-              value:
-                status: 503
-                code: HOME_DEVICES_QOD.ROUTER_OFFLINE
-                message: Router is not online. Try it later
-  parameters:
-    x-correlator:
-      name: x-correlator
-      in: header
-      description: Correlation id for the different services
-      schema:
-        type: string
   headers:
     x-correlator:
       description: Correlation id for the different services

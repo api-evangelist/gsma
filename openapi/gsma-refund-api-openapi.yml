@@ -308,427 +308,7 @@ paths:
         '429':
           $ref: '#/components/responses/Generic429'
 components:
-  parameters:
-    x-correlator:
-      name: x-correlator
-      in: header
-      description: Correlation id for the different services
-      schema:
-        $ref: '#/components/schemas/XCorrelator'
-    MerchantIdentifier:
-      description: Merchant identifier to filter the results
-      in: query
-      name: merchantIdentifier
-      required: false
-      schema:
-        type: string
-    EndRefundCreationDate:
-      description: End `refundCreationDate` for running the query. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-      in: query
-      name: refundCreationDate.lte
-      required: false
-      schema:
-        format: date-time
-        type: string
-    StartRefundCreationDate:
-      description: Initial `refundCreationDate` for running the query. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-      in: query
-      name: refundCreationDate.gte
-      required: false
-      schema:
-        format: date-time
-        type: string
-    RefundStatus:
-      description: List of refund status to be considered for the query
-      in: query
-      name: refundStatus
-      required: false
-      schema:
-        type: array
-        items:
-          type: string
-          enum:
-          - processing
-          - denied
-          - succeeded
-    PerPage:
-      name: perPage
-      in: query
-      description: Requested number of resources to be provided in response
-      schema:
-        type: integer
-        default: 10
-    Order:
-      description: Used to return the sorted results in descending (default) or ascending order, based on `refundCreationDate` property
-      in: query
-      name: order
-      required: false
-      schema:
-        default: desc
-        enum:
-        - desc
-        - asc
-        type: string
-    Page:
-      name: page
-      in: query
-      description: Requested index to indicate the start of the resources to be provided in the response
-      schema:
-        type: integer
-        default: 1
-  headers:
-    X-Total-Count:
-      description: Total number of items matching criteria
-      schema:
-        type: integer
-    x-correlator:
-      description: Correlation id for the different services
-      schema:
-        $ref: '#/components/schemas/XCorrelator'
-    Content-Last-Key:
-      description: Indicates the index of the last result provided in the response
-      schema:
-        type: integer
-  schemas:
-    Refund:
-      type: object
-      description: Information about a Refund resource.
-      required:
-      - refundId
-      - refundStatus
-      - refundCreationDate
-      - type
-      properties:
-        refundId:
-          type: string
-          description: Unique Identifier of the refund
-          example: AK234rfweSBuWGFUEWFGWEVWRV
-        refundStatus:
-          type: string
-          description: Specifies the refund status (`processing`, `denied`, `succeeded`).
-          example: processing
-        type:
-          type: string
-          description: 'Type of refund.
-
-            - `total` stands for a final refund, where whole amount is refunded so as it is not indicated by API Consumer. No more refunds are allowed for that `paymentId`.
-
-            - `partial` stands for a partial refund, whose amount is indicated by API Consumer. More refunds are allowed for that `paymentId`.'
-          enum:
-          - total
-          - partial
-        refundCreationDate:
-          type: string
-          format: date-time
-          description: Date time when the refund is created in server database. This is a technical information. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-        refundDate:
-          type: string
-          format: date-time
-          description: Date time when the refund is effectively performed. This is a business information. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-        reason:
-          type: string
-          description: Reason provided to request the refund. Optionally provided by the user or the merchant.
-        sink:
-          type: string
-          format: uri
-          pattern: ^https:\/\/.+$
-          description: The address to which events shall be delivered, using the HTTP protocol.
-          example: https://endpoint.example.com/sink
-      discriminator:
-        propertyName: type
-        mapping:
-          total: '#/components/schemas/TotalRefund'
-          partial: '#/components/schemas/PartialRefund'
-    DateTime:
-      type: string
-      format: date-time
-      description: Timestamp when the occurrence happened. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-      example: '2023-11-03T12:27:10Z'
-    XCorrelator:
-      type: string
-      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
-      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
-    ErrorInfo:
-      type: object
-      required:
-      - status
-      - code
-      - message
-      properties:
-        status:
-          type: integer
-          description: HTTP response status code
-        code:
-          type: string
-          description: A human-readable code to describe the error
-        message:
-          type: string
-          description: A human-readable description of what the event represents
-    RefundArray:
-      description: A list of refund(s)
-      type: array
-      minItems: 0
-      items:
-        $ref: '#/components/schemas/Refund'
-    CloudEvent:
-      description: The notification format
-      required:
-      - id
-      - source
-      - specversion
-      - type
-      - time
-      properties:
-        id:
-          type: string
-          description: Identifier of this event, that must be unique in the source context.
-          minLength: 1
-          example: sd5e-uy52-88t4-za66
-        source:
-          $ref: '#/components/schemas/Source'
-        type:
-          type: string
-          description: Type of event as defined in each CAMARA API
-          minLength: 25
-          example: org.camaraproject.carrier-billing.v0.payment-reserved
-        specversion:
-          type: string
-          description: Version of the specification to which this event conforms (must be 1.0 if it conforms to cloudevents 1.0.2 version)
-          minLength: 3
-          example: '1.0'
-        datacontenttype:
-          type: string
-          description: media-type that describes the event payload encoding, must be "application/json" for CAMARA APIs
-          example: application/json
-        data:
-          type: object
-          description: Event details payload described in each CAMARA API and referenced by its type
-        time:
-          $ref: '#/components/schemas/DateTime'
-      discriminator:
-        propertyName: type
-        mapping:
-          org.camaraproject.carrier-billing-refund.v0.refund-completed: '#/components/schemas/EventRefundCompleted'
-          org.camaraproject.carrier-billing-refund.v0.refund-denied: '#/components/schemas/EventRefundDenied'
-          org.camaraproject.carrier-billing-refund.v0.refund-in-bill: '#/components/schemas/EventRefundInBill'
-    CreateRefund:
-      type: object
-      description: Information to create a Refund resource.
-      required:
-      - type
-      properties:
-        type:
-          type: string
-          description: 'Type of refund.
-
-            - `total` stands for a final refund, where whole amount is refunded so as it is not indicated by API Consumer. No more refunds are allowed for that `paymentId`.
-
-            - `partial` stands for a partial refund, whose amount is indicated by API Consumer. More refunds are allowed for that `paymentId`.'
-          enum:
-          - total
-          - partial
-        reason:
-          type: string
-          description: Reason provided to request the refund. Optionally provided by the user or the merchant.
-        sink:
-          type: string
-          format: uri
-          pattern: ^https:\/\/.+$
-          description: The address to which events shall be delivered, using the HTTP protocol.
-          example: https://endpoint.example.com/sink
-        sinkCredential:
-          allOf:
-          - description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
-          - $ref: '#/components/schemas/SinkCredential'
-      discriminator:
-        propertyName: type
-        mapping:
-          total: '#/components/schemas/CreateTotalRefund'
-          partial: '#/components/schemas/CreatePartialRefund'
-    PaymentRemainingAmount:
-      type: object
-      description: Remaining Amount of a given payment not refunded yet.
-      required:
-      - amount
-      - currency
-      properties:
-        amount:
-          type: number
-          format: float
-          multipleOf: 0.001
-          minimum: 0
-          description: Specific amount not yet refunded for the payment. When takes value `0` it means whole payment has been refunded.
-          example: 100
-        currency:
-          type: string
-          description: Currency code in which amount is expressed as defined in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html).
-          example: EUR
-        description:
-          type: string
-          description: Description text (human readable) to contextualize this amount. Optionally indicated by Telco Operator.
-          example: Current Amount not refunded so far
-        isTaxIncluded:
-          type: boolean
-          default: false
-          description: If true, the `amount` is tax included, if false the `amount` is provided without tax. In both cases, `taxAmount` could be indicated to provide tax amount.
-        taxAmount:
-          type: number
-          format: float
-          multipleOf: 0.001
-          minimum: 0
-          description: 'The tax amount refunded by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
-
-            '
-          example: 21
-    Source:
-      type: string
-      format: uri-reference
-      minLength: 1
-      description: "Identifies the context in which an event happened - be a non-empty `URI-reference` like:\n- URI with a DNS authority:\n  * https://github.com/cloudevents\n  * mailto:cncf-wg-serverless@lists.cncf.io\n- Universally-unique URN with a UUID:\n  * urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66\n- Application-specific identifier:\n  * /cloudevents/spec/pull/123\n  * 1-555-123-4567"
-      example: https://notificationSendServer12.supertelco.com
-    SinkCredential:
-      type: object
-      properties:
-        credentialType:
-          type: string
-          enum:
-          - PLAIN
-          - ACCESSTOKEN
-          - REFRESHTOKEN
-          description: The type of the credential. Only `ACCESSTOKEN` is supported so far.
-      discriminator:
-        propertyName: credentialType
-        mapping:
-          PLAIN: '#/components/schemas/PlainCredential'
-          ACCESSTOKEN: '#/components/schemas/AccessTokenCredential'
-          REFRESHTOKEN: '#/components/schemas/RefreshTokenCredential'
-      required:
-      - credentialType
   responses:
-    RefundPermissionDenied403:
-      description: "Client does not have sufficient permission.\nIn addition to regular PERMISSION_DENIED scenario other scenarios may exist:\n  - Refund denied by business (\"code\": \"CARRIER_BILLING_REFUND.REFUND_DENIED\",\"message\": \"Refund denied by business.\").\n  - Payment not eligible for Refund (e.g. Payment conditions agreed do not allow refund) (\"code\": \"CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND\",\"message\": \"Payment not eligible for refund.\")."
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 403
-                code:
-                  enum:
-                  - PERMISSION_DENIED
-                  - CARRIER_BILLING_REFUND.REFUND_DENIED
-                  - CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
-            GENERIC_403_REFUND_DENIED:
-              summary: Generic Refund Denied
-              description: Refund denied by business
-              value:
-                status: 403
-                code: CARRIER_BILLING_REFUND.REFUND_DENIED
-                message: Refund denied by business.
-            GENERIC_403_PAYMENT_NOT_ELIGIBLE_FOR_REFUND:
-              summary: Generic Payment Not Eligible for Refund
-              description: Payment not eligible for Refund (e.g. Payment conditions agreed do not allow refund)
-              value:
-                status: 403
-                code: CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND
-                message: Payment not eligible for refund.
-    Generic401:
-      description: Unauthorized
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 401
-                code:
-                  enum:
-                  - UNAUTHENTICATED
-          examples:
-            GENERIC_401_UNAUTHENTICATED:
-              description: Request cannot be authenticated and a new authentication is required
-              value:
-                status: 401
-                code: UNAUTHENTICATED
-                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
-    CreateRefundUnprocessableContent422:
-      description: "Client indicates content that is understable by the Server but unable to be processed.\nScenarios considered:\n  - Unauthorized refund amount requested (\"code\": \"CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT\",\"message\": \"Unauthorized amount requested.\").\n  - Accumulated threshold refund amount for the user's mobile account overpassed (\"code\": \"CARRIER_BILLING_REFUND.USER_AMOUNT_THRESHOLD_OVERPASSED\",\"message\": \"Unauthorized refund request. Accumulated user mobile refunds overpass account amount threshold.\").\n  - Payment is not in suitable status for refund (\"code\": \"CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS\",\"message\": \"Payment is not yet completed.\").\n  - Property `isTaxIncluded` has not the same value as related Payment (\"code\": \"CARRIER_BILLING_REFUND.TAXES_MANAGEMENT_MISMATCH\",\"message\": \"Inconsistent isTaxIncluded value with regards to related payment.\").\n  - Refund details provided are inconsistent with regards to the related Payment (\"code\": \"CARRIER_BILLING_REFUND.REFUND_DETAILS_MISMATCH\",\"message\": \"Inconsistent refundDetails information with regards to related payment.\")."
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 422
-                code:
-                  enum:
-                  - CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT
-                  - CARRIER_BILLING_REFUND.USER_AMOUNT_THRESHOLD_OVERPASSED
-                  - CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS
-                  - CARRIER_BILLING_REFUND.TAXES_MANAGEMENT_MISMATCH
-                  - CARRIER_BILLING_REFUND.REFUND_DETAILS_MISMATCH
-          examples:
-            GENERIC_422_UNAUTHORIZED_REFUND_AMOUNT:
-              summary: Generic Unauthorized Refund Amount
-              description: Unauthorized refund amount requested
-              value:
-                status: 422
-                code: CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT
-                message: Unauthorized amount requested.
-            GENERIC_422_GENERIC_422_USER_MOBILE_ACCUMULATED_THRESHOLD_REFUND_AMOUNT_OVERPASSED:
-              summary: Generic User Mobile Accumulated threshold Refund Amount Overpassed
-              description: Accumulated threshold refund amount for the user's mobile account overpassed
-              value:
-                status: 422
-                code: CARRIER_BILLING_REFUND.USER_AMOUNT_THRESHOLD_OVERPASSED
-                message: Unauthorized refund request. Accumulated user mobile payments overpass account amount threshold.
-            GENERIC_422_INVALID_PAYMENT_STATUS:
-              summary: Generic Invalid Payment Status
-              description: Payment is not in suitable status for refund
-              value:
-                status: 422
-                code: CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS
-                message: Payment is not yet completed.
-            GENERIC_422_TAXES_MANAGEMENT_MISMATCH:
-              summary: Generic Taxes Management Mismatch
-              description: Property `isTaxIncluded` has not the same value as related Payment
-              value:
-                status: 422
-                code: CARRIER_BILLING_REFUND.TAXES_MANAGEMENT_MISMATCH
-                message: Inconsistent isTaxIncluded value with regards to related payment.
-            GENERIC_422_REFUND_DETAILS_MISMATCH:
-              summary: Generic Refund Details Mismatch
-              description: Refund details provided are inconsistent with regards to the related Payment
-              value:
-                status: 422
-                code: CARRIER_BILLING_REFUND.REFUND_DETAILS_MISMATCH
-                message: Inconsistent refundDetails information with regards to related payment.
     Generic429:
       description: Too Many Requests
       headers:
@@ -755,8 +335,8 @@ components:
                 status: 429
                 code: TOO_MANY_REQUESTS
                 message: Rate limit reached.
-    Generic410:
-      description: Gone
+    Generic409:
+      description: Conflict
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -769,119 +349,18 @@ components:
               properties:
                 status:
                   enum:
-                  - 410
+                  - 409
                 code:
                   enum:
-                  - GONE
+                  - ALREADY_EXISTS
           examples:
-            GENERIC_410_GONE:
-              summary: Generic Gone
-              description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
+            GENERIC_409_ALREADY_EXISTS:
+              summary: Generic Already Exists
+              description: Trying to create an existing resource
               value:
-                status: 410
-                code: GONE
-                message: Access to the target resource is no longer available.
-    Generic403:
-      description: Forbidden
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 403
-                code:
-                  enum:
-                  - PERMISSION_DENIED
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
-    Generic400:
-      description: Invalid input
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 400
-                code:
-                  enum:
-                  - INVALID_ARGUMENT
-          examples:
-            GENERIC_400_INVALID_ARGUMENT:
-              summary: Generic Invalid Argument
-              description: Invalid Argument. Generic Syntax Exception
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param.
-    GetRefundsInvalid400:
-      description: "Invalid input. In addition to regular INVALID_ARGUMENT scenario other scenarios may exist:\n  - Inconsistent refundCreationDate.gte and refundCreationDate.lte values (\"code\": \"CARRIER_BILLING_REFUND.INVALID_DATE_RANGE\",\"message\": \"Client specified an invalid date range.\").\n  - Request out of range (\"code\": \"OUT_OF_RANGE\",\"message\": \"Client specified an invalid range.\").\n  - Too many matching records found (\"code\": \"CARRIER_BILLING_REFUND.TOO_MANY_MATCHING_RECORDS\",\"message\": \"Too many matching records found. Specify additional/suitable criteria to limit the number of records.\")."
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 400
-                code:
-                  enum:
-                  - INVALID_ARGUMENT
-                  - OUT_OF_RANGE
-                  - CARRIER_BILLING_REFUND.INVALID_DATE_RANGE
-                  - CARRIER_BILLING_REFUND.TOO_MANY_MATCHING_RECORDS
-          examples:
-            GENERIC_400_INVALID_ARGUMENT:
-              summary: Generic Invalid Argument
-              description: Invalid Argument. Generic Syntax Exception
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param.
-            GENERIC_400_INVALID_DATE_RANGE:
-              summary: Generic Invalid Date Range
-              description: Inconsistent refundCreationDate.gte and refundCreationDate.lte values
-              value:
-                status: 400
-                code: CARRIER_BILLING_REFUND.INVALID_DATE_RANGE
-                message: Client specified an invalid date range.
-            GENERIC_400_OUT_OF_RANGE:
-              summary: Generic Out Of Range
-              description: Out of Range. Specific Syntax Exception used when a given field has a pre-defined range or a invalid filter criteria combination is requested
-              value:
-                status: 400
-                code: OUT_OF_RANGE
-                message: Client specified an invalid range.
-            GENERIC_400_TOO_MANY_MATCHING_RECORDS:
-              summary: Generic Too Many Matching Records
-              description: Too many matching records found
-              value:
-                status: 400
-                code: CARRIER_BILLING_REFUND.TOO_MANY_MATCHING_RECORDS
-                message: Too many matching records found. Specify additional/suitable criteria to limit the number of records.
+                status: 409
+                code: ALREADY_EXISTS
+                message: The resource that a client tried to create already exists.
     Generic404:
       description: Resource Not Found
       headers:
@@ -908,6 +387,32 @@ components:
                 status: 404
                 code: NOT_FOUND
                 message: The specified resource is not found.
+    Generic400:
+      description: Invalid input
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              summary: Generic Invalid Argument
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
     RefundInvalid400:
       description: "Invalid input.\nCommon INVALID_ARGUMENT scenarios usually are:\n  - Schema validation failed (\"code\": \"INVALID_ARGUMENT\",\"message\": \"Client specified an invalid argument, request body or query param.\").\n  - Currency is unknown or not authorized (\"code\": \"INVALID_ARGUMENT\",\"message\": \"Currency is unknown or not authorized.\").\n  - clientCorrelator still exist (\"code\": \"INVALID_ARGUMENT\",\"message\": \"clientCorrelator already exist on server.\").\n\nIn addition to regular INVALID_ARGUMENT scenario other scenarios may exist:\n  - Invalid sink credential (\"code\": \"INVALID_CREDENTIAL\",\"message\": \"Only Access token is supported\").\n  - Invalid sink credential access token (\"code\": \"INVALID_TOKEN\",\"message\": \"Only bearer token is supported\").\n  - Invalid sink (\"code\": \"INVALID_SINK\",\"message\": \"sink not valid for the specified protocol\")."
       headers:
@@ -972,8 +477,8 @@ components:
                 status: 400
                 code: INVALID_SINK
                 message: sink not valid for the specified protocol
-    Generic409:
-      description: Conflict
+    GetRefundsInvalid400:
+      description: "Invalid input. In addition to regular INVALID_ARGUMENT scenario other scenarios may exist:\n  - Inconsistent refundCreationDate.gte and refundCreationDate.lte values (\"code\": \"CARRIER_BILLING_REFUND.INVALID_DATE_RANGE\",\"message\": \"Client specified an invalid date range.\").\n  - Request out of range (\"code\": \"OUT_OF_RANGE\",\"message\": \"Client specified an invalid range.\").\n  - Too many matching records found (\"code\": \"CARRIER_BILLING_REFUND.TOO_MANY_MATCHING_RECORDS\",\"message\": \"Too many matching records found. Specify additional/suitable criteria to limit the number of records.\")."
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -986,18 +491,513 @@ components:
               properties:
                 status:
                   enum:
-                  - 409
+                  - 400
                 code:
                   enum:
-                  - ALREADY_EXISTS
+                  - INVALID_ARGUMENT
+                  - OUT_OF_RANGE
+                  - CARRIER_BILLING_REFUND.INVALID_DATE_RANGE
+                  - CARRIER_BILLING_REFUND.TOO_MANY_MATCHING_RECORDS
           examples:
-            GENERIC_409_ALREADY_EXISTS:
-              summary: Generic Already Exists
-              description: Trying to create an existing resource
+            GENERIC_400_INVALID_ARGUMENT:
+              summary: Generic Invalid Argument
+              description: Invalid Argument. Generic Syntax Exception
               value:
-                status: 409
-                code: ALREADY_EXISTS
-                message: The resource that a client tried to create already exists.
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+            GENERIC_400_INVALID_DATE_RANGE:
+              summary: Generic Invalid Date Range
+              description: Inconsistent refundCreationDate.gte and refundCreationDate.lte values
+              value:
+                status: 400
+                code: CARRIER_BILLING_REFUND.INVALID_DATE_RANGE
+                message: Client specified an invalid date range.
+            GENERIC_400_OUT_OF_RANGE:
+              summary: Generic Out Of Range
+              description: Out of Range. Specific Syntax Exception used when a given field has a pre-defined range or a invalid filter criteria combination is requested
+              value:
+                status: 400
+                code: OUT_OF_RANGE
+                message: Client specified an invalid range.
+            GENERIC_400_TOO_MANY_MATCHING_RECORDS:
+              summary: Generic Too Many Matching Records
+              description: Too many matching records found
+              value:
+                status: 400
+                code: CARRIER_BILLING_REFUND.TOO_MANY_MATCHING_RECORDS
+                message: Too many matching records found. Specify additional/suitable criteria to limit the number of records.
+    RefundPermissionDenied403:
+      description: "Client does not have sufficient permission.\nIn addition to regular PERMISSION_DENIED scenario other scenarios may exist:\n  - Refund denied by business (\"code\": \"CARRIER_BILLING_REFUND.REFUND_DENIED\",\"message\": \"Refund denied by business.\").\n  - Payment not eligible for Refund (e.g. Payment conditions agreed do not allow refund) (\"code\": \"CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND\",\"message\": \"Payment not eligible for refund.\")."
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 403
+                code:
+                  enum:
+                  - PERMISSION_DENIED
+                  - CARRIER_BILLING_REFUND.REFUND_DENIED
+                  - CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+            GENERIC_403_REFUND_DENIED:
+              summary: Generic Refund Denied
+              description: Refund denied by business
+              value:
+                status: 403
+                code: CARRIER_BILLING_REFUND.REFUND_DENIED
+                message: Refund denied by business.
+            GENERIC_403_PAYMENT_NOT_ELIGIBLE_FOR_REFUND:
+              summary: Generic Payment Not Eligible for Refund
+              description: Payment not eligible for Refund (e.g. Payment conditions agreed do not allow refund)
+              value:
+                status: 403
+                code: CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND
+                message: Payment not eligible for refund.
+    Generic410:
+      description: Gone
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 410
+                code:
+                  enum:
+                  - GONE
+          examples:
+            GENERIC_410_GONE:
+              summary: Generic Gone
+              description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
+              value:
+                status: 410
+                code: GONE
+                message: Access to the target resource is no longer available.
+    Generic401:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 401
+                code:
+                  enum:
+                  - UNAUTHENTICATED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated and a new authentication is required
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
+    Generic403:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 403
+                code:
+                  enum:
+                  - PERMISSION_DENIED
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+    CreateRefundUnprocessableContent422:
+      description: "Client indicates content that is understable by the Server but unable to be processed.\nScenarios considered:\n  - Unauthorized refund amount requested (\"code\": \"CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT\",\"message\": \"Unauthorized amount requested.\").\n  - Accumulated threshold refund amount for the user's mobile account overpassed (\"code\": \"CARRIER_BILLING_REFUND.USER_AMOUNT_THRESHOLD_OVERPASSED\",\"message\": \"Unauthorized refund request. Accumulated user mobile refunds overpass account amount threshold.\").\n  - Payment is not in suitable status for refund (\"code\": \"CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS\",\"message\": \"Payment is not yet completed.\").\n  - Property `isTaxIncluded` has not the same value as related Payment (\"code\": \"CARRIER_BILLING_REFUND.TAXES_MANAGEMENT_MISMATCH\",\"message\": \"Inconsistent isTaxIncluded value with regards to related payment.\").\n  - Refund details provided are inconsistent with regards to the related Payment (\"code\": \"CARRIER_BILLING_REFUND.REFUND_DETAILS_MISMATCH\",\"message\": \"Inconsistent refundDetails information with regards to related payment.\")."
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 422
+                code:
+                  enum:
+                  - CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT
+                  - CARRIER_BILLING_REFUND.USER_AMOUNT_THRESHOLD_OVERPASSED
+                  - CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS
+                  - CARRIER_BILLING_REFUND.TAXES_MANAGEMENT_MISMATCH
+                  - CARRIER_BILLING_REFUND.REFUND_DETAILS_MISMATCH
+          examples:
+            GENERIC_422_UNAUTHORIZED_REFUND_AMOUNT:
+              summary: Generic Unauthorized Refund Amount
+              description: Unauthorized refund amount requested
+              value:
+                status: 422
+                code: CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT
+                message: Unauthorized amount requested.
+            GENERIC_422_GENERIC_422_USER_MOBILE_ACCUMULATED_THRESHOLD_REFUND_AMOUNT_OVERPASSED:
+              summary: Generic User Mobile Accumulated threshold Refund Amount Overpassed
+              description: Accumulated threshold refund amount for the user's mobile account overpassed
+              value:
+                status: 422
+                code: CARRIER_BILLING_REFUND.USER_AMOUNT_THRESHOLD_OVERPASSED
+                message: Unauthorized refund request. Accumulated user mobile payments overpass account amount threshold.
+            GENERIC_422_INVALID_PAYMENT_STATUS:
+              summary: Generic Invalid Payment Status
+              description: Payment is not in suitable status for refund
+              value:
+                status: 422
+                code: CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS
+                message: Payment is not yet completed.
+            GENERIC_422_TAXES_MANAGEMENT_MISMATCH:
+              summary: Generic Taxes Management Mismatch
+              description: Property `isTaxIncluded` has not the same value as related Payment
+              value:
+                status: 422
+                code: CARRIER_BILLING_REFUND.TAXES_MANAGEMENT_MISMATCH
+                message: Inconsistent isTaxIncluded value with regards to related payment.
+            GENERIC_422_REFUND_DETAILS_MISMATCH:
+              summary: Generic Refund Details Mismatch
+              description: Refund details provided are inconsistent with regards to the related Payment
+              value:
+                status: 422
+                code: CARRIER_BILLING_REFUND.REFUND_DETAILS_MISMATCH
+                message: Inconsistent refundDetails information with regards to related payment.
+  schemas:
+    CreateRefund:
+      type: object
+      description: Information to create a Refund resource.
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: 'Type of refund.
+
+            - `total` stands for a final refund, where whole amount is refunded so as it is not indicated by API Consumer. No more refunds are allowed for that `paymentId`.
+
+            - `partial` stands for a partial refund, whose amount is indicated by API Consumer. More refunds are allowed for that `paymentId`.'
+          enum:
+          - total
+          - partial
+        reason:
+          type: string
+          description: Reason provided to request the refund. Optionally provided by the user or the merchant.
+        sink:
+          type: string
+          format: uri
+          pattern: ^https:\/\/.+$
+          description: The address to which events shall be delivered, using the HTTP protocol.
+          example: https://endpoint.example.com/sink
+        sinkCredential:
+          allOf:
+          - description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
+          - $ref: '#/components/schemas/SinkCredential'
+      discriminator:
+        propertyName: type
+        mapping:
+          total: '#/components/schemas/CreateTotalRefund'
+          partial: '#/components/schemas/CreatePartialRefund'
+    ErrorInfo:
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: A human-readable code to describe the error
+        message:
+          type: string
+          description: A human-readable description of what the event represents
+    DateTime:
+      type: string
+      format: date-time
+      description: Timestamp when the occurrence happened. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+      example: '2023-11-03T12:27:10Z'
+    XCorrelator:
+      type: string
+      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
+      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
+    CloudEvent:
+      description: The notification format
+      required:
+      - id
+      - source
+      - specversion
+      - type
+      - time
+      properties:
+        id:
+          type: string
+          description: Identifier of this event, that must be unique in the source context.
+          minLength: 1
+          example: sd5e-uy52-88t4-za66
+        source:
+          $ref: '#/components/schemas/Source'
+        type:
+          type: string
+          description: Type of event as defined in each CAMARA API
+          minLength: 25
+          example: org.camaraproject.carrier-billing.v0.payment-reserved
+        specversion:
+          type: string
+          description: Version of the specification to which this event conforms (must be 1.0 if it conforms to cloudevents 1.0.2 version)
+          minLength: 3
+          example: '1.0'
+        datacontenttype:
+          type: string
+          description: media-type that describes the event payload encoding, must be "application/json" for CAMARA APIs
+          example: application/json
+        data:
+          type: object
+          description: Event details payload described in each CAMARA API and referenced by its type
+        time:
+          $ref: '#/components/schemas/DateTime'
+      discriminator:
+        propertyName: type
+        mapping:
+          org.camaraproject.carrier-billing-refund.v0.refund-completed: '#/components/schemas/EventRefundCompleted'
+          org.camaraproject.carrier-billing-refund.v0.refund-denied: '#/components/schemas/EventRefundDenied'
+          org.camaraproject.carrier-billing-refund.v0.refund-in-bill: '#/components/schemas/EventRefundInBill'
+    RefundArray:
+      description: A list of refund(s)
+      type: array
+      minItems: 0
+      items:
+        $ref: '#/components/schemas/Refund'
+    PaymentRemainingAmount:
+      type: object
+      description: Remaining Amount of a given payment not refunded yet.
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: number
+          format: float
+          multipleOf: 0.001
+          minimum: 0
+          description: Specific amount not yet refunded for the payment. When takes value `0` it means whole payment has been refunded.
+          example: 100
+        currency:
+          type: string
+          description: Currency code in which amount is expressed as defined in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html).
+          example: EUR
+        description:
+          type: string
+          description: Description text (human readable) to contextualize this amount. Optionally indicated by Telco Operator.
+          example: Current Amount not refunded so far
+        isTaxIncluded:
+          type: boolean
+          default: false
+          description: If true, the `amount` is tax included, if false the `amount` is provided without tax. In both cases, `taxAmount` could be indicated to provide tax amount.
+        taxAmount:
+          type: number
+          format: float
+          multipleOf: 0.001
+          minimum: 0
+          description: 'The tax amount refunded by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
+
+            '
+          example: 21
+    Source:
+      type: string
+      format: uri-reference
+      minLength: 1
+      description: "Identifies the context in which an event happened - be a non-empty `URI-reference` like:\n- URI with a DNS authority:\n  * https://github.com/cloudevents\n  * mailto:cncf-wg-serverless@lists.cncf.io\n- Universally-unique URN with a UUID:\n  * urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66\n- Application-specific identifier:\n  * /cloudevents/spec/pull/123\n  * 1-555-123-4567"
+      example: https://notificationSendServer12.supertelco.com
+    SinkCredential:
+      type: object
+      properties:
+        credentialType:
+          type: string
+          enum:
+          - PLAIN
+          - ACCESSTOKEN
+          - REFRESHTOKEN
+          description: The type of the credential. Only `ACCESSTOKEN` is supported so far.
+      discriminator:
+        propertyName: credentialType
+        mapping:
+          PLAIN: '#/components/schemas/PlainCredential'
+          ACCESSTOKEN: '#/components/schemas/AccessTokenCredential'
+          REFRESHTOKEN: '#/components/schemas/RefreshTokenCredential'
+      required:
+      - credentialType
+    Refund:
+      type: object
+      description: Information about a Refund resource.
+      required:
+      - refundId
+      - refundStatus
+      - refundCreationDate
+      - type
+      properties:
+        refundId:
+          type: string
+          description: Unique Identifier of the refund
+          example: AK234rfweSBuWGFUEWFGWEVWRV
+        refundStatus:
+          type: string
+          description: Specifies the refund status (`processing`, `denied`, `succeeded`).
+          example: processing
+        type:
+          type: string
+          description: 'Type of refund.
+
+            - `total` stands for a final refund, where whole amount is refunded so as it is not indicated by API Consumer. No more refunds are allowed for that `paymentId`.
+
+            - `partial` stands for a partial refund, whose amount is indicated by API Consumer. More refunds are allowed for that `paymentId`.'
+          enum:
+          - total
+          - partial
+        refundCreationDate:
+          type: string
+          format: date-time
+          description: Date time when the refund is created in server database. This is a technical information. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+        refundDate:
+          type: string
+          format: date-time
+          description: Date time when the refund is effectively performed. This is a business information. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+        reason:
+          type: string
+          description: Reason provided to request the refund. Optionally provided by the user or the merchant.
+        sink:
+          type: string
+          format: uri
+          pattern: ^https:\/\/.+$
+          description: The address to which events shall be delivered, using the HTTP protocol.
+          example: https://endpoint.example.com/sink
+      discriminator:
+        propertyName: type
+        mapping:
+          total: '#/components/schemas/TotalRefund'
+          partial: '#/components/schemas/PartialRefund'
+  headers:
+    X-Total-Count:
+      description: Total number of items matching criteria
+      schema:
+        type: integer
+    x-correlator:
+      description: Correlation id for the different services
+      schema:
+        $ref: '#/components/schemas/XCorrelator'
+    Content-Last-Key:
+      description: Indicates the index of the last result provided in the response
+      schema:
+        type: integer
+  parameters:
+    Page:
+      name: page
+      in: query
+      description: Requested index to indicate the start of the resources to be provided in the response
+      schema:
+        type: integer
+        default: 1
+    PerPage:
+      name: perPage
+      in: query
+      description: Requested number of resources to be provided in response
+      schema:
+        type: integer
+        default: 10
+    MerchantIdentifier:
+      description: Merchant identifier to filter the results
+      in: query
+      name: merchantIdentifier
+      required: false
+      schema:
+        type: string
+    Order:
+      description: Used to return the sorted results in descending (default) or ascending order, based on `refundCreationDate` property
+      in: query
+      name: order
+      required: false
+      schema:
+        default: desc
+        enum:
+        - desc
+        - asc
+        type: string
+    EndRefundCreationDate:
+      description: End `refundCreationDate` for running the query. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+      in: query
+      name: refundCreationDate.lte
+      required: false
+      schema:
+        format: date-time
+        type: string
+    x-correlator:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        $ref: '#/components/schemas/XCorrelator'
+    StartRefundCreationDate:
+      description: Initial `refundCreationDate` for running the query. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+      in: query
+      name: refundCreationDate.gte
+      required: false
+      schema:
+        format: date-time
+        type: string
+    RefundStatus:
+      description: List of refund status to be considered for the query
+      in: query
+      name: refundStatus
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+          - processing
+          - denied
+          - succeeded
   securitySchemes:
     openId:
       type: openIdConnect

@@ -291,88 +291,27 @@ paths:
             X-Date:
               $ref: '#/components/headers/X-Date'
 components:
-  parameters:
-    X-Date:
-      name: X-Date
-      in: header
-      description: Header parameter to indicate the date and time that the message was originated. It is used for basic message integrity checks, to ensure the request is not stale. Note that the header was previously referenced as 'Date' in version 1.0 of the Mobile Money API.
-      required: false
-      schema:
-        type: string
-        format: date-time
-    X-CorrelationID:
-      name: X-CorrelationID
-      in: header
-      description: Header parameter to uniquely identify the request. Must be supplied as a UUID.
-      required: false
-      schema:
-        type: string
-        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-    X-API-Key:
-      name: X-API-Key
-      in: header
-      description: Used to pass pre-shared client's API key to the server.
-      required: false
-      schema:
-        type: string
-    X-Content-Hash:
-      name: X-Content-Hash
-      in: header
-      description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
-      required: false
-      schema:
-        type: string
-    serverCorrelationId:
-      name: serverCorrelationId
-      in: path
-      description: Path variable to uniquely identify a request state. Must be supplied as a UUID.
-      required: true
-      schema:
-        type: string
-        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-    X-User-Credential-2:
-      name: X-User-Credential-2
-      in: header
-      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
-      required: false
-      schema:
-        type: string
-    clientCorrelationId:
-      name: clientCorrelationId
-      in: path
-      description: Path variable to uniquely identify a response object. Must be supplied as a UUID.
-      required: true
-      schema:
-        type: string
-        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-    X-Client-Id:
-      name: X-Client-Id
-      in: header
-      description: Used to pass pre-shared client's identifier to the server.
-      required: false
-      schema:
-        type: string
-        maxLength: 256
-    X-User-Credential-1:
-      name: X-User-Credential-1
-      in: header
-      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
-      required: false
-      schema:
-        type: string
-    X-Channel:
-      name: X-Channel
-      in: header
-      description: String containing the channel that was used to originate the request. For example USSD, Web, App.
-      required: false
-      schema:
-        type: string
-        maxLength: 256
   schemas:
-    plannedRestorationTime:
-      type: string
-      format: date-time
-      description: Where the planned restoration time is known (e.g. scheduled maintenance), it can be provided in this field.
+    metadata:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Identifies the type of additional field.
+          minLength: 1
+          maxLength: 256
+        value:
+          type: string
+          description: Identifies the value of the additional field.
+          minLength: 1
+          maxLength: 256
+    delay:
+      type: number
+      format: int64
+      description: The anticipated processing delay in milliseconds.
     requestGenericPatch:
       type: object
       required:
@@ -394,6 +333,72 @@ components:
           description: Specify the value of the field to be updated or added.
           type: string
           maxLength: 256
+    responseHeartbeat:
+      type: object
+      required:
+      - serviceStatus
+      properties:
+        serviceStatus:
+          $ref: '#/components/schemas/serviceStatus'
+        delay:
+          $ref: '#/components/schemas/delay'
+        plannedRestorationTime:
+          $ref: '#/components/schemas/plannedRestorationTime'
+    metadataArray:
+      type: array
+      description: A collection of key/value pairs. These can be used to populate additional properties that describe administrative information regarding the resource.
+      items:
+        $ref: '#/components/schemas/metadata'
+      maxItems: 20
+    requestStateObject:
+      type: object
+      required:
+      - notificationMethod
+      - serverCorrelationId
+      - status
+      properties:
+        serverCorrelationId:
+          type: string
+          description: A unique identifier issued by the provider to enable the client to identify the RequestState resource on subsequent polling requests. Must be supplied as a UUID.
+          minLength: 1
+          maxLength: 256
+          pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+        objectReference:
+          type: string
+          description: Provides a reference to the subject resource, e.g. transaction reference.
+          minLength: 0
+          maxLength: 256
+        status:
+          type: string
+          enum:
+          - pending
+          - completed
+          - failed
+          description: Indicates the status of the request.
+        notificationMethod:
+          type: string
+          enum:
+          - callback
+          - polling
+          description: Indicates whether a callback will be issued or whether the client will need to poll.
+        pendingReason:
+          type: string
+          description: A textual description that can be provided to describe the reason for a pending status.
+          minLength: 0
+          maxLength: 256
+        expiryTime:
+          type: string
+          format: date-time
+          description: Indicate the time by which the provider will fail the request if completion criteria have not been met. For an example, a debit party failing to authorise within the allowed period.
+        pollLimit:
+          type: number
+          format: int32
+          description: Indicates the number of poll attempts for the given requeststate resource that will be allowed by the provider.
+          exclusiveMinimum: 0
+        error:
+          description: If the asynchronous processing failed, details of the error will be returned here.
+          allOf:
+          - $ref: '#/components/schemas/errorObject'
     errorObject:
       type: object
       required:
@@ -465,55 +470,6 @@ components:
           description: Diagnostic information in the form of key/value pairs relating to the error.
           allOf:
           - $ref: '#/components/schemas/metadataArray'
-    requestStateObject:
-      type: object
-      required:
-      - notificationMethod
-      - serverCorrelationId
-      - status
-      properties:
-        serverCorrelationId:
-          type: string
-          description: A unique identifier issued by the provider to enable the client to identify the RequestState resource on subsequent polling requests. Must be supplied as a UUID.
-          minLength: 1
-          maxLength: 256
-          pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-        objectReference:
-          type: string
-          description: Provides a reference to the subject resource, e.g. transaction reference.
-          minLength: 0
-          maxLength: 256
-        status:
-          type: string
-          enum:
-          - pending
-          - completed
-          - failed
-          description: Indicates the status of the request.
-        notificationMethod:
-          type: string
-          enum:
-          - callback
-          - polling
-          description: Indicates whether a callback will be issued or whether the client will need to poll.
-        pendingReason:
-          type: string
-          description: A textual description that can be provided to describe the reason for a pending status.
-          minLength: 0
-          maxLength: 256
-        expiryTime:
-          type: string
-          format: date-time
-          description: Indicate the time by which the provider will fail the request if completion criteria have not been met. For an example, a debit party failing to authorise within the allowed period.
-        pollLimit:
-          type: number
-          format: int32
-          description: Indicates the number of poll attempts for the given requeststate resource that will be allowed by the provider.
-          exclusiveMinimum: 0
-        error:
-          description: If the asynchronous processing failed, details of the error will be returned here.
-          allOf:
-          - $ref: '#/components/schemas/errorObject'
     responseResponse:
       type: object
       required:
@@ -521,43 +477,6 @@ components:
       properties:
         link:
           $ref: '#/components/schemas/link'
-    metadataArray:
-      type: array
-      description: A collection of key/value pairs. These can be used to populate additional properties that describe administrative information regarding the resource.
-      items:
-        $ref: '#/components/schemas/metadata'
-      maxItems: 20
-    responseHeartbeat:
-      type: object
-      required:
-      - serviceStatus
-      properties:
-        serviceStatus:
-          $ref: '#/components/schemas/serviceStatus'
-        delay:
-          $ref: '#/components/schemas/delay'
-        plannedRestorationTime:
-          $ref: '#/components/schemas/plannedRestorationTime'
-    metadata:
-      type: object
-      required:
-      - key
-      - value
-      properties:
-        key:
-          type: string
-          description: Identifies the type of additional field.
-          minLength: 1
-          maxLength: 256
-        value:
-          type: string
-          description: Identifies the value of the additional field.
-          minLength: 1
-          maxLength: 256
-    delay:
-      type: number
-      format: int64
-      description: The anticipated processing delay in milliseconds.
     serviceStatus:
       type: string
       description: Provides the status of the requested service.
@@ -577,6 +496,94 @@ components:
       description: Provides a URL to the resource.
       minLength: 1
       maxLength: 256
+    plannedRestorationTime:
+      type: string
+      format: date-time
+      description: Where the planned restoration time is known (e.g. scheduled maintenance), it can be provided in this field.
+  parameters:
+    X-Date:
+      name: X-Date
+      in: header
+      description: Header parameter to indicate the date and time that the message was originated. It is used for basic message integrity checks, to ensure the request is not stale. Note that the header was previously referenced as 'Date' in version 1.0 of the Mobile Money API.
+      required: false
+      schema:
+        type: string
+        format: date-time
+    X-Content-Hash:
+      name: X-Content-Hash
+      in: header
+      description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
+      required: false
+      schema:
+        type: string
+    X-Client-Id:
+      name: X-Client-Id
+      in: header
+      description: Used to pass pre-shared client's identifier to the server.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    serverCorrelationId:
+      name: serverCorrelationId
+      in: path
+      description: Path variable to uniquely identify a request state. Must be supplied as a UUID.
+      required: true
+      schema:
+        type: string
+        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+    X-User-Credential-2:
+      name: X-User-Credential-2
+      in: header
+      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    X-CorrelationID:
+      name: X-CorrelationID
+      in: header
+      description: Header parameter to uniquely identify the request. Must be supplied as a UUID.
+      required: false
+      schema:
+        type: string
+        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+    X-API-Key:
+      name: X-API-Key
+      in: header
+      description: Used to pass pre-shared client's API key to the server.
+      required: false
+      schema:
+        type: string
+    clientCorrelationId:
+      name: clientCorrelationId
+      in: path
+      description: Path variable to uniquely identify a response object. Must be supplied as a UUID.
+      required: true
+      schema:
+        type: string
+        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+    X-Channel:
+      name: X-Channel
+      in: header
+      description: String containing the channel that was used to originate the request. For example USSD, Web, App.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    X-User-Credential-1:
+      name: X-User-Credential-1
+      in: header
+      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+  headers:
+    X-Date:
+      required: false
+      description: The date and time that the response message was sent.
+      schema:
+        type: string
+        format: date-time
   requestBodies:
     genericPatch:
       required: true
@@ -585,10 +592,3 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/requestGenericPatchArray'
-  headers:
-    X-Date:
-      required: false
-      description: The date and time that the response message was sent.
-      schema:
-        type: string
-        format: date-time

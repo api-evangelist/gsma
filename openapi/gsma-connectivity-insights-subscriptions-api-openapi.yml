@@ -245,13 +245,299 @@ paths:
         '503':
           $ref: '#/components/responses/Generic503'
 components:
+  responses:
+    Generic429:
+      description: Too Many Requests
+      headers:
+        X-Correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_429_QUOTA_EXCEEDED:
+              description: Request is rejected due to exceeding a business quota limit
+              value:
+                status: 429
+                code: QUOTA_EXCEEDED
+                message: Either out of resource quota or reaching rate limiting.
+            GENERIC_429_TOO_MANY_REQUESTS:
+              description: API Server request limit is overpassed
+              value:
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Either out of resource quota or reaching rate limiting.
+    Generic409:
+      description: Conflict
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_409_ABORTED:
+              description: Concurreny of processes of the same nature/scope
+              value:
+                status: 409
+                code: ABORTED
+                message: Concurrency conflict.
+            GENERIC_409_ALREADY_EXISTS:
+              description: Trying to create an existing resource
+              value:
+                status: 409
+                code: ALREADY_EXISTS
+                message: The resource that a client tried to create already exists.
+    Generic415:
+      description: Unsupported Media Type
+      headers:
+        X-Correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_415_UNSUPPORTED_MEDIA_TYPE:
+              description: Payload format of the request is in an unsupported format by the Server. Should not happen
+              value:
+                status: 415
+                code: UNSUPPORTED_MEDIA_TYPE
+                message: The server refuses to accept the request because the payload format is in an unsupported format
+    SubscriptionIdRequired:
+      description: Problem with the client request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            Generic400:
+              summary: Schema validation failed
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param
+            subscriptionIdRequired:
+              summary: subscription id is required
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: 'Expected property is missing: subscriptionId'
+    Generic404:
+      description: Resource Not Found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
+    Generic400:
+      description: Problem with the client request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+    Generic503:
+      description: Service unavailable. Typically the server is down.
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_503_UNAVAILABLE:
+              description: Service is not available. Temporary situation usually related to maintenance process in the server side
+              value:
+                status: 503
+                code: UNAVAILABLE
+                message: Service Unavailable.
+    CreateSubscriptionUnprocessableEntity422:
+      description: Unprocessable Entity
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_422_MULTIEVENT_SUBSCRIPTION_NOT_SUPPORTED:
+              value:
+                status: 422
+                code: MULTIEVENT_SUBSCRIPTION_NOT_SUPPORTED
+                message: Multi event types subscription not managed
+            GENERIC_422_DEVICE_IDENTIFIERS_MISMATCH:
+              description: Inconsistency between device identifiers not pointing to the same device
+              value:
+                status: 422
+                code: DEVICE_IDENTIFIERS_MISMATCH
+                message: Provided device identifiers are not consistent.
+            GENERIC_422_DEVICE_NOT_APPLICABLE:
+              description: Service is not available for the provided device
+              value:
+                status: 422
+                code: DEVICE_NOT_APPLICABLE
+                message: The service is not available for the provided device.
+    Generic410:
+      description: Gone
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_410_GONE:
+              description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
+              value:
+                status: 410
+                code: GONE
+                message: Access to the target resource is no longer available.
+    Generic401:
+      description: Authentication problem with the client request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials.
+            GENERIC_401_AUTHENTICATION_REQUIRED:
+              description: New authentication is needed, authentication is no longer valid
+              value:
+                status: 401
+                code: AUTHENTICATION_REQUIRED
+                message: New authentication is required.
+    Generic500:
+      description: Server error
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_500_INTERNAL:
+              description: Problem in Server side. Regular Server Exception
+              value:
+                status: 500
+                code: INTERNAL
+                message: Unknown server error. Typically a server bug.
+    Generic403:
+      description: Client does not have sufficient permission
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+    SubscriptionPermissionDenied403:
+      description: Client does not have sufficient permission
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+            GENERIC_403_INVALID_TOKEN_CONTEXT:
+              description: Reflect some inconsistency between information in some field of the API and the related OAuth2 Token
+              value:
+                status: 403
+                code: INVALID_TOKEN_CONTEXT
+                message: '{{field}} is not consistent with access token.'
+            GENERIC_403_SUBSCRIPTION_MISMATCH:
+              value:
+                status: 403
+                code: SUBSCRIPTION_MISMATCH
+                message: Inconsistent access token for requested events subscription
+    CreateSubscriptionBadRequest400:
+      description: Problem with the client request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+            GENERIC_400_OUT_OF_RANGE:
+              description: Out of Range. Specific Syntax Exception used when a given field has a pre-defined range or a invalid filter criteria combination is requested
+              value:
+                status: 400
+                code: OUT_OF_RANGE
+                message: Client specified an invalid range.
+            GENERIC_400_INVALID_PROTOCOL:
+              value:
+                status: 400
+                code: INVALID_PROTOCOL
+                message: Only HTTP is supported
+            GENERIC_400_INVALID_CREDENTIAL:
+              value:
+                status: 400
+                code: INVALID_CREDENTIAL
+                message: Only Access token is supported
+            GENERIC_400_INVALID_TOKEN:
+              value:
+                status: 400
+                code: INVALID_TOKEN
+                message: Only bearer token is supported
   parameters:
-    x-correlator:
-      name: x-correlator
-      in: header
-      description: Correlation id for the different services
-      schema:
-        type: string
     SubscriptionId:
       name: subscriptionId
       in: path
@@ -263,54 +549,26 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/SubscriptionId'
+    x-correlator:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        type: string
   schemas:
-    EventTypeNotification:
+    Protocol:
       type: string
-      description: 'event-type - Event triggered when an event-type event occurred
-
-        subscription-ends: Event triggered when the subscription ends
-
-        '
       enum:
-      - org.camaraproject.connectivity-insights-subscriptions.v0.network-quality
-      - org.camaraproject.connectivity-insights-subscriptions.v0.subscription-ends
-    SubscriptionId:
-      type: string
-      description: 'The unique identifier of the subscription in the scope of the
-
-        subscription manager. When this information is contained within
-
-        an event notification, this concept SHALL be referred as
-
-        `subscriptionId` as per
-
-        [Commonalities Event Notification Model](https://github.com/camaraproject/Commonalities/blob/main/documentation/API-design-guidelines.md#122-event-notification).
+      - HTTP
+      - MQTT3
+      - MQTT5
+      - AMQP
+      - NATS
+      - KAFKA
+      description: 'Identifier of a delivery protocol. Only HTTP is allowed for now
 
         '
-      example: qs15-h556-rt89-1298
-    DateTime:
-      type: string
-      format: date-time
-      description: 'Timestamp of when the occurrence happened. Must adhere to RFC 3339.
-
-        '
-      example: '2018-04-05T17:31:00Z'
-    NetworkAccessIdentifier:
-      description: 'A public identifier addressing a subscription in a mobile network. In
-
-        3GPP terminology, it corresponds to the GPSI formatted with the
-
-        External Identifier ({Local Identifier}@{Domain Identifier}). Unlike
-
-        the telephone number, the network access identifier is not subjected
-
-        to portability ruling in force, and is individually managed by each
-
-        operator.
-
-        '
-      type: string
-      example: 123456789@domain.com
+      example: HTTP
     ErrorInfo:
       type: object
       description: Error information
@@ -328,173 +586,6 @@ components:
         message:
           type: string
           description: Detailed error description
-    CloudEvent:
-      description: The Cloud-Event used for the callback.
-      required:
-      - id
-      - source
-      - specversion
-      - type
-      - time
-      properties:
-        id:
-          type: string
-          description: 'identifier of this event, that must be unique in the source context.
-
-            '
-        source:
-          $ref: '#/components/schemas/Source'
-        type:
-          $ref: '#/components/schemas/EventTypeNotification'
-        specversion:
-          type: string
-          description: "Version of the specification to which this event conforms (must be\n 1.0 if it conforms to cloudevents 1.0.2 version)\n"
-          enum:
-          - '1.0'
-        datacontenttype:
-          type: string
-          description: '''media-type that describes the event payload encoding,
-
-            must be "application/json" for CAMARA APIs''
-
-            '
-          enum:
-          - application/json
-        data:
-          $ref: '#/components/schemas/NetworkQualityInsight'
-        time:
-          $ref: '#/components/schemas/DateTime'
-      discriminator:
-        propertyName: type
-        mapping:
-          org.camaraproject.connectivity-insights-subscriptions.v0.network-quality: '#/components/schemas/EventNetworkQuality'
-          org.camaraproject.connectivityinsights.v0.eventSubscriptionEnds: '#/components/schemas/EventSubscriptionEnds'
-    Protocol:
-      type: string
-      enum:
-      - HTTP
-      - MQTT3
-      - MQTT5
-      - AMQP
-      - NATS
-      - KAFKA
-      description: 'Identifier of a delivery protocol. Only HTTP is allowed for now
-
-        '
-      example: HTTP
-    SubscriptionRequest:
-      description: The request for creating a event-type event subscription
-      type: object
-      required:
-      - sink
-      - protocol
-      - config
-      - types
-      properties:
-        protocol:
-          $ref: '#/components/schemas/Protocol'
-        sink:
-          type: string
-          format: url
-          description: 'The address to which events shall be delivered using the selected
-
-            protocol.
-
-            '
-          example: https://endpoint.example.com/sink
-        sinkCredential:
-          $ref: '#/components/schemas/SinkCredential'
-        types:
-          description: 'Camara Event types eligible to be delivered by this subscription.
-
-            Note: for the Commonalities meta-release v0.4 we enforce to have
-
-            only event type per subscription then for following meta-release
-
-            use of array MUST be decided at API project level.
-
-            '
-          type: array
-          items:
-            type: string
-            example: org.camaraproject.connectivity-insights-subscriptions.v0.network-quality
-        config:
-          $ref: '#/components/schemas/Config'
-    Config:
-      description: 'Implementation-specific configuration parameters needed by the
-
-        subscription manager for acquiring events.
-
-        In CAMARA we have predefined attributes like `subscriptionExpireTime`,
-
-        `subscriptionMaxEvents`, `initialEvent`
-
-        Specific event type attributes must be defined in `subscriptionDetail`
-
-        Note: if a request is performed for several event type, all subscribed
-
-        event will use same `config` parameters.
-
-        '
-      type: object
-      required:
-      - subscriptionDetail
-      properties:
-        subscriptionDetail:
-          $ref: '#/components/schemas/CreateSubscriptionDetail'
-        subscriptionExpireTime:
-          type: string
-          format: date-time
-          example: '2023-01-17T13:18:23.682Z'
-          description: 'The subscription expiration time (in date-time format) requested by
-
-            the API consumer. Up to API project decision to keep it.
-
-            '
-        subscriptionMaxEvents:
-          type: integer
-          description: 'Identifies the maximum number of event reports to be generated
-
-            (>=1) requested by the API consumer - Once this number is reached,
-
-            the subscription ends. Up to API project decision to keep it.
-
-            '
-          minimum: 1
-          example: 5
-        initialEvent:
-          type: boolean
-          description: 'Set to `true` by API consumer if consumer wants to get an event as
-
-            soon as the subscription is created and current situation reflects
-
-            event request.
-
-            Example: Consumer request Roaming event. If consumer sets
-
-            initialEvent to true and device is in roaming situation, an event
-
-            is triggered Up to API project decision to keep it.
-
-            '
-    DeviceIpv6Address:
-      description: 'The device should be identified by the observed IPv6 address, or by any
-
-        single IPv6 address from within the subnet allocated to the device
-
-        (e.g. adding ::0 to the /64 prefix).
-
-
-        The session shall apply to all IP flows between the device subnet and
-
-        the specified application server, unless further restricted by the
-
-        optional parameters devicePorts or applicationServerPorts.
-
-        '
-      type: string
-      format: ipv6
-      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
     DeviceIpv4Addr:
       type: object
       description: 'The device should be identified by either the public (observed) IP
@@ -548,10 +639,115 @@ components:
       example:
         publicAddress: 84.125.93.10
         publicPort: 59765
-    ApplicationProfileId:
-      description: Identifier for the Application Profile
+    DateTime:
       type: string
-      format: uuid
+      format: date-time
+      description: 'Timestamp of when the occurrence happened. Must adhere to RFC 3339.
+
+        '
+      example: '2018-04-05T17:31:00Z'
+    SubscriptionRequest:
+      description: The request for creating a event-type event subscription
+      type: object
+      required:
+      - sink
+      - protocol
+      - config
+      - types
+      properties:
+        protocol:
+          $ref: '#/components/schemas/Protocol'
+        sink:
+          type: string
+          format: url
+          description: 'The address to which events shall be delivered using the selected
+
+            protocol.
+
+            '
+          example: https://endpoint.example.com/sink
+        sinkCredential:
+          $ref: '#/components/schemas/SinkCredential'
+        types:
+          description: 'Camara Event types eligible to be delivered by this subscription.
+
+            Note: for the Commonalities meta-release v0.4 we enforce to have
+
+            only event type per subscription then for following meta-release
+
+            use of array MUST be decided at API project level.
+
+            '
+          type: array
+          items:
+            type: string
+            example: org.camaraproject.connectivity-insights-subscriptions.v0.network-quality
+        config:
+          $ref: '#/components/schemas/Config'
+    CloudEvent:
+      description: The Cloud-Event used for the callback.
+      required:
+      - id
+      - source
+      - specversion
+      - type
+      - time
+      properties:
+        id:
+          type: string
+          description: 'identifier of this event, that must be unique in the source context.
+
+            '
+        source:
+          $ref: '#/components/schemas/Source'
+        type:
+          $ref: '#/components/schemas/EventTypeNotification'
+        specversion:
+          type: string
+          description: "Version of the specification to which this event conforms (must be\n 1.0 if it conforms to cloudevents 1.0.2 version)\n"
+          enum:
+          - '1.0'
+        datacontenttype:
+          type: string
+          description: '''media-type that describes the event payload encoding,
+
+            must be "application/json" for CAMARA APIs''
+
+            '
+          enum:
+          - application/json
+        data:
+          $ref: '#/components/schemas/NetworkQualityInsight'
+        time:
+          $ref: '#/components/schemas/DateTime'
+      discriminator:
+        propertyName: type
+        mapping:
+          org.camaraproject.connectivity-insights-subscriptions.v0.network-quality: '#/components/schemas/EventNetworkQuality'
+          org.camaraproject.connectivityinsights.v0.eventSubscriptionEnds: '#/components/schemas/EventSubscriptionEnds'
+    SingleIpv4Addr:
+      description: A single IPv4 address with no subnet mask
+      type: string
+      format: ipv4
+      example: 84.125.93.10
+    DeviceIpv6Address:
+      description: 'The device should be identified by the observed IPv6 address, or by any
+
+        single IPv6 address from within the subnet allocated to the device
+
+        (e.g. adding ::0 to the /64 prefix).
+
+
+        The session shall apply to all IP flows between the device subnet and
+
+        the specified application server, unless further restricted by the
+
+        optional parameters devicePorts or applicationServerPorts.
+
+        '
+      type: string
+      format: ipv6
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
     ApplicationServer:
       description: 'A server hosting backend applications to deliver some business logic to
 
@@ -580,6 +776,75 @@ components:
         ipv6Address:
           $ref: '#/components/schemas/ApplicationServerIpv6Address'
       minProperties: 1
+    Port:
+      description: TCP or UDP port number
+      type: integer
+      minimum: 0
+      maximum: 65535
+    Device:
+      description: 'End-user equipment able to connect to a mobile network. Examples of
+
+        devices include smartphones or IoT sensors/actuators.
+
+
+        The developer can choose to provide the below specified device
+
+        identifiers:
+
+
+        * `ipv4Address`
+
+        * `ipv6Address`
+
+        * `phoneNumber`
+
+        * `networkAccessIdentifier`
+
+
+        NOTE1: the MNO might support only a subset of these options. The
+
+        API invoker can provide multiple identifiers to be compatible across
+
+        different MNOs. In this case the identifiers MUST belong to the same
+
+        device.
+
+        NOTE2: for the Commonalities release v0.4, we are enforcing that the
+
+        networkAccessIdentifier is only part of the schema for future-proofing,
+
+        and CAMARA does not currently allow its use. After the CAMARA
+
+        meta-release work is concluded and the relevant issues are resolved,
+
+        its use will need to be explicitly documented in the guidelines.
+
+        '
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+        networkAccessIdentifier:
+          $ref: '#/components/schemas/NetworkAccessIdentifier'
+        ipv4Address:
+          $ref: '#/components/schemas/DeviceIpv4Addr'
+        ipv6Address:
+          $ref: '#/components/schemas/DeviceIpv6Address'
+      minProperties: 1
+    ApplicationProfileId:
+      description: Identifier for the Application Profile
+      type: string
+      format: uuid
+    EventTypeNotification:
+      type: string
+      description: 'event-type - Event triggered when an event-type event occurred
+
+        subscription-ends: Event triggered when the subscription ends
+
+        '
+      enum:
+      - org.camaraproject.connectivity-insights-subscriptions.v0.network-quality
+      - org.camaraproject.connectivity-insights-subscriptions.v0.subscription-ends
     AdditionalKpis:
       description: additional information about connectivity quality
       type: object
@@ -607,32 +872,84 @@ components:
           - 5G-NSA
           - 4G
           - 3G
-    NetworkQualityInsight:
-      type: object
-      description: 'the network''s confidence level at being able to meet the network
+    Source:
+      type: string
+      format: uri-reference
+      minLength: 1
+      description: "Identifies the context in which an event happened, as a non-empty\n`URI-reference` like:\n- URI with a DNS authority:\n  * https://github.com/cloudevents\n  * mailto:cncf-wg-serverless@lists.cncf.io\n- Universally-unique URN with a UUID:\n  * urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66\n- Application-specific identifier:\n  * /cloudevents/spec/pull/123\n  * 1-555-123-4567\n"
+      example: https://notificationSendServer12.supertelco.com
+    SubscriptionAsync:
+      description: 'Response for a event-type subscription request managed asynchronously
 
-        demands of a given policy for a given terminal device.
+        (Creation or Deletion)
 
         '
+      type: object
       properties:
-        papplicationProfileId:
-          $ref: '#/components/schemas/ApplicationProfileId'
-        packetDelayBudget:
-          $ref: '#/components/schemas/PolicyFulfillmentConfidence'
-        targetMinDownstreamRate:
-          $ref: '#/components/schemas/PolicyFulfillmentConfidence'
-        targetMinUpstreamRate:
-          $ref: '#/components/schemas/PolicyFulfillmentConfidence'
-        packetlossErrorRate:
-          $ref: '#/components/schemas/PolicyFulfillmentConfidence'
-        jitter:
-          $ref: '#/components/schemas/PolicyFulfillmentConfidence'
-        additionalKpis:
-          $ref: '#/components/schemas/AdditionalKpis'
-    ApplicationServerIpv6Address:
+        subscriptionId:
+          $ref: '#/components/schemas/SubscriptionId'
+    PolicyFulfillmentConfidence:
       type: string
-      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
-      description: "IPv6 address may be specified in form <address/mask> as:\n  - address - The /128 subnet is optional for single addresses:\n    - 2001:db8:85a3:8d3:1319:8a2e:370:7344\n    - 2001:db8:85a3:8d3:1319:8a2e:370:7344/128\n  - address/mask - an IP v6 number with a mask:\n    - 2001:db8:85a3:8d3::0/64\n    - 2001:db8:85a3:8d3::/64\n"
+      description: 'a plain-language indicator of how confident the network is to meet a
+
+        given network demand.
+
+        '
+      enum:
+      - meets the application requirements
+      - unable to meet the application requirements
+    PortsSpec:
+      description: Specification of several TCP or UDP ports
+      type: object
+      minProperties: 1
+      properties:
+        ranges:
+          description: Range of TCP or UDP ports
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+            - from
+            - to
+            properties:
+              from:
+                $ref: '#/components/schemas/Port'
+              to:
+                $ref: '#/components/schemas/Port'
+        ports:
+          description: Array of TCP or UDP ports
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/Port'
+      example:
+        ranges:
+        - from: 5010
+          to: 5020
+        ports:
+        - 5060
+        - 5070
+    ApplicationServerIpv4Address:
+      type: string
+      example: 192.168.0.1/24
+      description: "IPv4 address may be specified in form <address/mask> as:\n  - address - an IPv4 number in dotted-quad form 1.2.3.4. Only this\n  exact IP number will match the flow control rule.\n  - address/mask - an IP number as above with a mask width of the\n  form 1.2.3.4/24.\n    In this case, all IP numbers from 1.2.3.0 to 1.2.3.255 will match.\n    The bit width MUST be valid for the IP version.\n"
+    NetworkAccessIdentifier:
+      description: 'A public identifier addressing a subscription in a mobile network. In
+
+        3GPP terminology, it corresponds to the GPSI formatted with the
+
+        External Identifier ({Local Identifier}@{Domain Identifier}). Unlike
+
+        the telephone number, the network access identifier is not subjected
+
+        to portability ruling in force, and is individually managed by each
+
+        operator.
+
+        '
+      type: string
+      example: 123456789@domain.com
     Subscription:
       description: Represents a event-type subscription.
       type: object
@@ -718,36 +1035,101 @@ components:
           AMQP: '#/components/schemas/AMQPSubscriptionResponse'
           NATS: '#/components/schemas/NATSSubscriptionResponse'
           KAFKA: '#/components/schemas/ApacheKafkaSubscriptionResponse'
-    Source:
-      type: string
-      format: uri-reference
-      minLength: 1
-      description: "Identifies the context in which an event happened, as a non-empty\n`URI-reference` like:\n- URI with a DNS authority:\n  * https://github.com/cloudevents\n  * mailto:cncf-wg-serverless@lists.cncf.io\n- Universally-unique URN with a UUID:\n  * urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66\n- Application-specific identifier:\n  * /cloudevents/spec/pull/123\n  * 1-555-123-4567\n"
-      example: https://notificationSendServer12.supertelco.com
-    SingleIpv4Addr:
-      description: A single IPv4 address with no subnet mask
-      type: string
-      format: ipv4
-      example: 84.125.93.10
-    Port:
-      description: TCP or UDP port number
-      type: integer
-      minimum: 0
-      maximum: 65535
-    SubscriptionAsync:
-      description: 'Response for a event-type subscription request managed asynchronously
+    PhoneNumber:
+      description: 'A public identifier addressing a telephone subscription. In mobile
 
-        (Creation or Deletion)
+        networks it corresponds to the MSISDN (Mobile Station International
+
+        Subscriber Directory Number). In order to be globally unique it has to
+
+        be formatted in international format, according to E.164 standard,
+
+        optionally prefixed with ''+''.
+
+        '
+      type: string
+      pattern: ^\+?[0-9]{5,15}$
+      example: '123456789'
+    Config:
+      description: 'Implementation-specific configuration parameters needed by the
+
+        subscription manager for acquiring events.
+
+        In CAMARA we have predefined attributes like `subscriptionExpireTime`,
+
+        `subscriptionMaxEvents`, `initialEvent`
+
+        Specific event type attributes must be defined in `subscriptionDetail`
+
+        Note: if a request is performed for several event type, all subscribed
+
+        event will use same `config` parameters.
 
         '
       type: object
+      required:
+      - subscriptionDetail
       properties:
-        subscriptionId:
-          $ref: '#/components/schemas/SubscriptionId'
-    ApplicationServerIpv4Address:
+        subscriptionDetail:
+          $ref: '#/components/schemas/CreateSubscriptionDetail'
+        subscriptionExpireTime:
+          type: string
+          format: date-time
+          example: '2023-01-17T13:18:23.682Z'
+          description: 'The subscription expiration time (in date-time format) requested by
+
+            the API consumer. Up to API project decision to keep it.
+
+            '
+        subscriptionMaxEvents:
+          type: integer
+          description: 'Identifies the maximum number of event reports to be generated
+
+            (>=1) requested by the API consumer - Once this number is reached,
+
+            the subscription ends. Up to API project decision to keep it.
+
+            '
+          minimum: 1
+          example: 5
+        initialEvent:
+          type: boolean
+          description: 'Set to `true` by API consumer if consumer wants to get an event as
+
+            soon as the subscription is created and current situation reflects
+
+            event request.
+
+            Example: Consumer request Roaming event. If consumer sets
+
+            initialEvent to true and device is in roaming situation, an event
+
+            is triggered Up to API project decision to keep it.
+
+            '
+    CreateSubscriptionDetail:
+      description: The detail of the requested event subscription
+      type: object
+      properties:
+        device:
+          $ref: '#/components/schemas/Device'
+        applicationServer:
+          $ref: '#/components/schemas/ApplicationServer'
+        applicationServerPorts:
+          description: 'A list of single ports or port ranges on the application server
+
+            '
+          allOf:
+          - $ref: '#/components/schemas/PortsSpec'
+        applicationProfileId:
+          $ref: '#/components/schemas/ApplicationProfileId'
+      required:
+      - device
+      - applicationProfileId
+    ApplicationServerIpv6Address:
       type: string
-      example: 192.168.0.1/24
-      description: "IPv4 address may be specified in form <address/mask> as:\n  - address - an IPv4 number in dotted-quad form 1.2.3.4. Only this\n  exact IP number will match the flow control rule.\n  - address/mask - an IP number as above with a mask width of the\n  form 1.2.3.4/24.\n    In this case, all IP numbers from 1.2.3.0 to 1.2.3.255 will match.\n    The bit width MUST be valid for the IP version.\n"
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+      description: "IPv6 address may be specified in form <address/mask> as:\n  - address - The /128 subnet is optional for single addresses:\n    - 2001:db8:85a3:8d3:1319:8a2e:370:7344\n    - 2001:db8:85a3:8d3:1319:8a2e:370:7344/128\n  - address/mask - an IP v6 number with a mask:\n    - 2001:db8:85a3:8d3::0/64\n    - 2001:db8:85a3:8d3::/64\n"
     SinkCredential:
       type: object
       description: 'A sink credential provides authentication or authorization information
@@ -769,424 +1151,42 @@ components:
           REFRESHTOKEN: '#/components/schemas/RefreshTokenCredential'
       required:
       - credentialType
-    CreateSubscriptionDetail:
-      description: The detail of the requested event subscription
+    NetworkQualityInsight:
       type: object
-      properties:
-        device:
-          $ref: '#/components/schemas/Device'
-        applicationServer:
-          $ref: '#/components/schemas/ApplicationServer'
-        applicationServerPorts:
-          description: 'A list of single ports or port ranges on the application server
+      description: 'the network''s confidence level at being able to meet the network
 
-            '
-          allOf:
-          - $ref: '#/components/schemas/PortsSpec'
-        applicationProfileId:
+        demands of a given policy for a given terminal device.
+
+        '
+      properties:
+        papplicationProfileId:
           $ref: '#/components/schemas/ApplicationProfileId'
-      required:
-      - device
-      - applicationProfileId
-    PhoneNumber:
-      description: 'A public identifier addressing a telephone subscription. In mobile
-
-        networks it corresponds to the MSISDN (Mobile Station International
-
-        Subscriber Directory Number). In order to be globally unique it has to
-
-        be formatted in international format, according to E.164 standard,
-
-        optionally prefixed with ''+''.
-
-        '
+        packetDelayBudget:
+          $ref: '#/components/schemas/PolicyFulfillmentConfidence'
+        targetMinDownstreamRate:
+          $ref: '#/components/schemas/PolicyFulfillmentConfidence'
+        targetMinUpstreamRate:
+          $ref: '#/components/schemas/PolicyFulfillmentConfidence'
+        packetlossErrorRate:
+          $ref: '#/components/schemas/PolicyFulfillmentConfidence'
+        jitter:
+          $ref: '#/components/schemas/PolicyFulfillmentConfidence'
+        additionalKpis:
+          $ref: '#/components/schemas/AdditionalKpis'
+    SubscriptionId:
       type: string
-      pattern: ^\+?[0-9]{5,15}$
-      example: '123456789'
-    PortsSpec:
-      description: Specification of several TCP or UDP ports
-      type: object
-      minProperties: 1
-      properties:
-        ranges:
-          description: Range of TCP or UDP ports
-          type: array
-          minItems: 1
-          items:
-            type: object
-            required:
-            - from
-            - to
-            properties:
-              from:
-                $ref: '#/components/schemas/Port'
-              to:
-                $ref: '#/components/schemas/Port'
-        ports:
-          description: Array of TCP or UDP ports
-          type: array
-          minItems: 1
-          items:
-            $ref: '#/components/schemas/Port'
-      example:
-        ranges:
-        - from: 5010
-          to: 5020
-        ports:
-        - 5060
-        - 5070
-    PolicyFulfillmentConfidence:
-      type: string
-      description: 'a plain-language indicator of how confident the network is to meet a
+      description: 'The unique identifier of the subscription in the scope of the
 
-        given network demand.
+        subscription manager. When this information is contained within
+
+        an event notification, this concept SHALL be referred as
+
+        `subscriptionId` as per
+
+        [Commonalities Event Notification Model](https://github.com/camaraproject/Commonalities/blob/main/documentation/API-design-guidelines.md#122-event-notification).
 
         '
-      enum:
-      - meets the application requirements
-      - unable to meet the application requirements
-    Device:
-      description: 'End-user equipment able to connect to a mobile network. Examples of
-
-        devices include smartphones or IoT sensors/actuators.
-
-
-        The developer can choose to provide the below specified device
-
-        identifiers:
-
-
-        * `ipv4Address`
-
-        * `ipv6Address`
-
-        * `phoneNumber`
-
-        * `networkAccessIdentifier`
-
-
-        NOTE1: the MNO might support only a subset of these options. The
-
-        API invoker can provide multiple identifiers to be compatible across
-
-        different MNOs. In this case the identifiers MUST belong to the same
-
-        device.
-
-        NOTE2: for the Commonalities release v0.4, we are enforcing that the
-
-        networkAccessIdentifier is only part of the schema for future-proofing,
-
-        and CAMARA does not currently allow its use. After the CAMARA
-
-        meta-release work is concluded and the relevant issues are resolved,
-
-        its use will need to be explicitly documented in the guidelines.
-
-        '
-      type: object
-      properties:
-        phoneNumber:
-          $ref: '#/components/schemas/PhoneNumber'
-        networkAccessIdentifier:
-          $ref: '#/components/schemas/NetworkAccessIdentifier'
-        ipv4Address:
-          $ref: '#/components/schemas/DeviceIpv4Addr'
-        ipv6Address:
-          $ref: '#/components/schemas/DeviceIpv6Address'
-      minProperties: 1
-  responses:
-    SubscriptionIdRequired:
-      description: Problem with the client request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            Generic400:
-              summary: Schema validation failed
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param
-            subscriptionIdRequired:
-              summary: subscription id is required
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: 'Expected property is missing: subscriptionId'
-    SubscriptionPermissionDenied403:
-      description: Client does not have sufficient permission
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
-            GENERIC_403_INVALID_TOKEN_CONTEXT:
-              description: Reflect some inconsistency between information in some field of the API and the related OAuth2 Token
-              value:
-                status: 403
-                code: INVALID_TOKEN_CONTEXT
-                message: '{{field}} is not consistent with access token.'
-            GENERIC_403_SUBSCRIPTION_MISMATCH:
-              value:
-                status: 403
-                code: SUBSCRIPTION_MISMATCH
-                message: Inconsistent access token for requested events subscription
-    Generic401:
-      description: Authentication problem with the client request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_401_UNAUTHENTICATED:
-              description: Request cannot be authenticated
-              value:
-                status: 401
-                code: UNAUTHENTICATED
-                message: Request not authenticated due to missing, invalid, or expired credentials.
-            GENERIC_401_AUTHENTICATION_REQUIRED:
-              description: New authentication is needed, authentication is no longer valid
-              value:
-                status: 401
-                code: AUTHENTICATION_REQUIRED
-                message: New authentication is required.
-    Generic503:
-      description: Service unavailable. Typically the server is down.
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_503_UNAVAILABLE:
-              description: Service is not available. Temporary situation usually related to maintenance process in the server side
-              value:
-                status: 503
-                code: UNAVAILABLE
-                message: Service Unavailable.
-    Generic415:
-      description: Unsupported Media Type
-      headers:
-        X-Correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_415_UNSUPPORTED_MEDIA_TYPE:
-              description: Payload format of the request is in an unsupported format by the Server. Should not happen
-              value:
-                status: 415
-                code: UNSUPPORTED_MEDIA_TYPE
-                message: The server refuses to accept the request because the payload format is in an unsupported format
-    CreateSubscriptionUnprocessableEntity422:
-      description: Unprocessable Entity
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_422_MULTIEVENT_SUBSCRIPTION_NOT_SUPPORTED:
-              value:
-                status: 422
-                code: MULTIEVENT_SUBSCRIPTION_NOT_SUPPORTED
-                message: Multi event types subscription not managed
-            GENERIC_422_DEVICE_IDENTIFIERS_MISMATCH:
-              description: Inconsistency between device identifiers not pointing to the same device
-              value:
-                status: 422
-                code: DEVICE_IDENTIFIERS_MISMATCH
-                message: Provided device identifiers are not consistent.
-            GENERIC_422_DEVICE_NOT_APPLICABLE:
-              description: Service is not available for the provided device
-              value:
-                status: 422
-                code: DEVICE_NOT_APPLICABLE
-                message: The service is not available for the provided device.
-    Generic500:
-      description: Server error
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_500_INTERNAL:
-              description: Problem in Server side. Regular Server Exception
-              value:
-                status: 500
-                code: INTERNAL
-                message: Unknown server error. Typically a server bug.
-    Generic429:
-      description: Too Many Requests
-      headers:
-        X-Correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_429_QUOTA_EXCEEDED:
-              description: Request is rejected due to exceeding a business quota limit
-              value:
-                status: 429
-                code: QUOTA_EXCEEDED
-                message: Either out of resource quota or reaching rate limiting.
-            GENERIC_429_TOO_MANY_REQUESTS:
-              description: API Server request limit is overpassed
-              value:
-                status: 429
-                code: TOO_MANY_REQUESTS
-                message: Either out of resource quota or reaching rate limiting.
-    Generic410:
-      description: Gone
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_410_GONE:
-              description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
-              value:
-                status: 410
-                code: GONE
-                message: Access to the target resource is no longer available.
-    Generic403:
-      description: Client does not have sufficient permission
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
-    CreateSubscriptionBadRequest400:
-      description: Problem with the client request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_400_INVALID_ARGUMENT:
-              description: Invalid Argument. Generic Syntax Exception
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param.
-            GENERIC_400_OUT_OF_RANGE:
-              description: Out of Range. Specific Syntax Exception used when a given field has a pre-defined range or a invalid filter criteria combination is requested
-              value:
-                status: 400
-                code: OUT_OF_RANGE
-                message: Client specified an invalid range.
-            GENERIC_400_INVALID_PROTOCOL:
-              value:
-                status: 400
-                code: INVALID_PROTOCOL
-                message: Only HTTP is supported
-            GENERIC_400_INVALID_CREDENTIAL:
-              value:
-                status: 400
-                code: INVALID_CREDENTIAL
-                message: Only Access token is supported
-            GENERIC_400_INVALID_TOKEN:
-              value:
-                status: 400
-                code: INVALID_TOKEN
-                message: Only bearer token is supported
-    Generic400:
-      description: Problem with the client request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_400_INVALID_ARGUMENT:
-              description: Invalid Argument. Generic Syntax Exception
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param.
-    Generic404:
-      description: Resource Not Found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_404_NOT_FOUND:
-              description: Resource is not found
-              value:
-                status: 404
-                code: NOT_FOUND
-                message: The specified resource is not found.
-    Generic409:
-      description: Conflict
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_409_ABORTED:
-              description: Concurreny of processes of the same nature/scope
-              value:
-                status: 409
-                code: ABORTED
-                message: Concurrency conflict.
-            GENERIC_409_ALREADY_EXISTS:
-              description: Trying to create an existing resource
-              value:
-                status: 409
-                code: ALREADY_EXISTS
-                message: The resource that a client tried to create already exists.
+      example: qs15-h556-rt89-1298
   headers:
     x-correlator:
       description: Correlation id for the different services

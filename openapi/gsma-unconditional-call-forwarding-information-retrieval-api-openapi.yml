@@ -74,56 +74,7 @@ paths:
         '503':
           $ref: '#/components/responses/Generic503'
 components:
-  schemas:
-    ErrorInfo:
-      description: error information
-      type: object
-      required:
-      - status
-      - code
-      - message
-      properties:
-        status:
-          type: integer
-          description: HTTP status code returned along with this error response
-        code:
-          type: string
-          description: Code given to this error
-        message:
-          type: string
-          description: Detailed error description
-    CreateCallForwardingSignal:
-      description: resource containing the phone number (PhoneNumber) regarding which the Call Forwarding Service must be checked
-      type: object
-      properties:
-        phoneNumber:
-          $ref: '#/components/schemas/PhoneNumber'
-    PhoneNumber:
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
-      type: string
-      pattern: ^\+[1-9][0-9]{4,14}$
-      example: '+123456789'
-    UnconditionalCallForwardingSignal:
-      description: resource containing the information about the Unconditional Call Forwarding Service for the given phone number (PhoneNumber)
-      type: object
-      properties:
-        active:
-          type: boolean
-          description: Indicates if the unconditional call forwarding service is active.
   responses:
-    Generic500:
-      description: Server error
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 500
-            code: INTERNAL
-            message: Server error
     Generic429:
       description: Too Many Requests
       headers:
@@ -146,8 +97,8 @@ components:
                 status: 429
                 code: TOO_MANY_REQUESTS
                 message: Either out of resource quota or reaching rate limiting.
-    Generic403:
-      description: Client does not have sufficient permission
+    Generic504:
+      description: Request time exceeded. If it happens repeatedly, consider reducing the request complexity
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -155,17 +106,10 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            PermissionDenied:
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action
-            InvalidTokenContext:
-              value:
-                status: 403
-                code: INVALID_TOKEN_CONTEXT
-                message: PhoneNumber parameter doesn't match the value from the access token context
+          example:
+            status: 504
+            code: TIMEOUT
+            message: Request timeout exceeded. Try later
     Generic401:
       description: Authentication problem with the client request
       headers:
@@ -179,35 +123,6 @@ components:
             status: 401
             code: UNAUTHENTICATED
             message: Request not authenticated due to missing, invalid, or expired credentials
-    Generic400:
-      description: Problem with the client request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 400
-            code: INVALID_ARGUMENT
-            message: Client specified an invalid argument, request body or query param
-    Generic415:
-      description: Unsupported Media Type
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_415_UNSUPPORTED_MEDIA_TYPE:
-              description: Payload format of the request is in an unsupported format by the Server.
-              value:
-                status: 415
-                code: UNSUPPORTED_MEDIA_TYPE
-                message: The server refuses to accept the request because the payload format is in an unsupported format.
     Generic404:
       description: The specified resource was not found
       headers:
@@ -234,8 +149,8 @@ components:
             status: 503
             code: UNAVAILABLE
             message: Service unavailable
-    Generic504:
-      description: Request time exceeded. If it happens repeatedly, consider reducing the request complexity
+    Generic400:
+      description: Problem with the client request
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -244,9 +159,29 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorInfo'
           example:
-            status: 504
-            code: TIMEOUT
-            message: Request timeout exceeded. Try later
+            status: 400
+            code: INVALID_ARGUMENT
+            message: Client specified an invalid argument, request body or query param
+    Generic403:
+      description: Client does not have sufficient permission
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            PermissionDenied:
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action
+            InvalidTokenContext:
+              value:
+                status: 403
+                code: INVALID_TOKEN_CONTEXT
+                message: PhoneNumber parameter doesn't match the value from the access token context
     Generic422:
       description: Unprocessable Content
       headers:
@@ -275,6 +210,19 @@ components:
                 status: 422
                 code: UNIDENTIFIABLE_DEVICE
                 message: phone number not defined
+    Generic500:
+      description: Server error
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 500
+            code: INTERNAL
+            message: Server error
     Generic409:
       description: Conflict
       headers:
@@ -303,15 +251,67 @@ components:
                 status: 409
                 code: CONFLICT
                 message: A specified resource duplicate entry found.
+    Generic415:
+      description: Unsupported Media Type
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_415_UNSUPPORTED_MEDIA_TYPE:
+              description: Payload format of the request is in an unsupported format by the Server.
+              value:
+                status: 415
+                code: UNSUPPORTED_MEDIA_TYPE
+                message: The server refuses to accept the request because the payload format is in an unsupported format.
+  schemas:
+    PhoneNumber:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+123456789'
+    UnconditionalCallForwardingSignal:
+      description: resource containing the information about the Unconditional Call Forwarding Service for the given phone number (PhoneNumber)
+      type: object
+      properties:
+        active:
+          type: boolean
+          description: Indicates if the unconditional call forwarding service is active.
+    ErrorInfo:
+      description: error information
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP status code returned along with this error response
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+    CreateCallForwardingSignal:
+      description: resource containing the phone number (PhoneNumber) regarding which the Call Forwarding Service must be checked
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+  headers:
+    x-correlator:
+      description: Correlation id for the different services
+      schema:
+        type: string
   parameters:
     x-correlator:
       name: x-correlator
       in: header
-      description: Correlation id for the different services
-      schema:
-        type: string
-  headers:
-    x-correlator:
       description: Correlation id for the different services
       schema:
         type: string

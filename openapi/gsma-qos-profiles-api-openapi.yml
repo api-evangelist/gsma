@@ -117,45 +117,9 @@ paths:
         '429':
           $ref: '#/components/responses/Generic429'
 components:
-  parameters:
-    x-correlator:
-      name: x-correlator
-      in: header
-      description: Correlation id for the different services
-      schema:
-        $ref: '#/components/schemas/XCorrelator'
-  examples:
-    LIST_OF_QOS_PROFILES:
-      summary: A list of QoS profiles with a single entry
-      description: Example response when requesting a list of QoS profiles
-      value:
-      - name: voice
-        description: QoS profile for high-quality interactive voice
-        status: ACTIVE
-        targetMinUpstreamRate:
-          value: 100
-          unit: kbps
-        targetMinDownstreamRate:
-          value: 100
-          unit: kbps
-        minDuration:
-          value: 1
-          unit: Days
-        maxDuration:
-          value: 10
-          unit: Days
-        priority: 10
-        packetDelayBudget:
-          value: 50
-          unit: Milliseconds
-        jitter:
-          value: 5
-          unit: Milliseconds
-        packetErrorLossRate: 3
-        l4sQueueType: non-l4s-queue
   responses:
-    GenericDevice404:
-      description: Not found
+    Generic429:
+      description: Too Many Requests
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -168,24 +132,24 @@ components:
               properties:
                 status:
                   enum:
-                  - 404
+                  - 429
                 code:
                   enum:
-                  - NOT_FOUND
-                  - IDENTIFIER_NOT_FOUND
+                  - QUOTA_EXCEEDED
+                  - TOO_MANY_REQUESTS
           examples:
-            GENERIC_404_NOT_FOUND:
-              description: Resource is not found
+            GENERIC_429_QUOTA_EXCEEDED:
+              description: Request is rejected due to exceeding a business quota limit
               value:
-                status: 404
-                code: NOT_FOUND
-                message: The specified resource is not found.
-            GENERIC_404_DEVICE_NOT_FOUND:
-              description: Device identifier not found
+                status: 429
+                code: QUOTA_EXCEEDED
+                message: Out of resource quota.
+            GENERIC_429_TOO_MANY_REQUESTS:
+              description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
               value:
-                status: 404
-                code: IDENTIFIER_NOT_FOUND
-                message: Device identifier not found.
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Rate limit reached.
     Generic422:
       description: Unprocessable Content
       headers:
@@ -225,8 +189,8 @@ components:
                 status: 422
                 code: UNNECESSARY_IDENTIFIER
                 message: The device is already identified by the access token.
-    Generic401:
-      description: Unauthorized
+    Generic404:
+      description: Not found
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -239,74 +203,17 @@ components:
               properties:
                 status:
                   enum:
-                  - 401
+                  - 404
                 code:
                   enum:
-                  - UNAUTHENTICATED
+                  - NOT_FOUND
           examples:
-            GENERIC_401_UNAUTHENTICATED:
-              description: Request cannot be authenticated and a new authentication is required
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
               value:
-                status: 401
-                code: UNAUTHENTICATED
-                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
-    Generic429:
-      description: Too Many Requests
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 429
-                code:
-                  enum:
-                  - QUOTA_EXCEEDED
-                  - TOO_MANY_REQUESTS
-          examples:
-            GENERIC_429_QUOTA_EXCEEDED:
-              description: Request is rejected due to exceeding a business quota limit
-              value:
-                status: 429
-                code: QUOTA_EXCEEDED
-                message: Out of resource quota.
-            GENERIC_429_TOO_MANY_REQUESTS:
-              description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
-              value:
-                status: 429
-                code: TOO_MANY_REQUESTS
-                message: Rate limit reached.
-    Generic403:
-      description: Forbidden
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 403
-                code:
-                  enum:
-                  - PERMISSION_DENIED
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
     Generic400:
       description: Bad Request
       headers:
@@ -339,7 +246,32 @@ components:
                 status: 400
                 code: OUT_OF_RANGE
                 message: Client specified an invalid range.
-    Generic404:
+    Generic401:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 401
+                code:
+                  enum:
+                  - UNAUTHENTICATED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated and a new authentication is required
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
+    GenericDevice404:
       description: Not found
       headers:
         x-correlator:
@@ -357,6 +289,7 @@ components:
                 code:
                   enum:
                   - NOT_FOUND
+                  - IDENTIFIER_NOT_FOUND
           examples:
             GENERIC_404_NOT_FOUND:
               description: Resource is not found
@@ -364,16 +297,38 @@ components:
                 status: 404
                 code: NOT_FOUND
                 message: The specified resource is not found.
+            GENERIC_404_DEVICE_NOT_FOUND:
+              description: Device identifier not found
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: Device identifier not found.
+    Generic403:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 403
+                code:
+                  enum:
+                  - PERMISSION_DENIED
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
   schemas:
-    NetworkAccessIdentifier:
-      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
-      type: string
-      example: 123456789@domain.com
-    XCorrelator:
-      description: Value for the x-correlator
-      type: string
-      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
-      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
     ErrorInfo:
       description: Common schema for errors
       type: object
@@ -391,6 +346,42 @@ components:
       - status
       - code
       - message
+    DeviceIpv4Addr:
+      type: object
+      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
+
+
+        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
+
+
+        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
+
+
+        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
+
+        '
+      properties:
+        publicAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr'
+        privateAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr'
+        publicPort:
+          $ref: '#/components/schemas/Port'
+      anyOf:
+      - required:
+        - publicAddress
+        - privateAddress
+      - required:
+        - publicAddress
+        - publicPort
+      example:
+        publicAddress: 203.0.113.0
+        publicPort: 59765
+    XCorrelator:
+      description: Value for the x-correlator
+      type: string
+      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
+      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
     QosProfile:
       description: 'Data type with attributes of a QosProfile
 
@@ -633,89 +624,6 @@ components:
       required:
       - name
       - status
-    Rate:
-      description: Specification of rate
-      type: object
-      properties:
-        value:
-          description: Quantity of rate
-          type: integer
-          example: 10
-          format: int32
-          minimum: 0
-          maximum: 1024
-        unit:
-          $ref: '#/components/schemas/RateUnitEnum'
-    QosProfileName:
-      description: "A unique name for identifying a specific QoS profile.\nThis may follow different formats depending on the service providers implementation.\nSome options addresses:\n  - A UUID style string\n  - Support for predefined profile names like `QOS_E`, `QOS_S`, `QOS_M`, and `QOS_L`\n  - A searchable descriptive name\n"
-      type: string
-      example: voice
-      minLength: 3
-      maxLength: 256
-      format: string
-      pattern: ^[a-zA-Z0-9_.-]+$
-    Duration:
-      description: Specification of duration
-      type: object
-      properties:
-        value:
-          description: Quantity of duration
-          type: integer
-          example: 12
-          format: int32
-          minimum: 1
-        unit:
-          $ref: '#/components/schemas/TimeUnitEnum'
-    DeviceIpv4Addr:
-      type: object
-      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
-
-
-        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
-
-
-        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
-
-
-        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
-
-        '
-      properties:
-        publicAddress:
-          $ref: '#/components/schemas/SingleIpv4Addr'
-        privateAddress:
-          $ref: '#/components/schemas/SingleIpv4Addr'
-        publicPort:
-          $ref: '#/components/schemas/Port'
-      anyOf:
-      - required:
-        - publicAddress
-        - privateAddress
-      - required:
-        - publicAddress
-        - publicPort
-      example:
-        publicAddress: 203.0.113.0
-        publicPort: 59765
-    DeviceIpv6Address:
-      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
-
-
-        The session shall apply to all IP flows between the device subnet and the specified application server, unless further restricted by the optional parameters devicePorts or applicationServerPorts.
-
-        '
-      type: string
-      format: ipv6
-      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
-    RateUnitEnum:
-      description: Units of rate
-      type: string
-      enum:
-      - bps
-      - kbps
-      - Mbps
-      - Gbps
-      - Tbps
     QosProfileStatusEnum:
       description: 'The current status of the QoS Profile
 
@@ -731,39 +639,6 @@ components:
       - ACTIVE
       - INACTIVE
       - DEPRECATED
-    SingleIpv4Addr:
-      description: A single IPv4 address with no subnet mask
-      type: string
-      format: ipv4
-      example: 203.0.113.0
-    Port:
-      description: TCP or UDP port number
-      type: integer
-      minimum: 0
-      maximum: 65535
-    TimeUnitEnum:
-      description: Units of time
-      type: string
-      enum:
-      - Days
-      - Hours
-      - Minutes
-      - Seconds
-      - Milliseconds
-      - Microseconds
-      - Nanoseconds
-    QosProfileDeviceRequest:
-      description: 'Request object for QoS Profiles for a given device
-
-        '
-      type: object
-      properties:
-        device:
-          $ref: '#/components/schemas/Device'
-        name:
-          $ref: '#/components/schemas/QosProfileName'
-        status:
-          $ref: '#/components/schemas/QosProfileStatusEnum'
     Availability:
       description: A list of countries, and optionally networks, for which the API provider makes the profile available
       type: array
@@ -800,11 +675,35 @@ components:
       - countryName: DE
         networks:
         - '26202'
-    PhoneNumber:
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+    RateUnitEnum:
+      description: Units of rate
       type: string
-      pattern: ^\+[1-9][0-9]{4,14}$
-      example: '+123456789'
+      enum:
+      - bps
+      - kbps
+      - Mbps
+      - Gbps
+      - Tbps
+    SingleIpv4Addr:
+      description: A single IPv4 address with no subnet mask
+      type: string
+      format: ipv4
+      example: 203.0.113.0
+    DeviceIpv6Address:
+      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
+
+
+        The session shall apply to all IP flows between the device subnet and the specified application server, unless further restricted by the optional parameters devicePorts or applicationServerPorts.
+
+        '
+      type: string
+      format: ipv6
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+    Port:
+      description: TCP or UDP port number
+      type: integer
+      minimum: 0
+      maximum: 65535
     Device:
       description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
 
@@ -834,8 +733,109 @@ components:
         ipv6Address:
           $ref: '#/components/schemas/DeviceIpv6Address'
       minProperties: 1
+    Duration:
+      description: Specification of duration
+      type: object
+      properties:
+        value:
+          description: Quantity of duration
+          type: integer
+          example: 12
+          format: int32
+          minimum: 1
+        unit:
+          $ref: '#/components/schemas/TimeUnitEnum'
+    NetworkAccessIdentifier:
+      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+      type: string
+      example: 123456789@domain.com
+    QosProfileName:
+      description: "A unique name for identifying a specific QoS profile.\nThis may follow different formats depending on the service providers implementation.\nSome options addresses:\n  - A UUID style string\n  - Support for predefined profile names like `QOS_E`, `QOS_S`, `QOS_M`, and `QOS_L`\n  - A searchable descriptive name\n"
+      type: string
+      example: voice
+      minLength: 3
+      maxLength: 256
+      format: string
+      pattern: ^[a-zA-Z0-9_.-]+$
+    PhoneNumber:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+123456789'
+    TimeUnitEnum:
+      description: Units of time
+      type: string
+      enum:
+      - Days
+      - Hours
+      - Minutes
+      - Seconds
+      - Milliseconds
+      - Microseconds
+      - Nanoseconds
+    QosProfileDeviceRequest:
+      description: 'Request object for QoS Profiles for a given device
+
+        '
+      type: object
+      properties:
+        device:
+          $ref: '#/components/schemas/Device'
+        name:
+          $ref: '#/components/schemas/QosProfileName'
+        status:
+          $ref: '#/components/schemas/QosProfileStatusEnum'
+    Rate:
+      description: Specification of rate
+      type: object
+      properties:
+        value:
+          description: Quantity of rate
+          type: integer
+          example: 10
+          format: int32
+          minimum: 0
+          maximum: 1024
+        unit:
+          $ref: '#/components/schemas/RateUnitEnum'
   headers:
     x-correlator:
+      description: Correlation id for the different services
+      schema:
+        $ref: '#/components/schemas/XCorrelator'
+  examples:
+    LIST_OF_QOS_PROFILES:
+      summary: A list of QoS profiles with a single entry
+      description: Example response when requesting a list of QoS profiles
+      value:
+      - name: voice
+        description: QoS profile for high-quality interactive voice
+        status: ACTIVE
+        targetMinUpstreamRate:
+          value: 100
+          unit: kbps
+        targetMinDownstreamRate:
+          value: 100
+          unit: kbps
+        minDuration:
+          value: 1
+          unit: Days
+        maxDuration:
+          value: 10
+          unit: Days
+        priority: 10
+        packetDelayBudget:
+          value: 50
+          unit: Milliseconds
+        jitter:
+          value: 5
+          unit: Milliseconds
+        packetErrorLossRate: 3
+        l4sQueueType: non-l4s-queue
+  parameters:
+    x-correlator:
+      name: x-correlator
+      in: header
       description: Correlation id for the different services
       schema:
         $ref: '#/components/schemas/XCorrelator'

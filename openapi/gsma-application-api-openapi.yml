@@ -605,24 +605,9 @@ paths:
           - https://serverRoot/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5
 components:
   schemas:
-    SubmittedApp:
-      description: Information about the submitted app
-      type: object
-      properties:
-        appId:
-          $ref: '#/components/schemas/AppId'
-    AppInstanceId:
+    EdgeCloudProvider:
       type: string
-      format: uuid
-      description: 'A globally unique identifier associated with a running
-
-        instance of an application.
-
-        Edge Cloud Platform generates this identifier when the
-
-        instantiation in the Edge Cloud Zone is successful.
-
-        '
+      description: Human readable name of the Edge Cloud Provider.
     KubernetesResources:
       description: Definition of Kubernetes Cluster Infrastructure.
       required:
@@ -825,78 +810,290 @@ components:
           $ref: '#/components/schemas/K8sNetworking'
         addons:
           $ref: '#/components/schemas/K8sAddons'
-    AppId:
+    ErrorInfo:
+      type: object
+      description: Information about the error
+      properties:
+        status:
+          type: integer
+          description: HTTP status code returned along with this error response
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+      required:
+      - status
+      - code
+      - message
+    SubmittedApp:
+      description: Information about the submitted app
+      type: object
+      properties:
+        appId:
+          $ref: '#/components/schemas/AppId'
+    EdgeCloudZoneName:
       type: string
-      format: uuid
-      description: 'A globally unique identifier associated with the application.
-
-        Edge Cloud Platform generates this identifier when the
-
-        Application is submitted.
-
-        '
-    EdgeCloudRegion:
-      type: string
-      description: 'Human readable name of the geographical Edge Cloud Region of
+      description: 'Human readable name of the geographical zone of
 
         the Edge Cloud. Defined by the Edge Cloud Provider.
 
         '
-    GpuInfo:
+    VmResources:
+      description: Definition of Virtual Machine Infrastructure
       type: object
-      description: Information about the supported GPUs
       required:
-      - gpuMemory
-      - numGPU
+      - infraKind
+      - numCPU
+      - memory
       properties:
-        gpuMemory:
+        infraKind:
+          description: Type of infrastructure for the application.
+          type: string
+          example: virtualMachine
+          enum:
+          - virtualMachine
+        numCPU:
           type: integer
-          description: GPU memory in mega bytes
-        numGPU:
+          description: 'Number of vcpus in whole (i.e 1)
+
+            '
+          example: 1
+        memory:
           type: integer
-          description: Number of GPUs
-    OperatingSystem:
-      description: 'Information about the Operating System of the application image
+          example: 1024
+          description: Memory in mega bytes
+        additionalStorages:
+          $ref: '#/components/schemas/AdditionalStorage'
+        gpu:
+          $ref: '#/components/schemas/GpuInfo'
+    Fqdn:
+      type: string
+      description: 'Full qualified domain name of an application instance
+
+        '
+    RequiredResources:
+      description: 'Fundamental hardware requirements to be provisioned by the
+
+        Application Provider.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/KubernetesResources'
+      - $ref: '#/components/schemas/VmResources'
+      - $ref: '#/components/schemas/ContainerResources'
+      - $ref: '#/components/schemas/DockerComposeResources'
+      discriminator:
+        propertyName: infraKind
+        mapping:
+          kubernetes: '#/components/schemas/KubernetesResources'
+          virtualMachine: '#/components/schemas/VmResources'
+          container: '#/components/schemas/ContainerResources'
+          dockerCompose: '#/components/schemas/DockerComposeResources'
+    Uri:
+      type: string
+      example: https://charts.bitnami.com/bitnami/helm/example-chart:0.1.0
+      description: 'A Uniform Resource Identifier (URI) as per RFC 3986,
+
+        identifies the endpoint within an Edge Cloud Zone where the user
+
+        equipment may connect to the selected application instance
+
+        '
+    K8sAddons:
+      description: 'Addons for the Kubernetes cluster.
+
+        Additional addons should be defined in application the helm chart
+
+        (Service Mesh, Serverless, AI).
 
         '
       type: object
-      required:
-      - architecture
-      - family
-      - version
-      - license
       properties:
-        architecture:
-          description: Type of the OS Architecture
+        monitoring:
+          type: boolean
+          example: true
+          default: false
+          description: Enable monitoring for Kubernetes cluster.
+        ingress:
+          type: boolean
+          example: true
+          default: false
+          description: Enable ingress for Kubernetes cluster.
+    Ipv6Addr:
+      type: string
+      format: ipv6
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+      description: 'IP of the device. A single IPv6 address, following IETF 5952
+
+        format, may be specified like 2001:db8:85a3:8d3:1319:8a2e:370:7344
+
+        '
+    ContainerResources:
+      description: Container Infrastructure Definition
+      type: object
+      required:
+      - infraKind
+      - numCPU
+      - memory
+      properties:
+        infraKind:
+          description: Type of infrastructure for the application.
+          type: string
+          example: container
+          enum:
+          - container
+        numCPU:
+          $ref: '#/components/schemas/Vcpu'
+        memory:
+          type: integer
+          example: 1024
+          description: Memory in mega bytes
+        storage:
+          $ref: '#/components/schemas/AdditionalStorage'
+        gpu:
+          $ref: '#/components/schemas/GpuInfo'
+    AdditionalStorage:
+      description: Additional storage for the application.
+      type: array
+      items:
+        type: object
+        required:
+        - storageSize
+        - mountPoint
+        properties:
+          name:
+            type: string
+            description: Name of additional storage resource.
+            example: logs
+          storageSize:
+            type: string
+            description: Additional persistent volume for the application.
+            example: 80GB
+            pattern: ^\d+(GB|MB)$
+          mountPoint:
+            type: string
+            description: Location of additional storage resource.
+            example: /logs
+    K8sNetworking:
+      description: 'Kubernetes networking definition
+
+        '
+      type: object
+      properties:
+        primaryNetwork:
+          description: Definition of Kubernetes primary Network
+          type: object
+          properties:
+            provider:
+              description: CNI provider name
+              type: string
+              example: cilium
+            version:
+              description: CNI provider version
+              type: string
+              example: '1.13'
+        additionalNetworks:
+          description: Additional Networks for the Kubernetes cluster.
+          type: array
+          items:
+            type: object
+            description: Additional network interface definition
+            properties:
+              name:
+                description: Additional Network Name
+                type: string
+                example: net1
+              interfaceType:
+                description: "Type of additional Interface:\nnetdevice: (SR-IOV) A regular kernel network device in the\n           Network Namespace (netns) of the container\nvfio-pci: (SR-IOV) A PCI network interface directly mounted\n          in the container\ninterface: Additional interface to be used by cni plugins\n           such as macvlan, ipvlan\nNote: The use of SR-IOV interfaces automatically\nconfigure the required kernel parameters for the nodes.\n"
+                type: string
+                example: vfio-pci
+                enum:
+                - netdevice
+                - vfio-pci
+                - interface
+    AccessEndpoint:
+      type: object
+      description: 'Application Endpoint for an especific instance that is
+
+        running in an specific Edge Cloud Zone.
+
+        '
+      required:
+      - port
+      anyOf:
+      - required:
+        - fqdn
+      - required:
+        - ipv4Addresses
+      - required:
+        - ipv6Addresses
+      properties:
+        port:
+          $ref: '#/components/schemas/Port'
+        fqdn:
+          $ref: '#/components/schemas/Fqdn'
+        ipv4Addresses:
+          description: IP version 4 of an application instance
+          type: array
+          items:
+            $ref: '#/components/schemas/Ipv4Addr'
+          minItems: 1
+        ipv6Addresses:
+          description: IP version 6 of an application instance.
+          type: array
+          items:
+            $ref: '#/components/schemas/Ipv6Addr'
+          minItems: 1
+    AppInstanceInfo:
+      description: Information about the application instance.
+      type: object
+      properties:
+        appInstanceId:
+          $ref: '#/components/schemas/AppInstanceId'
+        status:
+          description: Status of the application instance (default is 'unknown')
           type: string
           enum:
-          - x86_64
-          - x86
-          example: x86_64
-        family:
-          description: Family to which OS belongs
-          type: string
-          enum:
-          - RHEL
-          - UBUNTU
-          - COREOS
-          - WINDOWS
-          - OTHER
-        version:
-          description: Version of the OS
-          type: string
-          enum:
-          - OS_VERSION_UBUNTU_2204_LTS
-          - OS_VERSION_RHEL_8
-          - OS_MS_WINDOWS_2022
-          - OTHER
-        license:
-          description: License needed to activate the OS
-          type: string
-          enum:
-          - OS_LICENSE_TYPE_FREE
-          - OS_LICENSE_TYPE_ON_DEMAND
-          - OTHER
+          - ready
+          - instantiating
+          - failed
+          - terminating
+          - unknown
+          default: unknown
+        componentEndpointInfo:
+          description: 'Information about the IP and Port exposed by the
+
+            Edge Cloud Platform.
+
+            Application Client shall use these access points to reach this
+
+            application instance
+
+            '
+          type: array
+          items:
+            type: object
+            required:
+            - interfaceId
+            - accessPoints
+            properties:
+              interfaceId:
+                type: string
+                pattern: ^[A-Za-z0-9][A-Za-z0-9_]{6,30}[A-Za-z0-9]$
+                description: 'This is the interface Identifier that Application Provider
+
+                  defines when application is being submitted.
+
+                  '
+              accessPoints:
+                $ref: '#/components/schemas/AccessEndpoint'
+          minItems: 1
+        kubernetesClusterRef:
+          $ref: '#/components/schemas/KubernetesClusterRef'
+        edgeCloudZone:
+          $ref: '#/components/schemas/EdgeCloudZone'
     AppManifest:
       description: 'Application information and requirements provided by the
 
@@ -1121,255 +1318,47 @@ components:
       - appRepo
       - requiredResources
       - componentSpec
-    ErrorInfo:
-      type: object
-      description: Information about the error
-      properties:
-        status:
-          type: integer
-          description: HTTP status code returned along with this error response
-        code:
-          type: string
-          description: Code given to this error
-        message:
-          type: string
-          description: Detailed error description
-      required:
-      - status
-      - code
-      - message
-    K8sAddons:
-      description: 'Addons for the Kubernetes cluster.
-
-        Additional addons should be defined in application the helm chart
-
-        (Service Mesh, Serverless, AI).
-
-        '
-      type: object
-      properties:
-        monitoring:
-          type: boolean
-          example: true
-          default: false
-          description: Enable monitoring for Kubernetes cluster.
-        ingress:
-          type: boolean
-          example: true
-          default: false
-          description: Enable ingress for Kubernetes cluster.
-    Ipv4Addr:
+    EdgeCloudZoneStatus:
+      description: Status of the Edge Cloud Zone (default is 'unknown')
       type: string
-      format: ipv4
-      example: 192.168.0.1
-      description: 'IP of the device. A single IPv4 address may be specified in
-
-        dotted-quad form 1.2.3.4. Only this exact IP number will match the flow
-
-        control rule.
-
-        '
-    VmResources:
-      description: Definition of Virtual Machine Infrastructure
-      type: object
-      required:
-      - infraKind
-      - numCPU
-      - memory
-      properties:
-        infraKind:
-          description: Type of infrastructure for the application.
-          type: string
-          example: virtualMachine
-          enum:
-          - virtualMachine
-        numCPU:
-          type: integer
-          description: 'Number of vcpus in whole (i.e 1)
-
-            '
-          example: 1
-        memory:
-          type: integer
-          example: 1024
-          description: Memory in mega bytes
-        additionalStorages:
-          $ref: '#/components/schemas/AdditionalStorage'
-        gpu:
-          $ref: '#/components/schemas/GpuInfo'
-    AppProvider:
-      type: string
-      pattern: ^[A-Za-z][A-Za-z0-9_]{7,63}$
-      description: Human readable name of the Application Provider.
-    AppInstanceInfo:
-      description: Information about the application instance.
-      type: object
-      properties:
-        appInstanceId:
-          $ref: '#/components/schemas/AppInstanceId'
-        status:
-          description: Status of the application instance (default is 'unknown')
-          type: string
-          enum:
-          - ready
-          - instantiating
-          - failed
-          - terminating
-          - unknown
-          default: unknown
-        componentEndpointInfo:
-          description: 'Information about the IP and Port exposed by the
-
-            Edge Cloud Platform.
-
-            Application Client shall use these access points to reach this
-
-            application instance
-
-            '
-          type: array
-          items:
-            type: object
-            required:
-            - interfaceId
-            - accessPoints
-            properties:
-              interfaceId:
-                type: string
-                pattern: ^[A-Za-z0-9][A-Za-z0-9_]{6,30}[A-Za-z0-9]$
-                description: 'This is the interface Identifier that Application Provider
-
-                  defines when application is being submitted.
-
-                  '
-              accessPoints:
-                $ref: '#/components/schemas/AccessEndpoint'
-          minItems: 1
-        kubernetesClusterRef:
-          $ref: '#/components/schemas/KubernetesClusterRef'
-        edgeCloudZone:
-          $ref: '#/components/schemas/EdgeCloudZone'
-    EdgeCloudProvider:
-      type: string
-      description: Human readable name of the Edge Cloud Provider.
-    Vcpu:
-      type: string
-      pattern: ^\d+((\.\d{1,3})|(m))?$
-      description: 'Number of vcpus in whole (i.e 1), decimal (i.e 0.500) up to
-
-        millivcpu, or millivcpu (i.e 500m) format.
-
-        '
-      example: 500m
-    Ipv6Addr:
-      type: string
-      format: ipv6
-      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
-      description: 'IP of the device. A single IPv6 address, following IETF 5952
-
-        format, may be specified like 2001:db8:85a3:8d3:1319:8a2e:370:7344
-
-        '
-    Fqdn:
-      type: string
-      description: 'Full qualified domain name of an application instance
-
-        '
-    AppZones:
-      description: 'Collection of Edge Cloud Zones and/or Kubernetes cluster reference
-
-        where the Application Provider wants to instantiate the application.
-
-        '
-      type: array
-      items:
-        type: object
-        properties:
-          kubernetesClusterRef:
-            $ref: '#/components/schemas/KubernetesClusterRef'
-          EdgeCloudZone:
-            $ref: '#/components/schemas/EdgeCloudZone'
-      required:
-      - EdgeCloudZone
-      minItems: 1
-      additionalProperties: false
-    EdgeCloudZoneName:
-      type: string
-      description: 'Human readable name of the geographical zone of
-
-        the Edge Cloud. Defined by the Edge Cloud Provider.
-
-        '
-    EdgeCloudZone:
-      type: object
-      description: 'An Edge Cloud Zone, uniquely identified by a
-
-        combination of the value of the Edge Cloud Zone Id object
-
-        and the value of the Edge Cloud Provider
-
-        object. This value is used to identify an Edge Cloud zone
-
-        between Edge Clouds from different Edge Cloud Providers.
-
-        '
-      required:
-      - edgeCloudZoneId
-      - edgeCloudZoneName
-      - edgeCloudProvider
-      properties:
-        edgeCloudZoneId:
-          $ref: '#/components/schemas/EdgeCloudZoneId'
-        edgeCloudZoneName:
-          $ref: '#/components/schemas/EdgeCloudZoneName'
-        edgeCloudZoneStatus:
-          $ref: '#/components/schemas/EdgeCloudZoneStatus'
-        edgeCloudProvider:
-          $ref: '#/components/schemas/EdgeCloudProvider'
-        edgeCloudRegion:
-          $ref: '#/components/schemas/EdgeCloudRegion'
-      minItems: 1
-    K8sNetworking:
-      description: 'Kubernetes networking definition
-
-        '
-      type: object
-      properties:
-        primaryNetwork:
-          description: Definition of Kubernetes primary Network
-          type: object
-          properties:
-            provider:
-              description: CNI provider name
-              type: string
-              example: cilium
-            version:
-              description: CNI provider version
-              type: string
-              example: '1.13'
-        additionalNetworks:
-          description: Additional Networks for the Kubernetes cluster.
-          type: array
-          items:
-            type: object
-            description: Additional network interface definition
-            properties:
-              name:
-                description: Additional Network Name
-                type: string
-                example: net1
-              interfaceType:
-                description: "Type of additional Interface:\nnetdevice: (SR-IOV) A regular kernel network device in the\n           Network Namespace (netns) of the container\nvfio-pci: (SR-IOV) A PCI network interface directly mounted\n          in the container\ninterface: Additional interface to be used by cni plugins\n           such as macvlan, ipvlan\nNote: The use of SR-IOV interfaces automatically\nconfigure the required kernel parameters for the nodes.\n"
-                type: string
-                example: vfio-pci
-                enum:
-                - netdevice
-                - vfio-pci
-                - interface
+      enum:
+      - active
+      - inactive
+      - unknown
+      default: unknown
     Port:
       type: integer
       description: Port to stablish the connection
       minimum: 0
+    AppInstanceId:
+      type: string
+      format: uuid
+      description: 'A globally unique identifier associated with a running
+
+        instance of an application.
+
+        Edge Cloud Platform generates this identifier when the
+
+        instantiation in the Edge Cloud Zone is successful.
+
+        '
+    GpuInfo:
+      type: object
+      description: Information about the supported GPUs
+      required:
+      - gpuMemory
+      - numGPU
+      properties:
+        gpuMemory:
+          type: integer
+          description: GPU memory in mega bytes
+        numGPU:
+          type: integer
+          description: Number of GPUs
+    AppProvider:
+      type: string
+      pattern: ^[A-Za-z][A-Za-z0-9_]{7,63}$
+      description: Human readable name of the Application Provider.
     KubernetesClusterRef:
       description: 'A global unique identifier associated with a Kubernetes cluster
 
@@ -1379,79 +1368,6 @@ components:
       type: string
       format: uuid
       example: 642f6105-7015-4af1-a4d1-e1ecb8437abc
-    AdditionalStorage:
-      description: Additional storage for the application.
-      type: array
-      items:
-        type: object
-        required:
-        - storageSize
-        - mountPoint
-        properties:
-          name:
-            type: string
-            description: Name of additional storage resource.
-            example: logs
-          storageSize:
-            type: string
-            description: Additional persistent volume for the application.
-            example: 80GB
-            pattern: ^\d+(GB|MB)$
-          mountPoint:
-            type: string
-            description: Location of additional storage resource.
-            example: /logs
-    Uri:
-      type: string
-      example: https://charts.bitnami.com/bitnami/helm/example-chart:0.1.0
-      description: 'A Uniform Resource Identifier (URI) as per RFC 3986,
-
-        identifies the endpoint within an Edge Cloud Zone where the user
-
-        equipment may connect to the selected application instance
-
-        '
-    AccessEndpoint:
-      type: object
-      description: 'Application Endpoint for an especific instance that is
-
-        running in an specific Edge Cloud Zone.
-
-        '
-      required:
-      - port
-      anyOf:
-      - required:
-        - fqdn
-      - required:
-        - ipv4Addresses
-      - required:
-        - ipv6Addresses
-      properties:
-        port:
-          $ref: '#/components/schemas/Port'
-        fqdn:
-          $ref: '#/components/schemas/Fqdn'
-        ipv4Addresses:
-          description: IP version 4 of an application instance
-          type: array
-          items:
-            $ref: '#/components/schemas/Ipv4Addr'
-          minItems: 1
-        ipv6Addresses:
-          description: IP version 6 of an application instance.
-          type: array
-          items:
-            $ref: '#/components/schemas/Ipv6Addr'
-          minItems: 1
-    EdgeCloudZoneStatus:
-      description: Status of the Edge Cloud Zone (default is 'unknown')
-      type: string
-      enum:
-      - active
-      - inactive
-      - unknown
-      default: unknown
     EdgeCloudZoneId:
       type: string
       format: uuid
@@ -1488,57 +1404,435 @@ components:
           $ref: '#/components/schemas/AdditionalStorage'
         gpu:
           $ref: '#/components/schemas/GpuInfo'
-    RequiredResources:
-      description: 'Fundamental hardware requirements to be provisioned by the
+    AppId:
+      type: string
+      format: uuid
+      description: 'A globally unique identifier associated with the application.
 
-        Application Provider.
+        Edge Cloud Platform generates this identifier when the
+
+        Application is submitted.
 
         '
-      oneOf:
-      - $ref: '#/components/schemas/KubernetesResources'
-      - $ref: '#/components/schemas/VmResources'
-      - $ref: '#/components/schemas/ContainerResources'
-      - $ref: '#/components/schemas/DockerComposeResources'
-      discriminator:
-        propertyName: infraKind
-        mapping:
-          kubernetes: '#/components/schemas/KubernetesResources'
-          virtualMachine: '#/components/schemas/VmResources'
-          container: '#/components/schemas/ContainerResources'
-          dockerCompose: '#/components/schemas/DockerComposeResources'
-    ContainerResources:
-      description: Container Infrastructure Definition
+    EdgeCloudRegion:
+      type: string
+      description: 'Human readable name of the geographical Edge Cloud Region of
+
+        the Edge Cloud. Defined by the Edge Cloud Provider.
+
+        '
+    Ipv4Addr:
+      type: string
+      format: ipv4
+      example: 192.168.0.1
+      description: 'IP of the device. A single IPv4 address may be specified in
+
+        dotted-quad form 1.2.3.4. Only this exact IP number will match the flow
+
+        control rule.
+
+        '
+    EdgeCloudZone:
+      type: object
+      description: 'An Edge Cloud Zone, uniquely identified by a
+
+        combination of the value of the Edge Cloud Zone Id object
+
+        and the value of the Edge Cloud Provider
+
+        object. This value is used to identify an Edge Cloud zone
+
+        between Edge Clouds from different Edge Cloud Providers.
+
+        '
+      required:
+      - edgeCloudZoneId
+      - edgeCloudZoneName
+      - edgeCloudProvider
+      properties:
+        edgeCloudZoneId:
+          $ref: '#/components/schemas/EdgeCloudZoneId'
+        edgeCloudZoneName:
+          $ref: '#/components/schemas/EdgeCloudZoneName'
+        edgeCloudZoneStatus:
+          $ref: '#/components/schemas/EdgeCloudZoneStatus'
+        edgeCloudProvider:
+          $ref: '#/components/schemas/EdgeCloudProvider'
+        edgeCloudRegion:
+          $ref: '#/components/schemas/EdgeCloudRegion'
+      minItems: 1
+    AppZones:
+      description: 'Collection of Edge Cloud Zones and/or Kubernetes cluster reference
+
+        where the Application Provider wants to instantiate the application.
+
+        '
+      type: array
+      items:
+        type: object
+        properties:
+          kubernetesClusterRef:
+            $ref: '#/components/schemas/KubernetesClusterRef'
+          EdgeCloudZone:
+            $ref: '#/components/schemas/EdgeCloudZone'
+      required:
+      - EdgeCloudZone
+      minItems: 1
+      additionalProperties: false
+    Vcpu:
+      type: string
+      pattern: ^\d+((\.\d{1,3})|(m))?$
+      description: 'Number of vcpus in whole (i.e 1), decimal (i.e 0.500) up to
+
+        millivcpu, or millivcpu (i.e 500m) format.
+
+        '
+      example: 500m
+    OperatingSystem:
+      description: 'Information about the Operating System of the application image
+
+        '
       type: object
       required:
-      - infraKind
-      - numCPU
-      - memory
+      - architecture
+      - family
+      - version
+      - license
       properties:
-        infraKind:
-          description: Type of infrastructure for the application.
+        architecture:
+          description: Type of the OS Architecture
           type: string
-          example: container
           enum:
-          - container
-        numCPU:
-          $ref: '#/components/schemas/Vcpu'
-        memory:
-          type: integer
-          example: 1024
-          description: Memory in mega bytes
-        storage:
-          $ref: '#/components/schemas/AdditionalStorage'
-        gpu:
-          $ref: '#/components/schemas/GpuInfo'
-    ProductRef:
-      type: object
-      description: A Product reference
+          - x86_64
+          - x86
+          example: x86_64
+        family:
+          description: Family to which OS belongs
+          type: string
+          enum:
+          - RHEL
+          - UBUNTU
+          - COREOS
+          - WINDOWS
+          - OTHER
+        version:
+          description: Version of the OS
+          type: string
+          enum:
+          - OS_VERSION_UBUNTU_2204_LTS
+          - OS_VERSION_RHEL_8
+          - OS_MS_WINDOWS_2022
+          - OTHER
+        license:
+          description: License needed to activate the OS
+          type: string
+          enum:
+          - OS_LICENSE_TYPE_FREE
+          - OS_LICENSE_TYPE_ON_DEMAND
+          - OTHER
+    ApiPermissionSet:
       allOf:
-      - $ref: '#/components/schemas/EntityRef'
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: The PermissionSet is a set of Permissions granted to a user (party, party role or resource). The set may be granted explicitly by an authorized user or may be acquired implicitly due to the role that the user is playing.
+        properties:
+          creationDate:
+            type: string
+            format: date-time
+            description: Date when the PermissionSet was created and assigned to a user
+          description:
+            type: string
+            description: Text describing the permission set
+          validFor:
+            $ref: '#/components/schemas/TimePeriod'
+          permission:
+            $ref: '#/components/schemas/ApiConsumerPermission'
       discriminator:
         propertyName: '@type'
         mapping:
-          ProductRef: '#/components/schemas/ProductRef'
+          ApiPermissionSet: '#/components/schemas/ApiPermissionSet'
+    ContactMedium:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: 'Indicates the contact medium that could be used to contact the party. This is an abstract base class, the actual value is in one of the strongly-typed subclasses : EmailContactMedium, FaxContactMedium, PhoneContactMedium, GeographicAddressContactMedium, SocialMediaContactMedium...'
+        properties:
+          id:
+            type: string
+            description: Identifier for this contact medium.
+          preferred:
+            type: boolean
+            description: If true, indicates that is the preferred contact medium
+          contactType:
+            type: string
+            description: Type of the contact medium to qualify it like pro email / personal email. This is not used to define the contact medium used.
+          validFor:
+            $ref: '#/components/schemas/TimePeriod'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ContactMedium: '#/components/schemas/ContactMedium'
+          EmailContactMedium: '#/components/schemas/EmailContactMedium'
+          FaxContactMedium: '#/components/schemas/FaxContactMedium'
+          GeographicAddressContactMedium: '#/components/schemas/GeographicAddressContactMedium'
+          PhoneContactMedium: '#/components/schemas/PhoneContactMedium'
+          SocialContactMedium: '#/components/schemas/SocialContactMedium'
+          WebFormContactMedium: '#/components/schemas/WebFormContactMedium'
+    Extensible:
+      type: object
+      description: Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type
+      properties:
+        '@type':
+          type: string
+          description: When sub-classing, this defines the sub-class Extensible name
+        '@baseType':
+          type: string
+          description: When sub-classing, this defines the super-class
+        '@schemaLocation':
+          type: string
+          description: A URI to a JSON-Schema file that defines additional attributes and relationships
+      required:
+      - '@type'
+    ApiDigitalIdentity_MVO:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: ApiDigitalIdentity is a class that allow to describe a digital identity for an individual or a resource or a specific party role. One of these three MUST be provided. If an individual is provided, this identity will be for all her/his partyRole. To avoid confusion it is recommended in this case to not provide partyRoleIdentified. DEPRECATED in the POST and PATCH, this attribute can't be valued by the API consumer in this context.
+        properties:
+          clientId:
+            type: string
+            description: 'OAuth2 Client ID: A public identifier for apps. Even though it is public, it is best that it is not guessable by third parties, so many implementations use something like a 32-character hex string. DEPRECATED in the POST and the PATCH, this attribute can''t be valued by the API consumer in this context.'
+          redirectUrl:
+            type: array
+            deprecated: true
+            items:
+              type: string
+            description: 'DEPRECATED : moved to Application schema. After a user successfully authorizes an application, the authorization server will redirect the user back to the application.'
+          jwksUri:
+            deprecated: true
+            type: string
+            description: 'DEPRECATED : moved to Application schema. JSON Web Key (JWK) is a data structure that represents a cryptographic key'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ApiDigitalIdentity: '#/components/schemas/ApiDigitalIdentity_MVO'
+    ContactMedium_FVO:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: 'Indicates the contact medium that could be used to contact the party. This is an abstract base class, the actual value is in one of the strongly-typed subclasses : EmailContactMedium, FaxContactMedium, PhoneContactMedium, GeographicAddressContactMedium, SocialMediaContactMedium...'
+        properties:
+          id:
+            type: string
+            description: Identifier for this contact medium.
+          preferred:
+            type: boolean
+            description: If true, indicates that is the preferred contact medium
+          contactType:
+            type: string
+            description: Type of the contact medium to qualify it like pro email / personal email. This is not used to define the contact medium used.
+          validFor:
+            $ref: '#/components/schemas/TimePeriod'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ContactMedium: '#/components/schemas/ContactMedium_FVO'
+          EmailContactMedium: '#/components/schemas/EmailContactMedium'
+          FaxContactMedium: '#/components/schemas/FaxContactMedium'
+          GeographicAddressContactMedium: '#/components/schemas/GeographicAddressContactMedium'
+          PhoneContactMedium: '#/components/schemas/PhoneContactMedium'
+          SocialContactMedium: '#/components/schemas/SocialContactMedium'
+          WebFormContactMedium: '#/components/schemas/WebFormContactMedium_FVO'
+    Application_MVO:
+      allOf:
+      - $ref: '#/components/schemas/LogicalResource_MVO'
+      - type: object
+        description: Application is a logical resource that can consume API products. It's a specialization of a LogicalResource in the Open Gateway context.
+        properties:
+          commercialName:
+            type: string
+            description: Exact name of the Application as marketed (and known by the end-user).
+          logoUrl:
+            type: string
+            description: Url to retrieve the Application official logo.
+          privacyPolicyURL:
+            type: string
+            description: Url to Application privacy policy, if applicable.
+          redirectUrl:
+            type: array
+            items:
+              type: string
+            description: After a user successfully authorizes an application, the authorization server will redirect the user back to the application.
+          jwksUri:
+            type: string
+            description: 'Uri pointing to a JSON Web Key (JWK) : data structure that represents a cryptographic key'
+          category:
+            $ref: '#/components/schemas/ApplicationCategoryType'
+          approvalStatusReason:
+            type: string
+            description: The reason why the approval state changed. DEPRECATED in the PATCH (bug to be fixed on next major version).
+          privacyRightsRequestContact:
+            type: array
+            items:
+              $ref: '#/components/schemas/ContactMedium'
+            description: Contact information for the exercise of data protection rights to which the End Users can address. Must be only EmailContactMedium or WebFormContactMedium for this context.
+          digitalIdentity:
+            $ref: '#/components/schemas/ApiDigitalIdentity_MVO'
+    ResourceOperationalStateType:
+      enum:
+      - enable
+      - disable
+      type: string
+      description: 'ResourceOperationalStateType enumerations; values defined by ITU X.731: ''disable'': The resource is totally inoperable and unable to provide service to the user(s); ''enable'': The resource is partially or fully operable and available for use.'
+    PartyRoleRef:
+      allOf:
+      - $ref: '#/components/schemas/EntityRef'
+      - type: object
+        description: Party role reference. A party role represents the part played by a party in a given context.
+        properties:
+          partyId:
+            type: string
+            description: The identifier of the engaged party that is linked to the PartyRole object.
+          partyName:
+            type: string
+            description: The name of the engaged party that is linked to the PartyRole object.
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          PartyRoleRef: '#/components/schemas/PartyRoleRef'
+    EntityRef:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - $ref: '#/components/schemas/Addressable'
+      - type: object
+        description: Entity reference schema to be use for all entityRef class.
+        properties:
+          id:
+            type: string
+            description: The identifier of the referred entity.
+          href:
+            type: string
+            description: The URI of the referred entity.
+          name:
+            type: string
+            description: Name of the referred entity.
+          '@referredType':
+            type: string
+            description: The actual type of the target instance when needed for disambiguation.
+        required:
+        - id
+    JsonPatch:
+      type: object
+      description: A JSONPatch document as defined by RFC 6902
+      required:
+      - op
+      - path
+      properties:
+        op:
+          type: string
+          description: The operation to be performed
+          enum:
+          - add
+          - remove
+          - replace
+          - move
+          - copy
+          - test
+        path:
+          type: string
+          description: A JSON-Pointer
+        value:
+          description: The value to be used within the operations.
+        from:
+          type: string
+          description: A string containing a JSON Pointer value.
+    Application_FVO:
+      allOf:
+      - $ref: '#/components/schemas/LogicalResource_FVO'
+      - type: object
+        description: Application is a logical resource that can consume API products. It's a specialization of a LogicalResource in the Open Gateway context.
+        properties:
+          commercialName:
+            type: string
+            description: Exact name of the Application as marketed (and known by the end-user).
+          logoUrl:
+            type: string
+            description: Url to retrieve the Application official logo.
+          privacyPolicyURL:
+            type: string
+            description: Url to Application privacy policy, if applicable.
+          redirectUrl:
+            type: array
+            items:
+              type: string
+            description: After a user successfully authorizes an application, the authorization server will redirect the user back to the application.
+          jwksUri:
+            type: string
+            description: 'Uri pointing to a JSON Web Key (JWK) : data structure that represents a cryptographic key'
+          category:
+            $ref: '#/components/schemas/ApplicationCategoryType'
+          applicationOwner:
+            $ref: '#/components/schemas/PartyRoleRef'
+          privacyRightsRequestContact:
+            type: array
+            items:
+              $ref: '#/components/schemas/ContactMedium_FVO'
+            description: Contact information for the exercise of data protection rights to which the End Users can address. Must be only EmailContactMedium or WebFormContactMedium for this context.
+          digitalIdentity:
+            $ref: '#/components/schemas/ApiDigitalIdentity_FVO'
+        required:
+        - commercialName
+        - applicationOwner
+        - description
+    Entity:
+      type: object
+      description: Base entity schema for use in TMForum Open-APIs. Property.
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - $ref: '#/components/schemas/Addressable'
+    ApiDigitalIdentity:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: ApiDigitalIdentity is a class that allow to describe a digital identity for an individual or a resource or a specific party role. One of these three MUST be provided. If an individual is provided, this identity will be for all her/his partyRole. To avoid confusion it is recommended in this case to not provide partyRoleIdentified. DEPRECATED in the POST and PATCH, this attribute can't be valued by the API consumer in this context.
+        properties:
+          clientId:
+            type: string
+            description: 'OAuth2 Client ID: A public identifier for apps. Even though it is public, it is best that it is not guessable by third parties, so many implementations use something like a 32-character hex string. DEPRECATED in the POST and the PATCH, this attribute can''t be valued by the API consumer in this context.'
+          redirectUrl:
+            type: array
+            deprecated: true
+            items:
+              type: string
+            description: 'DEPRECATED : moved to Application schema. After a user successfully authorizes an application, the authorization server will redirect the user back to the application.'
+          jwksUri:
+            deprecated: true
+            type: string
+            description: 'DEPRECATED : moved to Application schema. JSON Web Key (JWK) is a data structure that represents a cryptographic key'
+          validFor:
+            $ref: '#/components/schemas/TimePeriod'
+          status:
+            type: string
+            description: Used to indicate the current lifecycle status of this digital identity (unknown, active, suspended, archived).
+          credential:
+            type: array
+            description: A list of credential/authentification method that are used for this digital identity.
+            items:
+              $ref: '#/components/schemas/OAuth2ClientCredential'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ApiDigitalIdentity: '#/components/schemas/ApiDigitalIdentity'
+    AssetGroup:
+      type: object
+      description: Defines a group of assets (entities) to which access can be controlled. Specific subclasses allow definition in various ways (list of entities, queries, ownership by customer, etc.). AssetGroup is not a managed entity, its concrete subclasses are always included by value in their containing entities.
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ApiListAssetGroup: '#/components/schemas/ApiListAssetGroup'
+          AssetGroup: '#/components/schemas/AssetGroup'
     Application:
       allOf:
       - $ref: '#/components/schemas/LogicalResource'
@@ -1589,21 +1883,161 @@ components:
             type: string
             format: date-time
             description: Date and time when the Application was created
-    Entity:
-      type: object
-      description: Base entity schema for use in TMForum Open-APIs. Property.
+    Error:
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          Error: '#/components/schemas/Error'
       allOf:
       - $ref: '#/components/schemas/Extensible'
-      - $ref: '#/components/schemas/Addressable'
-    LogicalResourceRole:
+      - type: object
+        required:
+        - code
+        - reason
+        properties:
+          code:
+            type: string
+            description: Application relevant detail, defined in the API or a common list.
+          reason:
+            type: string
+            description: Explanation of the reason for the error which can be shown to a client user.
+          message:
+            type: string
+            description: More details and corrective actions related to the error which can be shown to a client user.
+          status:
+            type: string
+            description: HTTP Error code extension
+          referenceError:
+            type: string
+            description: URI of documentation describing the error.
+      description: Used when an API throws an Error, typically with a HTTP error response-code (3xx, 4xx, 5xx)
+    ExternalIdentifier:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: An identification of an entity that is owned by or originates in a software system different from the current system, for example a ProductOrder handed off from a commerce platform into an order handling system. The structure identifies the system itself, the nature of the entity within the system (e.g. class name) and the unique ID of the entity within the system. It is anticipated that multiple external IDs can be held for a single entity, e.g. if the entity passed through multiple systems on the way to the current system. In this case the consumer is expected to sequence the IDs in the array in reverse order of provenance, i.e. most recent system first in the list.
+        properties:
+          owner:
+            type: string
+            description: Name of the external system that owns the entity.
+            example: MagentoCommerce
+          externalIdentifierType:
+            type: string
+            description: Type of the identification, typically would be the type of the entity within the external system
+            example: ProductOrder
+          id:
+            type: string
+            description: identification of the entity within the external system.
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ExternalIdentifier: '#/components/schemas/ExternalIdentifier'
+    ApiConsumerPermission:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: An ApiConsumerPermission allows an Application to consume an API.
+        properties:
+          managedAssetGroup:
+            $ref: '#/components/schemas/ApiListAssetGroup'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ApiConsumerPermission: '#/components/schemas/ApiConsumerPermission'
+    OAuth2ClientCredential:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: OAuth2ClientCredential describes the registration attributes in an OAuth registration process
+        properties:
+          clientSecret:
+            type: string
+            description: Secret that permits the Application to authenticate with OAuth2 method.
+          state:
+            type: string
+            description: Used to indicate the current lifecycle state of this credential (like active, inactive, expired).
+          validFor:
+            $ref: '#/components/schemas/TimePeriod'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          OAuth2ClientCredential: '#/components/schemas/OAuth2ClientCredential'
+    LogicalResource:
+      allOf:
+      - $ref: '#/components/schemas/Entity'
+      - type: object
+        description: Logic resource is a type of resource that describes the common set of attributes shared by all concrete logical resources (e.g. TPE, MSISDN, IP Addresses) in the inventory.
+        properties:
+          description:
+            type: string
+            description: free-text description of the resource
+          name:
+            type: string
+            description: the name of the resource
+          operationalState:
+            $ref: '#/components/schemas/ResourceOperationalStateType'
+          resourceVersion:
+            type: string
+            description: A field that identifies the specific version of an instance of a resource.
+          externalIdentifier:
+            type: array
+            description: An identification of this resource that is owned by or originates in a software system different from the current system. The structure identifies the system itself, the nature of the resource within the system and the unique ID of the resource within the system. It is anticipated that multiple external IDs can be held for a single resource, e.g. if the resource passed through multiple systems on the way to the current system.
+            items:
+              $ref: '#/components/schemas/ExternalIdentifier'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          Application: '#/components/schemas/Application'
+          LogicalResource: '#/components/schemas/LogicalResource'
+    JsonPatchOperations:
+      description: JSONPatch Operations document as defined by RFC 6902
+      type: array
+      items:
+        $ref: '#/components/schemas/JsonPatch'
+    ExternalIdentifier_FVO:
+      allOf:
+      - $ref: '#/components/schemas/Extensible'
+      - type: object
+        description: An identification of an entity that is owned by or originates in a software system different from the current system, for example a ProductOrder handed off from a commerce platform into an order handling system. The structure identifies the system itself, the nature of the entity within the system (e.g. class name) and the unique ID of the entity within the system. It is anticipated that multiple external IDs can be held for a single entity, e.g. if the entity passed through multiple systems on the way to the current system. In this case the consumer is expected to sequence the IDs in the array in reverse order of provenance, i.e. most recent system first in the list.
+        properties:
+          owner:
+            type: string
+            description: Name of the external system that owns the entity.
+            example: MagentoCommerce
+          externalIdentifierType:
+            type: string
+            description: Type of the identification, typically would be the type of the entity within the external system
+            example: ProductOrder
+          id:
+            type: string
+            description: identification of the entity within the external system.
+        required:
+        - id
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ExternalIdentifier: '#/components/schemas/ExternalIdentifier_FVO'
+    ApiListAssetGroup:
+      allOf:
+      - $ref: '#/components/schemas/AssetGroup'
+      - type: object
+        description: Defines a group of API assets to which access can be controlled
+        properties:
+          apiProduct:
+            type: array
+            items:
+              $ref: '#/components/schemas/ProductRef'
+            description: The list of products for which permissions are given.
+    Addressable:
       type: object
-      description: A logical Resource Role is a role given to a logical resource in a given context.
+      description: Base schema for addressable entities
       properties:
-        grantedPermissionSet:
-          description: The PermissionSet is a set of Permissions granted to a user (party, party role, resource or resource role). The set may be granted explicitly by an authorized user or may be acquired implicitly due to the role that the user is playing.
-          type: array
-          items:
-            $ref: '#/components/schemas/ApiPermissionSet'
+        href:
+          type: string
+          description: Hyperlink reference
+        id:
+          type: string
+          description: unique identifier
     ApplicationCategoryType:
       enum:
       - agriculture
@@ -1652,81 +2086,6 @@ components:
       - weather
       type: string
       description: Valid values for the category of the Application. Please refer to main Application stores in order to retrieve a more precise definition of the categories.
-    ApiPermissionSet:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: The PermissionSet is a set of Permissions granted to a user (party, party role or resource). The set may be granted explicitly by an authorized user or may be acquired implicitly due to the role that the user is playing.
-        properties:
-          creationDate:
-            type: string
-            format: date-time
-            description: Date when the PermissionSet was created and assigned to a user
-          description:
-            type: string
-            description: Text describing the permission set
-          validFor:
-            $ref: '#/components/schemas/TimePeriod'
-          permission:
-            $ref: '#/components/schemas/ApiConsumerPermission'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApiPermissionSet: '#/components/schemas/ApiPermissionSet'
-    ApiDigitalIdentity:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: ApiDigitalIdentity is a class that allow to describe a digital identity for an individual or a resource or a specific party role. One of these three MUST be provided. If an individual is provided, this identity will be for all her/his partyRole. To avoid confusion it is recommended in this case to not provide partyRoleIdentified. DEPRECATED in the POST and PATCH, this attribute can't be valued by the API consumer in this context.
-        properties:
-          clientId:
-            type: string
-            description: 'OAuth2 Client ID: A public identifier for apps. Even though it is public, it is best that it is not guessable by third parties, so many implementations use something like a 32-character hex string. DEPRECATED in the POST and the PATCH, this attribute can''t be valued by the API consumer in this context.'
-          redirectUrl:
-            type: array
-            deprecated: true
-            items:
-              type: string
-            description: 'DEPRECATED : moved to Application schema. After a user successfully authorizes an application, the authorization server will redirect the user back to the application.'
-          jwksUri:
-            deprecated: true
-            type: string
-            description: 'DEPRECATED : moved to Application schema. JSON Web Key (JWK) is a data structure that represents a cryptographic key'
-          validFor:
-            $ref: '#/components/schemas/TimePeriod'
-          status:
-            type: string
-            description: Used to indicate the current lifecycle status of this digital identity (unknown, active, suspended, archived).
-          credential:
-            type: array
-            description: A list of credential/authentification method that are used for this digital identity.
-            items:
-              $ref: '#/components/schemas/OAuth2ClientCredential'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApiDigitalIdentity: '#/components/schemas/ApiDigitalIdentity'
-    EntityRef:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - $ref: '#/components/schemas/Addressable'
-      - type: object
-        description: Entity reference schema to be use for all entityRef class.
-        properties:
-          id:
-            type: string
-            description: The identifier of the referred entity.
-          href:
-            type: string
-            description: The URI of the referred entity.
-          name:
-            type: string
-            description: Name of the referred entity.
-          '@referredType':
-            type: string
-            description: The actual type of the target instance when needed for disambiguation.
-        required:
-        - id
     TimePeriod:
       type: object
       description: A period of time, either as a deadline (endDateTime only) a startDateTime only, or both
@@ -1741,372 +2100,15 @@ components:
           type: string
           format: date-time
           example: '1985-04-12T23:20:50.52Z'
-    ExternalIdentifier_FVO:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: An identification of an entity that is owned by or originates in a software system different from the current system, for example a ProductOrder handed off from a commerce platform into an order handling system. The structure identifies the system itself, the nature of the entity within the system (e.g. class name) and the unique ID of the entity within the system. It is anticipated that multiple external IDs can be held for a single entity, e.g. if the entity passed through multiple systems on the way to the current system. In this case the consumer is expected to sequence the IDs in the array in reverse order of provenance, i.e. most recent system first in the list.
-        properties:
-          owner:
-            type: string
-            description: Name of the external system that owns the entity.
-            example: MagentoCommerce
-          externalIdentifierType:
-            type: string
-            description: Type of the identification, typically would be the type of the entity within the external system
-            example: ProductOrder
-          id:
-            type: string
-            description: identification of the entity within the external system.
-        required:
-        - id
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ExternalIdentifier: '#/components/schemas/ExternalIdentifier_FVO'
-    Application_RES:
+    ProductRef:
       type: object
-      description: Response object for Application
-      allOf:
-      - $ref: '#/components/schemas/Application'
-      required:
-      - id
-      - href
-    LogicalResource:
-      allOf:
-      - $ref: '#/components/schemas/Entity'
-      - type: object
-        description: Logic resource is a type of resource that describes the common set of attributes shared by all concrete logical resources (e.g. TPE, MSISDN, IP Addresses) in the inventory.
-        properties:
-          description:
-            type: string
-            description: free-text description of the resource
-          name:
-            type: string
-            description: the name of the resource
-          operationalState:
-            $ref: '#/components/schemas/ResourceOperationalStateType'
-          resourceVersion:
-            type: string
-            description: A field that identifies the specific version of an instance of a resource.
-          externalIdentifier:
-            type: array
-            description: An identification of this resource that is owned by or originates in a software system different from the current system. The structure identifies the system itself, the nature of the resource within the system and the unique ID of the resource within the system. It is anticipated that multiple external IDs can be held for a single resource, e.g. if the resource passed through multiple systems on the way to the current system.
-            items:
-              $ref: '#/components/schemas/ExternalIdentifier'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          Application: '#/components/schemas/Application'
-          LogicalResource: '#/components/schemas/LogicalResource'
-    OAuth2ClientCredential:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: OAuth2ClientCredential describes the registration attributes in an OAuth registration process
-        properties:
-          clientSecret:
-            type: string
-            description: Secret that permits the Application to authenticate with OAuth2 method.
-          state:
-            type: string
-            description: Used to indicate the current lifecycle state of this credential (like active, inactive, expired).
-          validFor:
-            $ref: '#/components/schemas/TimePeriod'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          OAuth2ClientCredential: '#/components/schemas/OAuth2ClientCredential'
-    ApiDigitalIdentity_MVO:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: ApiDigitalIdentity is a class that allow to describe a digital identity for an individual or a resource or a specific party role. One of these three MUST be provided. If an individual is provided, this identity will be for all her/his partyRole. To avoid confusion it is recommended in this case to not provide partyRoleIdentified. DEPRECATED in the POST and PATCH, this attribute can't be valued by the API consumer in this context.
-        properties:
-          clientId:
-            type: string
-            description: 'OAuth2 Client ID: A public identifier for apps. Even though it is public, it is best that it is not guessable by third parties, so many implementations use something like a 32-character hex string. DEPRECATED in the POST and the PATCH, this attribute can''t be valued by the API consumer in this context.'
-          redirectUrl:
-            type: array
-            deprecated: true
-            items:
-              type: string
-            description: 'DEPRECATED : moved to Application schema. After a user successfully authorizes an application, the authorization server will redirect the user back to the application.'
-          jwksUri:
-            deprecated: true
-            type: string
-            description: 'DEPRECATED : moved to Application schema. JSON Web Key (JWK) is a data structure that represents a cryptographic key'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApiDigitalIdentity: '#/components/schemas/ApiDigitalIdentity_MVO'
-    ResourceOperationalStateType:
-      enum:
-      - enable
-      - disable
-      type: string
-      description: 'ResourceOperationalStateType enumerations; values defined by ITU X.731: ''disable'': The resource is totally inoperable and unable to provide service to the user(s); ''enable'': The resource is partially or fully operable and available for use.'
-    ContactMedium_FVO:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: 'Indicates the contact medium that could be used to contact the party. This is an abstract base class, the actual value is in one of the strongly-typed subclasses : EmailContactMedium, FaxContactMedium, PhoneContactMedium, GeographicAddressContactMedium, SocialMediaContactMedium...'
-        properties:
-          id:
-            type: string
-            description: Identifier for this contact medium.
-          preferred:
-            type: boolean
-            description: If true, indicates that is the preferred contact medium
-          contactType:
-            type: string
-            description: Type of the contact medium to qualify it like pro email / personal email. This is not used to define the contact medium used.
-          validFor:
-            $ref: '#/components/schemas/TimePeriod'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ContactMedium: '#/components/schemas/ContactMedium_FVO'
-          EmailContactMedium: '#/components/schemas/EmailContactMedium'
-          FaxContactMedium: '#/components/schemas/FaxContactMedium'
-          GeographicAddressContactMedium: '#/components/schemas/GeographicAddressContactMedium'
-          PhoneContactMedium: '#/components/schemas/PhoneContactMedium'
-          SocialContactMedium: '#/components/schemas/SocialContactMedium'
-          WebFormContactMedium: '#/components/schemas/WebFormContactMedium_FVO'
-    AssetGroup:
-      type: object
-      description: Defines a group of assets (entities) to which access can be controlled. Specific subclasses allow definition in various ways (list of entities, queries, ownership by customer, etc.). AssetGroup is not a managed entity, its concrete subclasses are always included by value in their containing entities.
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApiListAssetGroup: '#/components/schemas/ApiListAssetGroup'
-          AssetGroup: '#/components/schemas/AssetGroup'
-    ApiDigitalIdentity_FVO:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: ApiDigitalIdentity is a class that allow to describe a digital identity for an individual or a resource or a specific party role. One of these three MUST be provided. If an individual is provided, this identity will be for all her/his partyRole. To avoid confusion it is recommended in this case to not provide partyRoleIdentified. DEPRECATED in the POST and PATCH, this attribute can't be valued by the API consumer in this context.
-        properties:
-          clientId:
-            type: string
-            description: 'OAuth2 Client ID: A public identifier for apps. Even though it is public, it is best that it is not guessable by third parties, so many implementations use something like a 32-character hex string. DEPRECATED in the POST and the PATCH, this attribute can''t be valued by the API consumer in this context.'
-          redirectUrl:
-            type: array
-            deprecated: true
-            items:
-              type: string
-            description: 'DEPRECATED : moved to Application schema. After a user successfully authorizes an application, the authorization server will redirect the user back to the application.'
-          jwksUri:
-            deprecated: true
-            type: string
-            description: 'DEPRECATED : moved to Application schema. JSON Web Key (JWK) is a data structure that represents a cryptographic key'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApiDigitalIdentity: '#/components/schemas/ApiDigitalIdentity_FVO'
-    ContactMedium:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: 'Indicates the contact medium that could be used to contact the party. This is an abstract base class, the actual value is in one of the strongly-typed subclasses : EmailContactMedium, FaxContactMedium, PhoneContactMedium, GeographicAddressContactMedium, SocialMediaContactMedium...'
-        properties:
-          id:
-            type: string
-            description: Identifier for this contact medium.
-          preferred:
-            type: boolean
-            description: If true, indicates that is the preferred contact medium
-          contactType:
-            type: string
-            description: Type of the contact medium to qualify it like pro email / personal email. This is not used to define the contact medium used.
-          validFor:
-            $ref: '#/components/schemas/TimePeriod'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ContactMedium: '#/components/schemas/ContactMedium'
-          EmailContactMedium: '#/components/schemas/EmailContactMedium'
-          FaxContactMedium: '#/components/schemas/FaxContactMedium'
-          GeographicAddressContactMedium: '#/components/schemas/GeographicAddressContactMedium'
-          PhoneContactMedium: '#/components/schemas/PhoneContactMedium'
-          SocialContactMedium: '#/components/schemas/SocialContactMedium'
-          WebFormContactMedium: '#/components/schemas/WebFormContactMedium'
-    JsonPatchOperations:
-      description: JSONPatch Operations document as defined by RFC 6902
-      type: array
-      items:
-        $ref: '#/components/schemas/JsonPatch'
-    PartyRoleRef:
+      description: A Product reference
       allOf:
       - $ref: '#/components/schemas/EntityRef'
-      - type: object
-        description: Party role reference. A party role represents the part played by a party in a given context.
-        properties:
-          partyId:
-            type: string
-            description: The identifier of the engaged party that is linked to the PartyRole object.
-          partyName:
-            type: string
-            description: The name of the engaged party that is linked to the PartyRole object.
       discriminator:
         propertyName: '@type'
         mapping:
-          PartyRoleRef: '#/components/schemas/PartyRoleRef'
-    Error:
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          Error: '#/components/schemas/Error'
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        required:
-        - code
-        - reason
-        properties:
-          code:
-            type: string
-            description: Application relevant detail, defined in the API or a common list.
-          reason:
-            type: string
-            description: Explanation of the reason for the error which can be shown to a client user.
-          message:
-            type: string
-            description: More details and corrective actions related to the error which can be shown to a client user.
-          status:
-            type: string
-            description: HTTP Error code extension
-          referenceError:
-            type: string
-            description: URI of documentation describing the error.
-      description: Used when an API throws an Error, typically with a HTTP error response-code (3xx, 4xx, 5xx)
-    Application_FVO:
-      allOf:
-      - $ref: '#/components/schemas/LogicalResource_FVO'
-      - type: object
-        description: Application is a logical resource that can consume API products. It's a specialization of a LogicalResource in the Open Gateway context.
-        properties:
-          commercialName:
-            type: string
-            description: Exact name of the Application as marketed (and known by the end-user).
-          logoUrl:
-            type: string
-            description: Url to retrieve the Application official logo.
-          privacyPolicyURL:
-            type: string
-            description: Url to Application privacy policy, if applicable.
-          redirectUrl:
-            type: array
-            items:
-              type: string
-            description: After a user successfully authorizes an application, the authorization server will redirect the user back to the application.
-          jwksUri:
-            type: string
-            description: 'Uri pointing to a JSON Web Key (JWK) : data structure that represents a cryptographic key'
-          category:
-            $ref: '#/components/schemas/ApplicationCategoryType'
-          applicationOwner:
-            $ref: '#/components/schemas/PartyRoleRef'
-          privacyRightsRequestContact:
-            type: array
-            items:
-              $ref: '#/components/schemas/ContactMedium_FVO'
-            description: Contact information for the exercise of data protection rights to which the End Users can address. Must be only EmailContactMedium or WebFormContactMedium for this context.
-          digitalIdentity:
-            $ref: '#/components/schemas/ApiDigitalIdentity_FVO'
-        required:
-        - commercialName
-        - applicationOwner
-        - description
-    JsonPatch:
-      type: object
-      description: A JSONPatch document as defined by RFC 6902
-      required:
-      - op
-      - path
-      properties:
-        op:
-          type: string
-          description: The operation to be performed
-          enum:
-          - add
-          - remove
-          - replace
-          - move
-          - copy
-          - test
-        path:
-          type: string
-          description: A JSON-Pointer
-        value:
-          description: The value to be used within the operations.
-        from:
-          type: string
-          description: A string containing a JSON Pointer value.
-    Application_MVO:
-      allOf:
-      - $ref: '#/components/schemas/LogicalResource_MVO'
-      - type: object
-        description: Application is a logical resource that can consume API products. It's a specialization of a LogicalResource in the Open Gateway context.
-        properties:
-          commercialName:
-            type: string
-            description: Exact name of the Application as marketed (and known by the end-user).
-          logoUrl:
-            type: string
-            description: Url to retrieve the Application official logo.
-          privacyPolicyURL:
-            type: string
-            description: Url to Application privacy policy, if applicable.
-          redirectUrl:
-            type: array
-            items:
-              type: string
-            description: After a user successfully authorizes an application, the authorization server will redirect the user back to the application.
-          jwksUri:
-            type: string
-            description: 'Uri pointing to a JSON Web Key (JWK) : data structure that represents a cryptographic key'
-          category:
-            $ref: '#/components/schemas/ApplicationCategoryType'
-          approvalStatusReason:
-            type: string
-            description: The reason why the approval state changed. DEPRECATED in the PATCH (bug to be fixed on next major version).
-          privacyRightsRequestContact:
-            type: array
-            items:
-              $ref: '#/components/schemas/ContactMedium'
-            description: Contact information for the exercise of data protection rights to which the End Users can address. Must be only EmailContactMedium or WebFormContactMedium for this context.
-          digitalIdentity:
-            $ref: '#/components/schemas/ApiDigitalIdentity_MVO'
-    ApiConsumerPermission:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: An ApiConsumerPermission allows an Application to consume an API.
-        properties:
-          managedAssetGroup:
-            $ref: '#/components/schemas/ApiListAssetGroup'
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ApiConsumerPermission: '#/components/schemas/ApiConsumerPermission'
-    Extensible:
-      type: object
-      description: Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type
-      properties:
-        '@type':
-          type: string
-          description: When sub-classing, this defines the sub-class Extensible name
-        '@baseType':
-          type: string
-          description: When sub-classing, this defines the super-class
-        '@schemaLocation':
-          type: string
-          description: A URI to a JSON-Schema file that defines additional attributes and relationships
-      required:
-      - '@type'
+          ProductRef: '#/components/schemas/ProductRef'
     ApprovalStatusType:
       enum:
       - pendingApproval
@@ -2141,27 +2143,6 @@ components:
         mapping:
           Application: '#/components/schemas/Application_MVO'
           LogicalResource: '#/components/schemas/LogicalResource_MVO'
-    ExternalIdentifier:
-      allOf:
-      - $ref: '#/components/schemas/Extensible'
-      - type: object
-        description: An identification of an entity that is owned by or originates in a software system different from the current system, for example a ProductOrder handed off from a commerce platform into an order handling system. The structure identifies the system itself, the nature of the entity within the system (e.g. class name) and the unique ID of the entity within the system. It is anticipated that multiple external IDs can be held for a single entity, e.g. if the entity passed through multiple systems on the way to the current system. In this case the consumer is expected to sequence the IDs in the array in reverse order of provenance, i.e. most recent system first in the list.
-        properties:
-          owner:
-            type: string
-            description: Name of the external system that owns the entity.
-            example: MagentoCommerce
-          externalIdentifierType:
-            type: string
-            description: Type of the identification, typically would be the type of the entity within the external system
-            example: ProductOrder
-          id:
-            type: string
-            description: identification of the entity within the external system.
-      discriminator:
-        propertyName: '@type'
-        mapping:
-          ExternalIdentifier: '#/components/schemas/ExternalIdentifier'
     LogicalResource_FVO:
       allOf:
       - $ref: '#/components/schemas/Entity'
@@ -2189,87 +2170,86 @@ components:
         mapping:
           Application: '#/components/schemas/Application_FVO'
           LogicalResource: '#/components/schemas/LogicalResource_FVO'
-    Addressable:
-      type: object
-      description: Base schema for addressable entities
-      properties:
-        href:
-          type: string
-          description: Hyperlink reference
-        id:
-          type: string
-          description: unique identifier
-    ApiListAssetGroup:
+    ApiDigitalIdentity_FVO:
       allOf:
-      - $ref: '#/components/schemas/AssetGroup'
+      - $ref: '#/components/schemas/Extensible'
       - type: object
-        description: Defines a group of API assets to which access can be controlled
+        description: ApiDigitalIdentity is a class that allow to describe a digital identity for an individual or a resource or a specific party role. One of these three MUST be provided. If an individual is provided, this identity will be for all her/his partyRole. To avoid confusion it is recommended in this case to not provide partyRoleIdentified. DEPRECATED in the POST and PATCH, this attribute can't be valued by the API consumer in this context.
         properties:
-          apiProduct:
+          clientId:
+            type: string
+            description: 'OAuth2 Client ID: A public identifier for apps. Even though it is public, it is best that it is not guessable by third parties, so many implementations use something like a 32-character hex string. DEPRECATED in the POST and the PATCH, this attribute can''t be valued by the API consumer in this context.'
+          redirectUrl:
             type: array
+            deprecated: true
             items:
-              $ref: '#/components/schemas/ProductRef'
-            description: The list of products for which permissions are given.
-  parameters:
-    x-correlator:
-      name: x-correlator
-      in: header
-      description: 'Correlation id for the different services
-
-        '
-      schema:
-        type: string
-    Id:
-      name: id
-      required: true
-      schema:
-        type: string
-      in: path
-      description: Identifier of the Resource
-    Before:
-      name: before
-      in: query
-      description: An opaque string value representing the page results before the cursor value
-      schema:
-        type: string
-    Filter:
-      name: filter
-      in: query
-      description: Filter a collection using JSONPath
-      schema:
-        type: string
-        example: attachment[?(@size==300)]
-    Fields:
-      name: fields
-      in: query
-      description: Comma-separated properties to be provided in response
-      schema:
-        type: string
-    Offset:
-      name: offset
-      in: query
-      description: Requested index for start of resources to be provided in response
-      schema:
-        type: integer
-    Limit:
-      name: limit
-      in: query
-      description: Requested number of resources to be provided in response
-      schema:
-        type: integer
-    Sort:
-      name: sort
-      in: query
-      description: The default direction is Ascending order, the use of the modifier in front of the sort field name, “-“, changes the sort order direction.
-      schema:
-        type: string
-    After:
-      name: after
-      in: query
-      description: An opaque string value representing the page results after the cursor value
-      schema:
-        type: string
+              type: string
+            description: 'DEPRECATED : moved to Application schema. After a user successfully authorizes an application, the authorization server will redirect the user back to the application.'
+          jwksUri:
+            deprecated: true
+            type: string
+            description: 'DEPRECATED : moved to Application schema. JSON Web Key (JWK) is a data structure that represents a cryptographic key'
+      discriminator:
+        propertyName: '@type'
+        mapping:
+          ApiDigitalIdentity: '#/components/schemas/ApiDigitalIdentity_FVO'
+    Application_RES:
+      type: object
+      description: Response object for Application
+      allOf:
+      - $ref: '#/components/schemas/Application'
+      required:
+      - id
+      - href
+    LogicalResourceRole:
+      type: object
+      description: A logical Resource Role is a role given to a logical resource in a given context.
+      properties:
+        grantedPermissionSet:
+          description: The PermissionSet is a set of Permissions granted to a user (party, party role, resource or resource role). The set may be granted explicitly by an authorized user or may be acquired implicitly due to the role that the user is playing.
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiPermissionSet'
   responses:
+    '404':
+      description: Not Found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 404
+            code: NOT_FOUND
+            message: Resource does not exist
+    '501':
+      description: Not Implemented
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 501
+            code: NOT_IMPLEMENTED
+            message: Service not implemented
+    '403':
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 403
+            code: PERMISSION_DENIED
+            message: 'Operation not allowed: ...'
     '400':
       description: Bad request
       headers:
@@ -2296,19 +2276,6 @@ components:
             status: 503
             code: UNAVAILABLE
             message: Service unavailable
-    '403':
-      description: Unauthorized
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 403
-            code: PERMISSION_DENIED
-            message: 'Operation not allowed: ...'
     '500':
       description: Internal Server Error
       headers:
@@ -2322,19 +2289,6 @@ components:
             status: 500
             code: INTERNAL
             message: 'Internal server error: ...'
-    '404':
-      description: Not Found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 404
-            code: NOT_FOUND
-            message: Resource does not exist
     '401':
       description: Unauthorized
       headers:
@@ -2348,19 +2302,69 @@ components:
             status: 401
             code: UNAUTHENTICATED
             message: 'Authorization failed: ...'
-    '501':
-      description: Not Implemented
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
+    '404_2':
+      description: Not Found
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 501
-            code: NOT_IMPLEMENTED
-            message: Service not implemented
+            $ref: '#/components/schemas/Error'
+          examples:
+            basic:
+              summary: Not Found Error
+              value:
+                '@type': Error
+                code: ERR404
+                reason: Not Found
+                message: The requested URL was not found on the server.
+                referenceError: https://host/errors
+    '501_2':
+      description: Not Implemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            basic:
+              summary: Not Implemented Error
+              value:
+                '@type': Error
+                code: ERR501
+                reason: The requested operation is not implemented
+                message: The requested operation is not implemented. Please contact the system administrator.
+                referenceError: https://host/errors
+    '403_2':
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            basic:
+              summary: Forbidden Error
+              value:
+                '@type': Error
+                code: ERR403
+                reason: Forbidden
+                message: You don't have the permission to access the requested resource. It is either read-protected or not readable by the server.
+                referenceError: https://host/errors
+    200ApplicationArray:
+      description: Success
+      headers:
+        X-Total-Count:
+          $ref: '#/components/headers/X-Total-Count'
+        X-Result-Count:
+          $ref: '#/components/headers/X-Result-Count'
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Application_RES'
+          examples:
+            Retrieve_a_list_of_Application:
+              $ref: '#/components/examples/Retrieve_a_list_of_Application_response'
+            Retrieve_a_list_of_Application_with_field_selection_and_filter:
+              $ref: '#/components/examples/Retrieve_a_list_of_Application_with_field_selection_and_filter_response'
     '400_2':
       description: Bad Request
       content:
@@ -2375,6 +2379,49 @@ components:
                 code: ERR400
                 reason: Bad Request
                 message: The server could not understand the request due to invalid syntax. Please correct the syntax and try again.
+                referenceError: https://host/errors
+    200Application_Get:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Application_RES'
+          examples:
+            Retrieve_an_Application_from_its_identifier:
+              $ref: '#/components/examples/Retrieve_an_Application_from_its_identifier_response'
+            Retrieve_an_Application_with_permissions_from_its_identifier:
+              $ref: '#/components/examples/Retrieve_an_Application_with_permissions_from_its_identifier_response'
+            Retrieve_an_Application_without_digital_identity_from_its_identifier:
+              $ref: '#/components/examples/Retrieve_an_Application_without_digital_identity_from_its_identifier_response'
+    '405':
+      description: Method Not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            basic:
+              summary: Method Not allowed Error
+              value:
+                '@type': Error
+                code: ERR405
+                reason: Method Not allowed
+                message: The method is not allowed for the requested URL.
+                referenceError: https://host/errors
+    '409':
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            basic:
+              summary: Conflict Error
+              value:
+                '@type': Error
+                code: ERR409
+                reason: Conflict
+                message: The request could not be completed due to a conflict with the current state of the target resource.
                 referenceError: https://host/errors
     200Application_Patch:
       description: Success
@@ -2406,21 +2453,15 @@ components:
                 reason: Service Unavailable
                 message: The service is currently unavailable. Please try again later.
                 referenceError: https://host/errors
-    '403_2':
-      description: Forbidden
+    201Application:
+      description: Created
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: '#/components/schemas/Application_RES'
           examples:
-            basic:
-              summary: Forbidden Error
-              value:
-                '@type': Error
-                code: ERR403
-                reason: Forbidden
-                message: You don't have the permission to access the requested resource. It is either read-protected or not readable by the server.
-                referenceError: https://host/errors
+            Create_an_Application:
+              $ref: '#/components/examples/Create_an_Application_response'
     '500_2':
       description: Internal Server Error
       content:
@@ -2436,30 +2477,6 @@ components:
                 reason: Internal Server Error
                 message: The server encountered an internal error. Please contact the system administrator.
                 referenceError: https://host/errors
-    '404_2':
-      description: Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            basic:
-              summary: Not Found Error
-              value:
-                '@type': Error
-                code: ERR404
-                reason: Not Found
-                message: The requested URL was not found on the server.
-                referenceError: https://host/errors
-    201Application:
-      description: Created
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Application_RES'
-          examples:
-            Create_an_Application:
-              $ref: '#/components/examples/Create_an_Application_response'
     '401_2':
       description: Unauthorized
       content:
@@ -2474,82 +2491,6 @@ components:
                 code: ERR401
                 reason: Unauthorized
                 message: You are not authorized to access the requested resource. Please provide the correct credentials.
-                referenceError: https://host/errors
-    '501_2':
-      description: Not Implemented
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            basic:
-              summary: Not Implemented Error
-              value:
-                '@type': Error
-                code: ERR501
-                reason: The requested operation is not implemented
-                message: The requested operation is not implemented. Please contact the system administrator.
-                referenceError: https://host/errors
-    200ApplicationArray:
-      description: Success
-      headers:
-        X-Total-Count:
-          $ref: '#/components/headers/X-Total-Count'
-        X-Result-Count:
-          $ref: '#/components/headers/X-Result-Count'
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/Application_RES'
-          examples:
-            Retrieve_a_list_of_Application:
-              $ref: '#/components/examples/Retrieve_a_list_of_Application_response'
-            Retrieve_a_list_of_Application_with_field_selection_and_filter:
-              $ref: '#/components/examples/Retrieve_a_list_of_Application_with_field_selection_and_filter_response'
-    '405':
-      description: Method Not allowed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            basic:
-              summary: Method Not allowed Error
-              value:
-                '@type': Error
-                code: ERR405
-                reason: Method Not allowed
-                message: The method is not allowed for the requested URL.
-                referenceError: https://host/errors
-    200Application_Get:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Application_RES'
-          examples:
-            Retrieve_an_Application_from_its_identifier:
-              $ref: '#/components/examples/Retrieve_an_Application_from_its_identifier_response'
-            Retrieve_an_Application_with_permissions_from_its_identifier:
-              $ref: '#/components/examples/Retrieve_an_Application_with_permissions_from_its_identifier_response'
-            Retrieve_an_Application_without_digital_identity_from_its_identifier:
-              $ref: '#/components/examples/Retrieve_an_Application_without_digital_identity_from_its_identifier_response'
-    '409':
-      description: Conflict
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            basic:
-              summary: Conflict Error
-              value:
-                '@type': Error
-                code: ERR409
-                reason: Conflict
-                message: The request could not be completed due to a conflict with the current state of the target resource.
                 referenceError: https://host/errors
   headers:
     x-correlator:
@@ -2568,96 +2509,66 @@ components:
       description: Actual number of items returned in the response body
       schema:
         type: integer
+  parameters:
+    x-correlator:
+      name: x-correlator
+      in: header
+      description: 'Correlation id for the different services
+
+        '
+      schema:
+        type: string
+    Filter:
+      name: filter
+      in: query
+      description: Filter a collection using JSONPath
+      schema:
+        type: string
+        example: attachment[?(@size==300)]
+    Limit:
+      name: limit
+      in: query
+      description: Requested number of resources to be provided in response
+      schema:
+        type: integer
+    Sort:
+      name: sort
+      in: query
+      description: The default direction is Ascending order, the use of the modifier in front of the sort field name, “-“, changes the sort order direction.
+      schema:
+        type: string
+    Fields:
+      name: fields
+      in: query
+      description: Comma-separated properties to be provided in response
+      schema:
+        type: string
+    Id:
+      name: id
+      required: true
+      schema:
+        type: string
+      in: path
+      description: Identifier of the Resource
+    Before:
+      name: before
+      in: query
+      description: An opaque string value representing the page results before the cursor value
+      schema:
+        type: string
+    After:
+      name: after
+      in: query
+      description: An opaque string value representing the page results after the cursor value
+      schema:
+        type: string
+    Offset:
+      name: offset
+      in: query
+      description: Requested index for start of resources to be provided in response
+      schema:
+        type: integer
   examples:
-    Update_an_Application_with_json-patch_json_content_type_response:
-      value:
-        '@type': Application
-        '@baseType': LogicalResource
-        id: f1cba17d-789a-4037-b3e3-2c96e887576c
-        href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/f1cba17d-789a-4037-b3e3-2c96e887576c
-        name: Evolve Quest
-        creationDate: '2024-12-02T14:00:00.00Z'
-        commercialName: Evolve Quest
-        logoUrl: https://channelpartner.com/opengateway/application/evolvequest/logo.jpg
-        privacyPolicyURL: https://channelpartner.com/opengateway/application/evolvequest/privacyPolicy.html
-        description: Evolve Quest mobile application
-        redirectUrl:
-        - https://channelpartner.com/opengateway/application/evolvequest/redirect
-        jwksUri: https://channelpartner.com/opengateway/application/evolvequest/jwk
-        category: games
-        operationalState: disable
-        approvalStatus: approved
-        digitalIdentity:
-          '@type': ApiDigitalIdentity
-          clientId: evolve_quest_channelPartner15
-          validFor:
-            startDateTime: '2024-12-02T14:01:00.00Z'
-        applicationOwner:
-          '@type': PartyRoleRef
-          id: e05b75dc-f843-40d9-8d16-112275a28385
-          '@referredType': PartyRole
-        privacyRightsRequestContact:
-        - '@type': WebFormContactMedium
-          '@baseType': ContactMedium
-          id: '1'
-          preferred: false
-          url: https://contact.evolvequest.com
-        - '@type': EmailContactMedium
-          '@baseType': ContactMedium
-          id: '2'
-          preferred: true
-          emailAddress: contact@evolvequest.com
-        externalIdentifier:
-        - '@type': ExternalIdentifier
-          id: application_123
-          owner: ChannelPartner
-          externalIdentifierType: Application
-        channelPartner:
-          '@type': PartyRoleRef
-          id: '15'
-          '@referredType': PartyRole
-      description: An example of a response for updating an Application object.
-    Update_an_Application_with_json-patch-query_json_content_type_request:
-      value:
-      - op: replace
-        path: /externalIdentifier?id=application_123
-        value:
-          '@type': ExternalIdentifier
-          id: application_124
-          owner: ChannelPartner
-          externalIdentifierType: Application
-      description: An example of a request for updating an Application object.
-    Update_an_Application_with_merge-patch_json_content_type_request:
-      value:
-        '@type': Application
-        operationalState: disable
-      description: An example of a request for updating an Application object.
-    Update_an_Application_with_json-patch_json_content_type_request:
-      value:
-      - op: replace
-        path: /operationalState
-        value: disable
-      description: An example of a request for updating an Application object.
-    Retrieve_a_list_of_Application_with_field_selection_and_filter_response:
-      value:
-      - '@type': Application
-        '@baseType': LogicalResource
-        id: f1cba17d-789a-4037-b3e3-2c96e887576c
-        href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/f1cba17d-789a-4037-b3e3-2c96e887576c
-        approvalStatus: approved
-        applicationOwner:
-          '@type': PartyRoleRef
-          id: e05b75dc-f843-40d9-8d16-112275a28385
-      - '@type': Application
-        '@baseType': LogicalResource
-        id: '102'
-        href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/102
-        approvalStatus: approved
-        applicationOwner:
-          '@type': PartyRoleRef
-          id: e05b75dc-f843-40d9-8d16-112275a28385
-          '@referredType': PartyRole
-      description: A collection of Application with field selection and filter
     Update_an_Application_with_merge-patch_json_content_type_response:
       value:
         '@type': Application
@@ -2706,7 +2617,153 @@ components:
           id: '15'
           '@referredType': PartyRole
       description: An example of a response for updating an Application object.
-    Update_an_Application_with_json_content_type_response:
+    Retrieve_a_list_of_Application_response:
+      value:
+      - '@type': Application
+        '@baseType': LogicalResource
+        id: f1cba17d-789a-4037-b3e3-2c96e887576c
+        href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/f1cba17d-789a-4037-b3e3-2c96e887576c
+        name: Evolve Quest
+        creationDate: '2024-12-02T14:00:00.00Z'
+        commercialName: Evolve Quest
+        logoUrl: https://channelpartner.com/opengateway/application/evolvequest/logo.jpg
+        privacyPolicyURL: https://channelpartner.com/opengateway/application/evolvequest/privacyPolicy.html
+        description: Evolve Quest mobile application
+        redirectUrl:
+        - https://channelpartner.com/opengateway/application/evolvequest/redirect
+        jwksUri: https://channelpartner.com/opengateway/application/evolvequest/jwk
+        category: games
+        operationalState: enable
+        approvalStatus: approved
+        digitalIdentity:
+          '@type': ApiDigitalIdentity
+          clientId: evolve_quest_channelPartner15
+          validFor:
+            startDateTime: '2024-12-02T14:01:00.00Z'
+        applicationOwner:
+          '@type': PartyRoleRef
+          id: e05b75dc-f843-40d9-8d16-112275a28385
+          '@referredType': PartyRole
+        privacyRightsRequestContact:
+        - '@type': WebFormContactMedium
+          '@baseType': ContactMedium
+          id: '1'
+          preferred: false
+          url: https://contact.evolvequest.com
+        - '@type': EmailContactMedium
+          '@baseType': ContactMedium
+          id: '2'
+          preferred: true
+          emailAddress: contact@evolvequest.com
+        channelPartner:
+          '@type': PartyRoleRef
+          id: '15'
+          '@referredType': PartyRole
+      - '@type': Application
+        '@baseType': LogicalResource
+        id: '102'
+        href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/102
+        name: Evolve West
+        creationDate: '2024-12-02T14:10:00.00Z'
+        commercialName: Evolve West
+        logoUrl: https://channelpartner.com/opengateway/application/evolvequest/logo.jpg
+        privacyPolicyURL: https://channelpartner.com/opengateway/application/evolvequest/privacyPolicy.html
+        description: Evolve West mobile application
+        redirectUrl:
+        - https://channelpartner.com/opengateway/application/evolvequest/redirect
+        jwksUri: https://channelpartner.com/opengateway/application/evolvequest/jwk
+        category: games
+        operationalState: enable
+        approvalStatus: approved
+        digitalIdentity:
+          '@type': ApiDigitalIdentity
+          clientId: evolve_west_channelPartner15
+          validFor:
+            startDateTime: '2024-12-02T14:11:00.00Z'
+        apiConsumerRole:
+        - grantedPermissionSet:
+          - '@type': ApiPermissionSet
+            creationDate: '2025-04-02T15:00:00.00Z'
+            permission:
+              '@type': ApiConsumerPermission
+              managedAssetGroup:
+                '@type': ApiListAssetGroup
+                '@baseType': AssetGroup
+                apiProduct:
+                - '@type': ProductRef
+                  id: '123'
+                  '@referredType': ApiProduct
+            validFor:
+              startDateTime: '2025-04-02T15:00:00.00Z'
+        applicationOwner:
+          '@type': PartyRoleRef
+          id: e05b75dc-f843-40d9-8d16-112275a28385
+          '@referredType': PartyRole
+        privacyRightsRequestContact:
+        - '@type': WebFormContactMedium
+          '@baseType': ContactMedium
+          id: '1'
+          preferred: false
+          url: https://contact.evolvewest.com
+        - '@type': EmailContactMedium
+          '@baseType': ContactMedium
+          id: '2'
+          preferred: true
+          emailAddress: contact@evolvewest.com
+        channelPartner:
+          '@type': PartyRoleRef
+          id: '15'
+          '@referredType': PartyRole
+      description: A collection of Application representation
+    Update_an_Application_with_json_content_type_request:
+      value:
+        '@type': Application
+        operationalState: disable
+      description: Updating an Application object.
+    Retrieve_an_Application_from_its_identifier_response:
+      value:
+        '@type': Application
+        '@baseType': LogicalResource
+        id: f1cba17d-789a-4037-b3e3-2c96e887576c
+        href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/f1cba17d-789a-4037-b3e3-2c96e887576c
+        name: Evolve Quest
+        creationDate: '2024-12-02T14:00:00.00Z'
+        commercialName: Evolve Quest
+        logoUrl: https://channelpartner.com/opengateway/application/evolvequest/logo.jpg
+        privacyPolicyURL: https://channelpartner.com/opengateway/application/evolvequest/privacyPolicy.html
+        description: Evolve Quest mobile application
+        redirectUrl:
+        - https://channelpartner.com/opengateway/application/evolvequest/redirect
+        jwksUri: https://channelpartner.com/opengateway/application/evolvequest/jwk
+        category: games
+        operationalState: enable
+        approvalStatus: approved
+        digitalIdentity:
+          '@type': ApiDigitalIdentity
+          clientId: evolve_quest_channelPartner15
+          validFor:
+            startDateTime: '2024-12-02T14:01:00.00Z'
+        applicationOwner:
+          '@type': PartyRoleRef
+          id: e05b75dc-f843-40d9-8d16-112275a28385
+          '@referredType': PartyRole
+        privacyRightsRequestContact:
+        - '@type': WebFormContactMedium
+          '@baseType': ContactMedium
+          id: '1'
+          preferred: false
+          url: https://contact.evolvequest.com
+        - '@type': EmailContactMedium
+          '@baseType': ContactMedium
+          id: '2'
+          preferred: true
+          emailAddress: contact@evolvequest.com
+        channelPartner:
+          '@type': PartyRoleRef
+          id: '15'
+          '@referredType': PartyRole
+      description: Application representation
+    Update_an_Application_with_json-patch_json_content_type_response:
       value:
         '@type': Application
         '@baseType': LogicalResource
@@ -2753,7 +2810,63 @@ components:
           '@type': PartyRoleRef
           id: '15'
           '@referredType': PartyRole
-      description: A response after PATCH-ing an Application object.
+      description: An example of a response for updating an Application object.
+    Create_an_Application_response:
+      value:
+        '@type': Application
+        '@baseType': LogicalResource
+        id: f1cba17d-789a-4037-b3e3-2c96e887576c
+        href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/f1cba17d-789a-4037-b3e3-2c96e887576c
+        name: Evolve Quest
+        creationDate: '2024-12-02T14:00:00.00Z'
+        commercialName: Evolve Quest
+        logoUrl: https://channelpartner.com/opengateway/application/evolvequest/logo.jpg
+        privacyPolicyURL: https://channelpartner.com/opengateway/application/evolvequest/privacyPolicy.html
+        description: Evolve Quest mobile application
+        redirectUrl:
+        - https://channelpartner.com/opengateway/application/evolvequest/redirect
+        jwksUri: https://channelpartner.com/opengateway/application/evolvequest/jwk
+        category: games
+        operationalState: enable
+        approvalStatus: approved
+        digitalIdentity:
+          '@type': ApiDigitalIdentity
+          clientId: evolve_quest_channelPartner15
+        applicationOwner:
+          '@type': PartyRoleRef
+          id: e05b75dc-f843-40d9-8d16-112275a28385
+          '@referredType': PartyRole
+        privacyRightsRequestContact:
+        - '@type': WebFormContactMedium
+          '@baseType': ContactMedium
+          id: '1'
+          preferred: false
+          url: https://contact.evolvequest.com
+        - '@type': EmailContactMedium
+          '@baseType': ContactMedium
+          id: '2'
+          preferred: true
+          emailAddress: contact@evolvequest.com
+        externalIdentifier:
+        - '@type': ExternalIdentifier
+          id: application_123
+          owner: ChannelPartner
+          externalIdentifierType: Application
+        channelPartner:
+          '@type': PartyRoleRef
+          id: '15'
+          '@referredType': PartyRole
+      description: POST Application Response Example
+    Update_an_Application_with_json-patch-query_json_content_type_request:
+      value:
+      - op: replace
+        path: /externalIdentifier?id=application_123
+        value:
+          '@type': ExternalIdentifier
+          id: application_124
+          owner: ChannelPartner
+          externalIdentifierType: Application
+      description: An example of a request for updating an Application object.
     Retrieve_an_Application_with_permissions_from_its_identifier_response:
       value:
         '@type': Application
@@ -2860,7 +2973,7 @@ components:
           id: '15'
           '@referredType': PartyRole
       description: An example of a response for updating an Application object.
-    Create_an_Application_response:
+    Update_an_Application_with_json_content_type_response:
       value:
         '@type': Application
         '@baseType': LogicalResource
@@ -2876,11 +2989,13 @@ components:
         - https://channelpartner.com/opengateway/application/evolvequest/redirect
         jwksUri: https://channelpartner.com/opengateway/application/evolvequest/jwk
         category: games
-        operationalState: enable
+        operationalState: disable
         approvalStatus: approved
         digitalIdentity:
           '@type': ApiDigitalIdentity
           clientId: evolve_quest_channelPartner15
+          validFor:
+            startDateTime: '2024-12-02T14:01:00.00Z'
         applicationOwner:
           '@type': PartyRoleRef
           id: e05b75dc-f843-40d9-8d16-112275a28385
@@ -2905,105 +3020,7 @@ components:
           '@type': PartyRoleRef
           id: '15'
           '@referredType': PartyRole
-      description: POST Application Response Example
-    Retrieve_a_list_of_Application_response:
-      value:
-      - '@type': Application
-        '@baseType': LogicalResource
-        id: f1cba17d-789a-4037-b3e3-2c96e887576c
-        href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/f1cba17d-789a-4037-b3e3-2c96e887576c
-        name: Evolve Quest
-        creationDate: '2024-12-02T14:00:00.00Z'
-        commercialName: Evolve Quest
-        logoUrl: https://channelpartner.com/opengateway/application/evolvequest/logo.jpg
-        privacyPolicyURL: https://channelpartner.com/opengateway/application/evolvequest/privacyPolicy.html
-        description: Evolve Quest mobile application
-        redirectUrl:
-        - https://channelpartner.com/opengateway/application/evolvequest/redirect
-        jwksUri: https://channelpartner.com/opengateway/application/evolvequest/jwk
-        category: games
-        operationalState: enable
-        approvalStatus: approved
-        digitalIdentity:
-          '@type': ApiDigitalIdentity
-          clientId: evolve_quest_channelPartner15
-          validFor:
-            startDateTime: '2024-12-02T14:01:00.00Z'
-        applicationOwner:
-          '@type': PartyRoleRef
-          id: e05b75dc-f843-40d9-8d16-112275a28385
-          '@referredType': PartyRole
-        privacyRightsRequestContact:
-        - '@type': WebFormContactMedium
-          '@baseType': ContactMedium
-          id: '1'
-          preferred: false
-          url: https://contact.evolvequest.com
-        - '@type': EmailContactMedium
-          '@baseType': ContactMedium
-          id: '2'
-          preferred: true
-          emailAddress: contact@evolvequest.com
-        channelPartner:
-          '@type': PartyRoleRef
-          id: '15'
-          '@referredType': PartyRole
-      - '@type': Application
-        '@baseType': LogicalResource
-        id: '102'
-        href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/102
-        name: Evolve West
-        creationDate: '2024-12-02T14:10:00.00Z'
-        commercialName: Evolve West
-        logoUrl: https://channelpartner.com/opengateway/application/evolvequest/logo.jpg
-        privacyPolicyURL: https://channelpartner.com/opengateway/application/evolvequest/privacyPolicy.html
-        description: Evolve West mobile application
-        redirectUrl:
-        - https://channelpartner.com/opengateway/application/evolvequest/redirect
-        jwksUri: https://channelpartner.com/opengateway/application/evolvequest/jwk
-        category: games
-        operationalState: enable
-        approvalStatus: approved
-        digitalIdentity:
-          '@type': ApiDigitalIdentity
-          clientId: evolve_west_channelPartner15
-          validFor:
-            startDateTime: '2024-12-02T14:11:00.00Z'
-        apiConsumerRole:
-        - grantedPermissionSet:
-          - '@type': ApiPermissionSet
-            creationDate: '2025-04-02T15:00:00.00Z'
-            permission:
-              '@type': ApiConsumerPermission
-              managedAssetGroup:
-                '@type': ApiListAssetGroup
-                '@baseType': AssetGroup
-                apiProduct:
-                - '@type': ProductRef
-                  id: '123'
-                  '@referredType': ApiProduct
-            validFor:
-              startDateTime: '2025-04-02T15:00:00.00Z'
-        applicationOwner:
-          '@type': PartyRoleRef
-          id: e05b75dc-f843-40d9-8d16-112275a28385
-          '@referredType': PartyRole
-        privacyRightsRequestContact:
-        - '@type': WebFormContactMedium
-          '@baseType': ContactMedium
-          id: '1'
-          preferred: false
-          url: https://contact.evolvewest.com
-        - '@type': EmailContactMedium
-          '@baseType': ContactMedium
-          id: '2'
-          preferred: true
-          emailAddress: contact@evolvewest.com
-        channelPartner:
-          '@type': PartyRoleRef
-          id: '15'
-          '@referredType': PartyRole
-      description: A collection of Application representation
+      description: A response after PATCH-ing an Application object.
     Retrieve_an_Application_without_digital_identity_from_its_identifier_response:
       value:
         '@type': Application
@@ -3044,54 +3061,6 @@ components:
           id: '15'
           '@referredType': PartyRole
       description: Application representation
-    Retrieve_an_Application_from_its_identifier_response:
-      value:
-        '@type': Application
-        '@baseType': LogicalResource
-        id: f1cba17d-789a-4037-b3e3-2c96e887576c
-        href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/f1cba17d-789a-4037-b3e3-2c96e887576c
-        name: Evolve Quest
-        creationDate: '2024-12-02T14:00:00.00Z'
-        commercialName: Evolve Quest
-        logoUrl: https://channelpartner.com/opengateway/application/evolvequest/logo.jpg
-        privacyPolicyURL: https://channelpartner.com/opengateway/application/evolvequest/privacyPolicy.html
-        description: Evolve Quest mobile application
-        redirectUrl:
-        - https://channelpartner.com/opengateway/application/evolvequest/redirect
-        jwksUri: https://channelpartner.com/opengateway/application/evolvequest/jwk
-        category: games
-        operationalState: enable
-        approvalStatus: approved
-        digitalIdentity:
-          '@type': ApiDigitalIdentity
-          clientId: evolve_quest_channelPartner15
-          validFor:
-            startDateTime: '2024-12-02T14:01:00.00Z'
-        applicationOwner:
-          '@type': PartyRoleRef
-          id: e05b75dc-f843-40d9-8d16-112275a28385
-          '@referredType': PartyRole
-        privacyRightsRequestContact:
-        - '@type': WebFormContactMedium
-          '@baseType': ContactMedium
-          id: '1'
-          preferred: false
-          url: https://contact.evolvequest.com
-        - '@type': EmailContactMedium
-          '@baseType': ContactMedium
-          id: '2'
-          preferred: true
-          emailAddress: contact@evolvequest.com
-        channelPartner:
-          '@type': PartyRoleRef
-          id: '15'
-          '@referredType': PartyRole
-      description: Application representation
-    Update_an_Application_with_json_content_type_request:
-      value:
-        '@type': Application
-        operationalState: disable
-      description: Updating an Application object.
     Create_an_Application_request:
       value:
         '@type': Application
@@ -3126,6 +3095,37 @@ components:
           owner: ChannelPartner
           externalIdentifierType: Application
       description: POST Application Request Example
+    Update_an_Application_with_merge-patch_json_content_type_request:
+      value:
+        '@type': Application
+        operationalState: disable
+      description: An example of a request for updating an Application object.
+    Update_an_Application_with_json-patch_json_content_type_request:
+      value:
+      - op: replace
+        path: /operationalState
+        value: disable
+      description: An example of a request for updating an Application object.
+    Retrieve_a_list_of_Application_with_field_selection_and_filter_response:
+      value:
+      - '@type': Application
+        '@baseType': LogicalResource
+        id: f1cba17d-789a-4037-b3e3-2c96e887576c
+        href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/f1cba17d-789a-4037-b3e3-2c96e887576c
+        approvalStatus: approved
+        applicationOwner:
+          '@type': PartyRoleRef
+          id: e05b75dc-f843-40d9-8d16-112275a28385
+      - '@type': Application
+        '@baseType': LogicalResource
+        id: '102'
+        href: https://mycsp.com/tmf-api/openGatewayOperateAPIOnboardingAndOrdering/v5/application/102
+        approvalStatus: approved
+        applicationOwner:
+          '@type': PartyRoleRef
+          id: e05b75dc-f843-40d9-8d16-112275a28385
+          '@referredType': PartyRole
+      description: A collection of Application with field selection and filter
   requestBodies:
     Application_FVO:
       description: The Application to be created

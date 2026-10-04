@@ -389,16 +389,9 @@ paths:
       - openId:
         - quality-on-demand:sessions:retrieve-by-device
 components:
-  parameters:
-    x-correlator:
-      name: x-correlator
-      in: header
-      description: Correlation id for the different services
-      schema:
-        type: string
   responses:
-    GenericDevice404:
-      description: Not found
+    Generic429:
+      description: Too Many Requests
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -407,46 +400,18 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorInfo'
           examples:
-            GENERIC_404_NOT_FOUND:
-              description: Resource is not found
+            GENERIC_429_QUOTA_EXCEEDED:
+              description: Request is rejected due to exceeding a business quota limit
               value:
-                status: 404
-                code: NOT_FOUND
-                message: The specified resource is not found.
-            GENERIC_404_DEVICE_NOT_FOUND:
-              description: Device identifier not found
+                status: 429
+                code: QUOTA_EXCEEDED
+                message: Either out of resource quota or reaching rate limiting.
+            GENERIC_429_TOO_MANY_REQUESTS:
+              description: API Server request limit is overpassed
               value:
-                status: 404
-                code: DEVICE_NOT_FOUND
-                message: Device identifier not found.
-    Generic422:
-      description: Unprocessable Content
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_422_DEVICE_IDENTIFIERS_MISMATCH:
-              description: Inconsistency between device identifiers not pointing to the same device
-              value:
-                status: 422
-                code: DEVICE_IDENTIFIERS_MISMATCH
-                message: Provided device identifiers are not consistent.
-            GENERIC_422_DEVICE_NOT_APPLICABLE:
-              description: Service is not available for the provided device
-              value:
-                status: 422
-                code: DEVICE_NOT_APPLICABLE
-                message: The service is not available for the provided device.
-            GENERIC_422_UNIDENTIFIABLE_DEVICE:
-              description: Service is not available for the provided device
-              value:
-                status: 422
-                code: UNIDENTIFIABLE_DEVICE
-                message: The device cannot be identified.
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Either out of resource quota or reaching rate limiting.
     CreateSessionBadRequest400:
       description: Bad Request when creating a session
       headers:
@@ -485,8 +450,8 @@ components:
                 status: 400
                 code: INVALID_TOKEN
                 message: Only bearer token is supported
-    Generic401:
-      description: Unauthorized
+    Generic422:
+      description: Unprocessable Content
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -495,18 +460,78 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorInfo'
           examples:
-            GENERIC_401_UNAUTHENTICATED:
-              description: Request cannot be authenticated
+            GENERIC_422_DEVICE_IDENTIFIERS_MISMATCH:
+              description: Inconsistency between device identifiers not pointing to the same device
               value:
-                status: 401
-                code: UNAUTHENTICATED
-                message: Request not authenticated due to missing, invalid, or expired credentials.
-            GENERIC_401_AUTHENTICATION_REQUIRED:
-              description: New authentication is needed, authentication is no longer valid
+                status: 422
+                code: DEVICE_IDENTIFIERS_MISMATCH
+                message: Provided device identifiers are not consistent.
+            GENERIC_422_DEVICE_NOT_APPLICABLE:
+              description: Service is not available for the provided device
               value:
-                status: 401
-                code: AUTHENTICATION_REQUIRED
-                message: New authentication is required.
+                status: 422
+                code: DEVICE_NOT_APPLICABLE
+                message: The service is not available for the provided device.
+            GENERIC_422_UNIDENTIFIABLE_DEVICE:
+              description: Service is not available for the provided device
+              value:
+                status: 422
+                code: UNIDENTIFIABLE_DEVICE
+                message: The device cannot be identified.
+    Generic404:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
+    Generic400:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+            GENERIC_400_OUT_OF_RANGE:
+              description: Out of Range. Specific Syntax Exception used when a given field has a pre-defined range or a invalid filter criteria combination is requested
+              value:
+                status: 400
+                code: OUT_OF_RANGE
+                message: Client specified an invalid range.
+    SessionStatusConflict409:
+      description: Conflict
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            SessionExtensionNotAllowed:
+              description: Session extension is in conflict with current session status
+              value:
+                status: 409
+                code: QUALITY_ON_DEMAND.SESSION_EXTENSION_NOT_ALLOWED
+                message: Extending the session duration is not allowed in the current state ({qosStatus}). The session must be in the AVAILABLE state.
     SessionInConflict409:
       description: Conflict
       headers:
@@ -520,22 +545,6 @@ components:
             status: 409
             code: CONFLICT
             message: Conflict with an existing session for the same device.
-    Generic503:
-      description: Service Unavailable
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_503_UNAVAILABLE:
-              description: Service is not available. Temporary situation usually related to maintenance process in the server side
-              value:
-                status: 503
-                code: UNAVAILABLE
-                message: Service Unavailable.
     GenericExtendSessionDuration400:
       description: Bad Request
       headers:
@@ -564,6 +573,82 @@ components:
                 status: 400
                 code: QUALITY_ON_DEMAND.DURATION_OUT_OF_RANGE
                 message: The requested duration is out of the allowed range for the specific QoS profile
+    Generic503:
+      description: Service Unavailable
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_503_UNAVAILABLE:
+              description: Service is not available. Temporary situation usually related to maintenance process in the server side
+              value:
+                status: 503
+                code: UNAVAILABLE
+                message: Service Unavailable.
+    Generic410:
+      description: Gone
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_410_GONE:
+              description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
+              value:
+                status: 410
+                code: GONE
+                message: Access to the target resource is no longer available.
+    Generic401:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials.
+            GENERIC_401_AUTHENTICATION_REQUIRED:
+              description: New authentication is needed, authentication is no longer valid
+              value:
+                status: 401
+                code: AUTHENTICATION_REQUIRED
+                message: New authentication is required.
+    GenericDevice404:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
+            GENERIC_404_DEVICE_NOT_FOUND:
+              description: Device identifier not found
+              value:
+                status: 404
+                code: DEVICE_NOT_FOUND
+                message: Device identifier not found.
     Generic500:
       description: Internal server error
       headers:
@@ -577,28 +662,6 @@ components:
             status: 500
             code: INTERNAL
             message: 'Internal server error: ...'
-    Generic429:
-      description: Too Many Requests
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_429_QUOTA_EXCEEDED:
-              description: Request is rejected due to exceeding a business quota limit
-              value:
-                status: 429
-                code: QUOTA_EXCEEDED
-                message: Either out of resource quota or reaching rate limiting.
-            GENERIC_429_TOO_MANY_REQUESTS:
-              description: API Server request limit is overpassed
-              value:
-                status: 429
-                code: TOO_MANY_REQUESTS
-                message: Either out of resource quota or reaching rate limiting.
     Generic403:
       description: Forbidden
       headers:
@@ -621,87 +684,75 @@ components:
                 status: 403
                 code: INVALID_TOKEN_CONTEXT
                 message: '{{field}} is not consistent with access token.'
-    Generic410:
-      description: Gone
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_410_GONE:
-              description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
-              value:
-                status: 410
-                code: GONE
-                message: Access to the target resource is no longer available.
-    Generic400:
-      description: Bad Request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_400_INVALID_ARGUMENT:
-              description: Invalid Argument. Generic Syntax Exception
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param.
-            GENERIC_400_OUT_OF_RANGE:
-              description: Out of Range. Specific Syntax Exception used when a given field has a pre-defined range or a invalid filter criteria combination is requested
-              value:
-                status: 400
-                code: OUT_OF_RANGE
-                message: Client specified an invalid range.
-    Generic404:
-      description: Not found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            GENERIC_404_NOT_FOUND:
-              description: Resource is not found
-              value:
-                status: 404
-                code: NOT_FOUND
-                message: The specified resource is not found.
-    SessionStatusConflict409:
-      description: Conflict
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            SessionExtensionNotAllowed:
-              description: Session extension is in conflict with current session status
-              value:
-                status: 409
-                code: QUALITY_ON_DEMAND.SESSION_EXTENSION_NOT_ALLOWED
-                message: Extending the session duration is not allowed in the current state ({qosStatus}). The session must be in the AVAILABLE state.
-  schemas:
-    RetrieveSessionsInput:
-      description: Parameters to get QoS session information by device
-      type: object
-      properties:
+  examples:
+    SESSION_AVAILABLE_EXAMPLE:
+      summary: QoS session status is available
+      description: QoS session info when status is available
+      value:
+        duration: 3600
         device:
-          $ref: '#/components/schemas/Device'
-    NetworkAccessIdentifier:
-      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
-      type: string
-      example: 123456789@domain.com
+          ipv4Address:
+            publicAddress: 203.0.113.0
+            publicPort: 59765
+        applicationServer:
+          ipv4Address: 198.51.100.0/24
+        qosProfile: QOS_L
+        sink: https://application-server.com/notifications
+        sessionId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        startedAt: '2024-06-01T12:00:00Z'
+        expiresAt: '2024-06-01T13:00:00Z'
+        qosStatus: AVAILABLE
+    RETRIEVE_SESSIONS_EXAMPLE:
+      summary: List of QoS sessions for the device
+      description: A single QoS session for the device is available
+      value:
+      - duration: 3600
+        device:
+          phoneNumber: '+123456789'
+        applicationServer:
+          ipv4Address: 0.0.0.0/0
+        qosProfile: QOS_L
+        sink: https://application-server.com/notifications
+        sessionId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        startedAt: '2024-06-01T12:00:00Z'
+        expiresAt: '2024-06-01T13:00:00Z'
+        qosStatus: AVAILABLE
+    SESSION_UNAVAILABLE_EXAMPLE:
+      summary: QoS session is unavailable
+      description: QoS session info when status is unavailable due to network termination
+      value:
+        duration: 2428
+        device:
+          ipv4Address:
+            publicAddress: 203.0.113.0
+            publicPort: 59765
+        applicationServer:
+          ipv4Address: 198.51.100.0/24
+        qosProfile: QOS_L
+        sink: https://application-server.com/notifications
+        sessionId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        startedAt: '2024-06-01T12:00:00Z'
+        expiresAt: '2024-06-01T12:40:28Z'
+        qosStatus: UNAVAILABLE
+        statusInfo: NETWORK_TERMINATED
+    RETRIEVE_SESSIONS_EMPTY_EXAMPLE:
+      summary: No sessions found for the device
+      description: An empty array is returned when no sessions are found for the device
+      value: []
+    QOS_STATUS_CHANGED_EXAMPLE:
+      summary: QoS status changed
+      description: Cloud event example for QoS status change to UNAVAILABLE due to DURATION_EXPIRED
+      value:
+        id: 83a0d986-0866-4f38-b8c0-fc65bfcda452
+        source: https://api.example.com/qod/v0/sessions/123e4567-e89b-12d3-a456-426614174000
+        specversion: '1.0'
+        type: org.camaraproject.quality-on-demand.v0.qos-status-changed
+        time: '2024-06-01T13:00:00Z'
+        data:
+          sessionId: 123e4567-e89b-12d3-a456-426614174000
+          qosStatus: UNAVAILABLE
+          statusInfo: DURATION_EXPIRED
+  schemas:
     ErrorInfo:
       description: Common schema for errors
       type: object
@@ -719,6 +770,73 @@ components:
       - status
       - code
       - message
+    DeviceIpv4Addr:
+      type: object
+      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
+
+
+        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
+
+
+        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
+
+
+        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
+
+        '
+      properties:
+        publicAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr'
+        privateAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr'
+        publicPort:
+          $ref: '#/components/schemas/Port'
+      anyOf:
+      - required:
+        - publicAddress
+        - privateAddress
+      - required:
+        - publicAddress
+        - publicPort
+      example:
+        publicAddress: 203.0.113.0
+        publicPort: 59765
+    RetrieveSessionsOutput:
+      description: QoS session information for a given device
+      type: array
+      items:
+        $ref: '#/components/schemas/SessionInfo'
+      minItems: 0
+    QosStatus:
+      description: 'The current status of the requested QoS session. The status can be one of the following:
+
+        * `REQUESTED` - QoS has been requested by creating a session
+
+        * `AVAILABLE` - The requested QoS has been provided by the network
+
+        * `UNAVAILABLE` - The requested QoS cannot be provided by the network due to some reason
+
+        '
+      type: string
+      enum:
+      - REQUESTED
+      - AVAILABLE
+      - UNAVAILABLE
+    StatusInfo:
+      description: 'Reason for the new `qosStatus`. Currently `statusInfo` is only applicable when `qosStatus` is ''UNAVAILABLE''.
+
+        * `DURATION_EXPIRED` - Session terminated due to requested duration expired
+
+        * `NETWORK_TERMINATED` - Network terminated the session before the requested duration expired
+
+        * `DELETE_REQUESTED`- User requested the deletion of the session before the requested duration expired
+
+        '
+      type: string
+      enum:
+      - DURATION_EXPIRED
+      - NETWORK_TERMINATED
+      - DELETE_REQUESTED
     CloudEvent:
       description: Event compliant with the CloudEvents specification
       required:
@@ -763,45 +881,17 @@ components:
         propertyName: type
         mapping:
           org.camaraproject.quality-on-demand.v0.qos-status-changed: '#/components/schemas/EventQosStatusChanged'
-    QosProfileName:
-      description: "A unique name for identifying a specific QoS profile.\nThis may follow different formats depending on the service providers implementation.\nSome options addresses:\n  - A UUID style string\n  - Support for predefined profiles QOS_S, QOS_M, QOS_L, and QOS_E\n  - A searchable descriptive name\nThe set of QoS Profiles that an operator is offering can be retrieved by means of the [QoS Profile API](link TBC).\n"
-      type: string
-      example: QCI_1_voice
-      minLength: 3
-      maxLength: 256
-      format: string
-      pattern: ^[a-zA-Z0-9_.-]+$
-    DeviceIpv4Addr:
+    RetrieveSessionsInput:
+      description: Parameters to get QoS session information by device
       type: object
-      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
-
-
-        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
-
-
-        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
-
-
-        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
-
-        '
       properties:
-        publicAddress:
-          $ref: '#/components/schemas/SingleIpv4Addr'
-        privateAddress:
-          $ref: '#/components/schemas/SingleIpv4Addr'
-        publicPort:
-          $ref: '#/components/schemas/Port'
-      anyOf:
-      - required:
-        - publicAddress
-        - privateAddress
-      - required:
-        - publicAddress
-        - publicPort
-      example:
-        publicAddress: 203.0.113.0
-        publicPort: 59765
+        device:
+          $ref: '#/components/schemas/Device'
+    SingleIpv4Addr:
+      description: A single IPv4 address with no subnet mask
+      type: string
+      format: ipv4
+      example: 203.0.113.0
     DeviceIpv6Address:
       description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
 
@@ -812,21 +902,6 @@ components:
       type: string
       format: ipv6
       example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
-    StatusInfo:
-      description: 'Reason for the new `qosStatus`. Currently `statusInfo` is only applicable when `qosStatus` is ''UNAVAILABLE''.
-
-        * `DURATION_EXPIRED` - Session terminated due to requested duration expired
-
-        * `NETWORK_TERMINATED` - Network terminated the session before the requested duration expired
-
-        * `DELETE_REQUESTED`- User requested the deletion of the session before the requested duration expired
-
-        '
-      type: string
-      enum:
-      - DURATION_EXPIRED
-      - NETWORK_TERMINATED
-      - DELETE_REQUESTED
     ApplicationServer:
       description: 'A server hosting backend applications to deliver some business logic to clients.
 
@@ -846,41 +921,15 @@ components:
         ipv6Address:
           $ref: '#/components/schemas/ApplicationServerIpv6Address'
       minProperties: 1
-    ApplicationServerIpv6Address:
+    Port:
+      description: TCP or UDP port number
+      type: integer
+      minimum: 0
+      maximum: 65535
+    SessionId:
+      description: Session ID in UUID format
       type: string
-      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
-      description: "IPv6 address may be specified in form <address/mask> as:\n  - address - The /128 subnet is optional for single addresses:\n    - 2001:db8:85a3:8d3:1319:8a2e:370:7344\n    - 2001:db8:85a3:8d3:1319:8a2e:370:7344/128\n  - address/mask - an IP v6 number with a mask:\n    - 2001:db8:85a3:8d3::0/64\n    - 2001:db8:85a3:8d3::/64\n"
-    CreateSession:
-      description: Attributes required to create a session
-      allOf:
-      - $ref: '#/components/schemas/BaseSessionInfo'
-      - type: object
-        properties:
-          duration:
-            description: 'Requested session duration in seconds. Value may be explicitly limited for the QoS profile, as specified in the [Qos Profile API](TBC). Implementations can grant the requested session duration or set a different duration, based on network policies or conditions.
-
-              '
-            type: integer
-            format: int32
-            minimum: 1
-            example: 3600
-        required:
-        - duration
-    QosStatus:
-      description: 'The current status of the requested QoS session. The status can be one of the following:
-
-        * `REQUESTED` - QoS has been requested by creating a session
-
-        * `AVAILABLE` - The requested QoS has been provided by the network
-
-        * `UNAVAILABLE` - The requested QoS cannot be provided by the network due to some reason
-
-        '
-      type: string
-      enum:
-      - REQUESTED
-      - AVAILABLE
-      - UNAVAILABLE
+      format: uuid
     ExtendSessionDuration:
       description: Attributes required to extend the duration of an active session
       type: object
@@ -895,6 +944,91 @@ components:
           example: 1800
       required:
       - requestedAdditionalDuration
+    Device:
+      description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
+
+
+        The developer can choose to provide the below specified device identifiers:
+
+
+        * `ipv4Address`
+
+        * `ipv6Address`
+
+        * `phoneNumber`
+
+        * `networkAccessIdentifier`
+
+
+        NOTE1: the network operator might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different network operators. In this case the identifiers MUST belong to the same device
+
+        NOTE2: for the Commonalities release v0.4, we are enforcing that the networkAccessIdentifier is only part of the schema for future-proofing, and CAMARA does not currently allow its use. After the CAMARA meta-release work is concluded and the relevant issues are resolved, its use will need to be explicitly documented in the guidelines.
+
+        '
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+        networkAccessIdentifier:
+          $ref: '#/components/schemas/NetworkAccessIdentifier'
+        ipv4Address:
+          $ref: '#/components/schemas/DeviceIpv4Addr'
+        ipv6Address:
+          $ref: '#/components/schemas/DeviceIpv6Address'
+      minProperties: 1
+    PortsSpec:
+      description: Specification of several TCP or UDP ports
+      type: object
+      minProperties: 1
+      properties:
+        ranges:
+          description: Range of TCP or UDP ports
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+            - from
+            - to
+            properties:
+              from:
+                $ref: '#/components/schemas/Port'
+              to:
+                $ref: '#/components/schemas/Port'
+        ports:
+          description: Array of TCP or UDP ports
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/Port'
+      example:
+        ranges:
+        - from: 5010
+          to: 5020
+        ports:
+        - 5060
+        - 5070
+    ApplicationServerIpv4Address:
+      type: string
+      example: 198.51.100.0/24
+      description: "IPv4 address may be specified in form <address/mask> as:\n  - address - an IPv4 number in dotted-quad form 1.2.3.4. Only this exact IP number will match the flow control rule.\n  - address/mask - an IP number as above with a mask width of the form 1.2.3.4/24.\n    In this case, all IP numbers from 1.2.3.0 to 1.2.3.255 will match. The bit width MUST be valid for the IP version.\n"
+    NetworkAccessIdentifier:
+      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+      type: string
+      example: 123456789@domain.com
+    PhoneNumber:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+123456789'
+    QosProfileName:
+      description: "A unique name for identifying a specific QoS profile.\nThis may follow different formats depending on the service providers implementation.\nSome options addresses:\n  - A UUID style string\n  - Support for predefined profiles QOS_S, QOS_M, QOS_L, and QOS_E\n  - A searchable descriptive name\nThe set of QoS Profiles that an operator is offering can be retrieved by means of the [QoS Profile API](link TBC).\n"
+      type: string
+      example: QCI_1_voice
+      minLength: 3
+      maxLength: 256
+      format: string
+      pattern: ^[a-zA-Z0-9_.-]+$
     SessionInfo:
       description: 'Session related information returned in responses.
 
@@ -951,16 +1085,44 @@ components:
         - sessionId
         - duration
         - qosStatus
-    SingleIpv4Addr:
-      description: A single IPv4 address with no subnet mask
+    CreateSession:
+      description: Attributes required to create a session
+      allOf:
+      - $ref: '#/components/schemas/BaseSessionInfo'
+      - type: object
+        properties:
+          duration:
+            description: 'Requested session duration in seconds. Value may be explicitly limited for the QoS profile, as specified in the [Qos Profile API](TBC). Implementations can grant the requested session duration or set a different duration, based on network policies or conditions.
+
+              '
+            type: integer
+            format: int32
+            minimum: 1
+            example: 3600
+        required:
+        - duration
+    ApplicationServerIpv6Address:
       type: string
-      format: ipv4
-      example: 203.0.113.0
-    Port:
-      description: TCP or UDP port number
-      type: integer
-      minimum: 0
-      maximum: 65535
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+      description: "IPv6 address may be specified in form <address/mask> as:\n  - address - The /128 subnet is optional for single addresses:\n    - 2001:db8:85a3:8d3:1319:8a2e:370:7344\n    - 2001:db8:85a3:8d3:1319:8a2e:370:7344/128\n  - address/mask - an IP v6 number with a mask:\n    - 2001:db8:85a3:8d3::0/64\n    - 2001:db8:85a3:8d3::/64\n"
+    SinkCredential:
+      type: object
+      properties:
+        credentialType:
+          type: string
+          enum:
+          - PLAIN
+          - ACCESSTOKEN
+          - REFRESHTOKEN
+          description: The type of the credential. With the current API version the type MUST be set to `ACCESSTOKEN`
+      discriminator:
+        propertyName: credentialType
+        mapping:
+          PLAIN: '#/components/schemas/PlainCredential'
+          ACCESSTOKEN: '#/components/schemas/AccessTokenCredential'
+          REFRESHTOKEN: '#/components/schemas/RefreshTokenCredential'
+      required:
+      - credentialType
     BaseSessionInfo:
       description: Common attributes of a QoD session
       type: object
@@ -991,177 +1153,15 @@ components:
       required:
       - applicationServer
       - qosProfile
-    RetrieveSessionsOutput:
-      description: QoS session information for a given device
-      type: array
-      items:
-        $ref: '#/components/schemas/SessionInfo'
-      minItems: 0
-    ApplicationServerIpv4Address:
-      type: string
-      example: 198.51.100.0/24
-      description: "IPv4 address may be specified in form <address/mask> as:\n  - address - an IPv4 number in dotted-quad form 1.2.3.4. Only this exact IP number will match the flow control rule.\n  - address/mask - an IP number as above with a mask width of the form 1.2.3.4/24.\n    In this case, all IP numbers from 1.2.3.0 to 1.2.3.255 will match. The bit width MUST be valid for the IP version.\n"
-    SinkCredential:
-      type: object
-      properties:
-        credentialType:
-          type: string
-          enum:
-          - PLAIN
-          - ACCESSTOKEN
-          - REFRESHTOKEN
-          description: The type of the credential. With the current API version the type MUST be set to `ACCESSTOKEN`
-      discriminator:
-        propertyName: credentialType
-        mapping:
-          PLAIN: '#/components/schemas/PlainCredential'
-          ACCESSTOKEN: '#/components/schemas/AccessTokenCredential'
-          REFRESHTOKEN: '#/components/schemas/RefreshTokenCredential'
-      required:
-      - credentialType
-    SessionId:
-      description: Session ID in UUID format
-      type: string
-      format: uuid
-    PhoneNumber:
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
-      type: string
-      pattern: ^\+[1-9][0-9]{4,14}$
-      example: '+123456789'
-    PortsSpec:
-      description: Specification of several TCP or UDP ports
-      type: object
-      minProperties: 1
-      properties:
-        ranges:
-          description: Range of TCP or UDP ports
-          type: array
-          minItems: 1
-          items:
-            type: object
-            required:
-            - from
-            - to
-            properties:
-              from:
-                $ref: '#/components/schemas/Port'
-              to:
-                $ref: '#/components/schemas/Port'
-        ports:
-          description: Array of TCP or UDP ports
-          type: array
-          minItems: 1
-          items:
-            $ref: '#/components/schemas/Port'
-      example:
-        ranges:
-        - from: 5010
-          to: 5020
-        ports:
-        - 5060
-        - 5070
-    Device:
-      description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
-
-
-        The developer can choose to provide the below specified device identifiers:
-
-
-        * `ipv4Address`
-
-        * `ipv6Address`
-
-        * `phoneNumber`
-
-        * `networkAccessIdentifier`
-
-
-        NOTE1: the network operator might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different network operators. In this case the identifiers MUST belong to the same device
-
-        NOTE2: for the Commonalities release v0.4, we are enforcing that the networkAccessIdentifier is only part of the schema for future-proofing, and CAMARA does not currently allow its use. After the CAMARA meta-release work is concluded and the relevant issues are resolved, its use will need to be explicitly documented in the guidelines.
-
-        '
-      type: object
-      properties:
-        phoneNumber:
-          $ref: '#/components/schemas/PhoneNumber'
-        networkAccessIdentifier:
-          $ref: '#/components/schemas/NetworkAccessIdentifier'
-        ipv4Address:
-          $ref: '#/components/schemas/DeviceIpv4Addr'
-        ipv6Address:
-          $ref: '#/components/schemas/DeviceIpv6Address'
-      minProperties: 1
-  examples:
-    QOS_STATUS_CHANGED_EXAMPLE:
-      summary: QoS status changed
-      description: Cloud event example for QoS status change to UNAVAILABLE due to DURATION_EXPIRED
-      value:
-        id: 83a0d986-0866-4f38-b8c0-fc65bfcda452
-        source: https://api.example.com/qod/v0/sessions/123e4567-e89b-12d3-a456-426614174000
-        specversion: '1.0'
-        type: org.camaraproject.quality-on-demand.v0.qos-status-changed
-        time: '2024-06-01T13:00:00Z'
-        data:
-          sessionId: 123e4567-e89b-12d3-a456-426614174000
-          qosStatus: UNAVAILABLE
-          statusInfo: DURATION_EXPIRED
-    RETRIEVE_SESSIONS_EMPTY_EXAMPLE:
-      summary: No sessions found for the device
-      description: An empty array is returned when no sessions are found for the device
-      value: []
-    RETRIEVE_SESSIONS_EXAMPLE:
-      summary: List of QoS sessions for the device
-      description: A single QoS session for the device is available
-      value:
-      - duration: 3600
-        device:
-          phoneNumber: '+123456789'
-        applicationServer:
-          ipv4Address: 0.0.0.0/0
-        qosProfile: QOS_L
-        sink: https://application-server.com/notifications
-        sessionId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-        startedAt: '2024-06-01T12:00:00Z'
-        expiresAt: '2024-06-01T13:00:00Z'
-        qosStatus: AVAILABLE
-    SESSION_UNAVAILABLE_EXAMPLE:
-      summary: QoS session is unavailable
-      description: QoS session info when status is unavailable due to network termination
-      value:
-        duration: 2428
-        device:
-          ipv4Address:
-            publicAddress: 203.0.113.0
-            publicPort: 59765
-        applicationServer:
-          ipv4Address: 198.51.100.0/24
-        qosProfile: QOS_L
-        sink: https://application-server.com/notifications
-        sessionId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-        startedAt: '2024-06-01T12:00:00Z'
-        expiresAt: '2024-06-01T12:40:28Z'
-        qosStatus: UNAVAILABLE
-        statusInfo: NETWORK_TERMINATED
-    SESSION_AVAILABLE_EXAMPLE:
-      summary: QoS session status is available
-      description: QoS session info when status is available
-      value:
-        duration: 3600
-        device:
-          ipv4Address:
-            publicAddress: 203.0.113.0
-            publicPort: 59765
-        applicationServer:
-          ipv4Address: 198.51.100.0/24
-        qosProfile: QOS_L
-        sink: https://application-server.com/notifications
-        sessionId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-        startedAt: '2024-06-01T12:00:00Z'
-        expiresAt: '2024-06-01T13:00:00Z'
-        qosStatus: AVAILABLE
   headers:
     x-correlator:
+      description: Correlation id for the different services
+      schema:
+        type: string
+  parameters:
+    x-correlator:
+      name: x-correlator
+      in: header
       description: Correlation id for the different services
       schema:
         type: string
