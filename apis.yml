@@ -89,7 +89,7 @@ tags_raw:
 - Specification
 - GSMA
 created: '2026-07-25'
-modified: '2026-07-25'
+modified: '2026-10-06'
 specificationVersion: '0.23'
 apis:
 - aid: gsma:gsma-accounts-api
@@ -4892,6 +4892,8 @@ apis:
   - type: APIReference
     url: https://github.com/tmforum-apis/TMF931_OpenGatewayOnboardingAndOrderingComponentSuite
 common:
+- url: https://www.gsma.com/newsroom/feed/
+  type: BlogRSS
 - type: CapabilityMap
   url: capabilities/gsma-capability-edges.yml
   name: GSMA Business Capability Map
