@@ -1,21 +1,19 @@
-# Kin Score artifact — gsma — 2026-09-06T224210
+# Kin Score artifact — gsma — 2026-10-11T110117
 # The API Evangelist rating (https://github.com/api-evangelist/kin-score). Generated; do not edit.
 ---
 kin_score:
   slug: gsma
-  schema_version: 0.19.0
-  scored_at: '2026-09-06'
-  run_ts: 2026-09-06T224210
-  composite: 54.9
+  schema_version: 0.23.0
+  scored_at: '2026-10-11'
+  run_ts: 2026-10-11T110117
+  composite: 54.4
   band: strong
   facets:
-    discoverability: 68.5
-    contract_quality: 58.7
-    governance: 4.5
-    operational_transparency: 44.7
-    developer_ergonomics: 73.2
-    commercial_clarity: 23.7
+    discoverability: 73.2
+    contract_quality: 56.2
     contract_governance: 4.5
+    operational_transparency: 44.7
+    developer_ergonomics: 78.0
     access_clarity: 23.7
   agent_readiness:
     score: 40.8
@@ -44,7 +42,7 @@ kin_score:
     applies: true
     regime: Telecommunications
     regime_id: telecommunications
-    score: 80.6
+    score: 48.3
     matched_via: tags
   provenance:
     mcp: derived
@@ -52,7 +50,7 @@ kin_score:
     agentic_access: derived
     conformance: derived
     contracts:
-      total: 31
+      total: 40
       derived: 0
       coverage: 0.0
       callable: 0.0
