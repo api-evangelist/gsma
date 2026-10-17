@@ -69,8 +69,8 @@ paths:
           $ref: '#/components/responses/Generic504'
 components:
   responses:
-    Generic504:
-      description: Gateway Timeout
+    Generic401:
+      description: Unauthorized
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -79,9 +79,35 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorInfo'
           example:
-            status: 504
-            code: TIMEOUT
-            message: Request timeout exceeded
+            status: 401
+            code: UNAUTHENTICATED
+            message: Request not authenticated due to missing, invalid, or expired credentials
+    Generic500:
+      description: Internal Server Error
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 500
+            code: INTERNAL
+            message: Server error
+    Generic400:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          example:
+            status: 400
+            code: INVALID_ARGUMENT
+            message: Client specified an invalid argument, request body or query param
     setQosServiceUnavailable503:
       description: Service Unavailable
       headers:
@@ -102,8 +128,28 @@ components:
                 status: 503
                 code: HOME_DEVICES_QOD.ROUTER_OFFLINE
                 message: Router is not online. Try it later
-    Generic401:
-      description: Unauthorized
+    setQosNotFound404:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo'
+          examples:
+            NotFound:
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found
+            NoDeviceMatch:
+              value:
+                status: 404
+                code: DEVICE_NOT_FOUND
+                message: No connected device found for the input criteria provided
+    Generic504:
+      description: Gateway Timeout
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -112,35 +158,9 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorInfo'
           example:
-            status: 401
-            code: UNAUTHENTICATED
-            message: Request not authenticated due to missing, invalid, or expired credentials
-    Generic400:
-      description: Bad Request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 400
-            code: INVALID_ARGUMENT
-            message: Client specified an invalid argument, request body or query param
-    Generic500:
-      description: Internal Server Error
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          example:
-            status: 500
-            code: INTERNAL
-            message: Server error
+            status: 504
+            code: TIMEOUT
+            message: Request timeout exceeded
     setQosPermissionDenied403:
       description: Forbidden
       headers:
@@ -211,33 +231,6 @@ components:
                 status: 409
                 code: HOME_DEVICES_QOD.QOS_ALREADY_SET_TO_DEFAULT
                 message: Device QoS is already set to default value
-    setQosNotFound404:
-      description: Not found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo'
-          examples:
-            NotFound:
-              value:
-                status: 404
-                code: NOT_FOUND
-                message: The specified resource is not found
-            NoDeviceMatch:
-              value:
-                status: 404
-                code: DEVICE_NOT_FOUND
-                message: No connected device found for the input criteria provided
-  parameters:
-    x-correlator:
-      name: x-correlator
-      in: header
-      description: Correlation id for the different services
-      schema:
-        type: string
   schemas:
     ErrorInfo:
       type: object
@@ -303,6 +296,13 @@ components:
           format: ipv4
           description: Internal IP address of the connected device in the LAN.
           example: 192.168.1.27
+  parameters:
+    x-correlator:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        type: string
   headers:
     x-correlator:
       description: Correlation id for the different services

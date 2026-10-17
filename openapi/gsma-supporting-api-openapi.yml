@@ -291,65 +291,40 @@ paths:
             X-Date:
               $ref: '#/components/headers/X-Date'
 components:
+  headers:
+    X-Date:
+      required: false
+      description: The date and time that the response message was sent.
+      schema:
+        type: string
+        format: date-time
   schemas:
-    metadata:
-      type: object
-      required:
-      - key
-      - value
-      properties:
-        key:
-          type: string
-          description: Identifies the type of additional field.
-          minLength: 1
-          maxLength: 256
-        value:
-          type: string
-          description: Identifies the value of the additional field.
-          minLength: 1
-          maxLength: 256
     delay:
       type: number
       format: int64
       description: The anticipated processing delay in milliseconds.
-    requestGenericPatch:
-      type: object
-      required:
-      - op
-      - path
-      - value
-      properties:
-        op:
-          description: Indicates the Patch operation to be performed. 'replace' is used to update a field and 'add' is used to add a new field.
-          type: string
-          enum:
-          - replace
-          - add
-        path:
-          description: Specify the field to be updated or added preceded by '/'.
-          type: string
-          maxLength: 256
-        value:
-          description: Specify the value of the field to be updated or added.
-          type: string
-          maxLength: 256
-    responseHeartbeat:
-      type: object
-      required:
-      - serviceStatus
-      properties:
-        serviceStatus:
-          $ref: '#/components/schemas/serviceStatus'
-        delay:
-          $ref: '#/components/schemas/delay'
-        plannedRestorationTime:
-          $ref: '#/components/schemas/plannedRestorationTime'
+    serviceStatus:
+      type: string
+      description: Provides the status of the requested service.
+      enum:
+      - available
+      - unavailable
+      - degraded
     metadataArray:
       type: array
       description: A collection of key/value pairs. These can be used to populate additional properties that describe administrative information regarding the resource.
       items:
         $ref: '#/components/schemas/metadata'
       maxItems: 20
+    plannedRestorationTime:
+      type: string
+      format: date-time
+      description: Where the planned restoration time is known (e.g. scheduled maintenance), it can be provided in this field.
+    link:
+      type: string
+      description: Provides a URL to the resource.
+      minLength: 1
+      maxLength: 256
     requestStateObject:
       type: object
       required:
@@ -399,6 +374,41 @@ components:
           description: If the asynchronous processing failed, details of the error will be returned here.
           allOf:
           - $ref: '#/components/schemas/errorObject'
+    requestGenericPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          description: Indicates the Patch operation to be performed. 'replace' is used to update a field and 'add' is used to add a new field.
+          type: string
+          enum:
+          - replace
+          - add
+        path:
+          description: Specify the field to be updated or added preceded by '/'.
+          type: string
+          maxLength: 256
+        value:
+          description: Specify the value of the field to be updated or added.
+          type: string
+          maxLength: 256
+    responseResponse:
+      type: object
+      required:
+      - link
+      properties:
+        link:
+          $ref: '#/components/schemas/link'
+    requestGenericPatchArray:
+      type: array
+      description: Collection of updates that are to be processed.
+      items:
+        $ref: '#/components/schemas/requestGenericPatch'
+      minItems: 1
+      maxItems: 10
     errorObject:
       type: object
       required:
@@ -470,37 +480,49 @@ components:
           description: Diagnostic information in the form of key/value pairs relating to the error.
           allOf:
           - $ref: '#/components/schemas/metadataArray'
-    responseResponse:
+    responseHeartbeat:
       type: object
       required:
-      - link
+      - serviceStatus
       properties:
-        link:
-          $ref: '#/components/schemas/link'
-    serviceStatus:
-      type: string
-      description: Provides the status of the requested service.
-      enum:
-      - available
-      - unavailable
-      - degraded
-    requestGenericPatchArray:
-      type: array
-      description: Collection of updates that are to be processed.
-      items:
-        $ref: '#/components/schemas/requestGenericPatch'
-      minItems: 1
-      maxItems: 10
-    link:
-      type: string
-      description: Provides a URL to the resource.
-      minLength: 1
-      maxLength: 256
-    plannedRestorationTime:
-      type: string
-      format: date-time
-      description: Where the planned restoration time is known (e.g. scheduled maintenance), it can be provided in this field.
+        serviceStatus:
+          $ref: '#/components/schemas/serviceStatus'
+        delay:
+          $ref: '#/components/schemas/delay'
+        plannedRestorationTime:
+          $ref: '#/components/schemas/plannedRestorationTime'
+    metadata:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Identifies the type of additional field.
+          minLength: 1
+          maxLength: 256
+        value:
+          type: string
+          description: Identifies the value of the additional field.
+          minLength: 1
+          maxLength: 256
   parameters:
+    X-User-Credential-1:
+      name: X-User-Credential-1
+      in: header
+      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    X-Client-Id:
+      name: X-Client-Id
+      in: header
+      description: Used to pass pre-shared client's identifier to the server.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
     X-Date:
       name: X-Date
       in: header
@@ -513,44 +535,6 @@ components:
       name: X-Content-Hash
       in: header
       description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
-      required: false
-      schema:
-        type: string
-    X-Client-Id:
-      name: X-Client-Id
-      in: header
-      description: Used to pass pre-shared client's identifier to the server.
-      required: false
-      schema:
-        type: string
-        maxLength: 256
-    serverCorrelationId:
-      name: serverCorrelationId
-      in: path
-      description: Path variable to uniquely identify a request state. Must be supplied as a UUID.
-      required: true
-      schema:
-        type: string
-        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-    X-User-Credential-2:
-      name: X-User-Credential-2
-      in: header
-      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
-      required: false
-      schema:
-        type: string
-    X-CorrelationID:
-      name: X-CorrelationID
-      in: header
-      description: Header parameter to uniquely identify the request. Must be supplied as a UUID.
-      required: false
-      schema:
-        type: string
-        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-    X-API-Key:
-      name: X-API-Key
-      in: header
-      description: Used to pass pre-shared client's API key to the server.
       required: false
       schema:
         type: string
@@ -570,20 +554,36 @@ components:
       schema:
         type: string
         maxLength: 256
-    X-User-Credential-1:
-      name: X-User-Credential-1
+    X-API-Key:
+      name: X-API-Key
       in: header
-      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      description: Used to pass pre-shared client's API key to the server.
       required: false
       schema:
         type: string
-  headers:
-    X-Date:
-      required: false
-      description: The date and time that the response message was sent.
+    serverCorrelationId:
+      name: serverCorrelationId
+      in: path
+      description: Path variable to uniquely identify a request state. Must be supplied as a UUID.
+      required: true
       schema:
         type: string
-        format: date-time
+        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+    X-CorrelationID:
+      name: X-CorrelationID
+      in: header
+      description: Header parameter to uniquely identify the request. Must be supplied as a UUID.
+      required: false
+      schema:
+        type: string
+        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+    X-User-Credential-2:
+      name: X-User-Credential-2
+      in: header
+      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
   requestBodies:
     genericPatch:
       required: true

@@ -1148,19 +1148,168 @@ paths:
             X-Date:
               $ref: '#/components/headers/X-Date'
 components:
+  parameters:
+    batchId:
+      name: batchId
+      in: path
+      description: Path variable to uniquely identify the transaction batch.
+      required: true
+      schema:
+        type: string
+        maxLength: 256
+        minLength: 1
+    offset:
+      name: offset
+      in: query
+      description: Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60.
+      required: false
+      schema:
+        type: integer
+        format: int32
+    transactionTypePath:
+      name: transactionType
+      in: path
+      required: true
+      description: Identifies the type of transaction that is to be created.
+      schema:
+        type: string
+        enum:
+        - billpay
+        - deposit
+        - disbursement
+        - transfer
+        - merchantpay
+        - inttransfer
+        - adjustment
+        - reversal
+        - withdrawal
+    X-Account-Holding-Institution-Identifier:
+      name: X-Account-Holding-Institution-Identifier
+      in: header
+      description: A header variable that identifies the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier-Type header.
+      required: false
+      schema:
+        type: string
+    X-Account-Holding-Institution-Identifier-Type:
+      name: X-Account-Holding-Institution-Identifier-Type
+      in: header
+      description: A header variable that identifies the type of the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier header.
+      required: false
+      schema:
+        type: string
+        enum:
+        - lei
+        - swiftbic
+        - organisationid
+    fromDateTime:
+      name: fromDateTime
+      in: query
+      description: Indicates the minimum creation date for which records should be returned.
+      required: false
+      schema:
+        type: string
+        format: date-time
+    limit:
+      name: limit
+      in: query
+      description: Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request.
+      required: false
+      schema:
+        type: integer
+        format: int32
+    X-User-Bearer:
+      name: X-User-Bearer
+      in: header
+      description: Used to pass user’s access token when OAuth 2.0/OIDC authorisation framework is used for end-user authentication.
+      required: false
+      schema:
+        type: string
+    X-Channel:
+      name: X-Channel
+      in: header
+      description: String containing the channel that was used to originate the request. For example USSD, Web, App.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    X-CorrelationID:
+      name: X-CorrelationID
+      in: header
+      description: Header parameter to uniquely identify the request. Must be supplied as a UUID.
+      required: false
+      schema:
+        type: string
+        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+    transactionReference:
+      name: transactionReference
+      in: path
+      description: Path variable to uniquely identify the transaction.
+      required: true
+      schema:
+        type: string
+        maxLength: 256
+        minLength: 1
+    X-User-Credential-2:
+      name: X-User-Credential-2
+      in: header
+      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    X-User-Credential-1:
+      name: X-User-Credential-1
+      in: header
+      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    X-Content-Hash:
+      name: X-Content-Hash
+      in: header
+      description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
+      required: false
+      schema:
+        type: string
+    X-Callback-URL:
+      name: X-Callback-URL
+      in: header
+      description: The URL supplied by the client that will be used to return the callback in the form of a HTTP PUT.
+      required: false
+      schema:
+        type: string
+        format: uri
+    X-API-Key:
+      name: X-API-Key
+      in: header
+      description: Used to pass pre-shared client's API key to the server.
+      required: false
+      schema:
+        type: string
+    X-Client-Id:
+      name: X-Client-Id
+      in: header
+      description: Used to pass pre-shared client's identifier to the server.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    X-Date:
+      name: X-Date
+      in: header
+      description: Header parameter to indicate the date and time that the message was originated. It is used for basic message integrity checks, to ensure the request is not stale. Note that the header was previously referenced as 'Date' in version 1.0 of the Mobile Money API.
+      required: false
+      schema:
+        type: string
+        format: date-time
+    toDateTime:
+      name: toDateTime
+      in: query
+      description: Indicates the maximum creation date for which records should be returned.
+      required: false
+      schema:
+        type: string
+        format: date-time
   schemas:
-    creditPartyArray:
-      type: array
-      description: A collection of key/value pairs that enable the party to be identified. Keys include MSISDN and Wallet Identifier.
-      items:
-        $ref: '#/components/schemas/party'
-      maxItems: 10
-      minItems: 1
-    quotationReference:
-      type: string
-      description: Reference for the quotation that was provided to the sender.
-      minLength: 1
-      maxLength: 256
     postalAddress:
       type: object
       required:
@@ -1200,122 +1349,33 @@ components:
           description: Country"
           allOf:
           - $ref: '#/components/schemas/nationality'
-    gender:
-      type: string
-      enum:
-      - m
-      - f
-      - u
-      description: Gender of the KYC subject.
-    rejectionCount:
-      type: number
-      format: int32
-      description: Indicates the number of records that have been rejected, either during parsing or during final processing.
-      minimum: 0
-    metadataArray:
-      type: array
-      description: A collection of key/value pairs. These can be used to populate additional properties that describe administrative information regarding the resource.
-      items:
-        $ref: '#/components/schemas/metadata'
-      maxItems: 20
-    originalTransactionReference:
-      type: string
-      description: For reversals and refunds, this field indicates the transaction which is the subject of the reversal.
-      minLength: 0
-      maxLength: 256
-    geoCode:
-      type: string
-      description: Indicates the geographic location from where the transaction was initiated.
-      minLength: 0
-      maxLength: 256
-      pattern: ^(-?(90|(\d|[1-8]\d)(\.\d{1,6}){0,1}))\,{1}(-?(180|(\d|\d\d|1[0-7]\d)(\.\d{1,6}){0,1}))$
-      example: 37.423825,-122.082900
-    deliveryMethod:
-      type: string
-      enum:
-      - directtoaccount
-      - agent
-      - personaldelivery
-    emailAddress:
-      type: string
-      description: Email address of the KYC subject.
-      minLength: 0
-      maxLength: 256
-    requestBatchTransaction:
+    requestingOrganisation:
       type: object
+      description: An object that details the originating organisation of the request.
       required:
-      - transactions
+      - requestingOrganisationIdentifierType
+      - requestingOrganisationIdentifier
       properties:
-        batchStatus:
-          $ref: '#/components/schemas/batchStatus'
-        transactions:
-          type: array
-          description: Collection of Transactions that are to be processed.
-          items:
-            $ref: '#/components/schemas/requestTransaction'
-          minItems: 1
-          maxItems: 999999
-        batchTitle:
-          $ref: '#/components/schemas/batchTitle'
-        batchdescription:
-          $ref: '#/components/schemas/batchDescription'
-        requestingOrganisation:
-          $ref: '#/components/schemas/requestingOrganisation'
-        scheduledStartDate:
-          $ref: '#/components/schemas/scheduledStartDate'
-        modificationDate:
-          $ref: '#/components/schemas/modificationDate'
-        requestDate:
-          $ref: '#/components/schemas/requestDate'
-        customData:
-          $ref: '#/components/schemas/customDataArray'
-    requestGenericPatchArray:
-      type: array
-      description: Collection of updates that are to be processed.
-      items:
-        $ref: '#/components/schemas/requestGenericPatch'
-      minItems: 1
-      maxItems: 10
-    subjectName:
-      type: object
-      properties:
-        title:
+        requestingOrganisationIdentifierType:
           type: string
-          description: The given title of the KYC subject, e.g. Mr, Mrs, Dr.
-          minLength: 0
-          maxLength: 256
-        firstName:
+          description: Identifies the identifier type of the requesting organisation.
+          enum:
+          - lei
+          - swiftbic
+          - organisationid
+        requestingOrganisationIdentifier:
           type: string
-          description: First name (also referred to as given name) of the KYC subject.
-          minLength: 0
+          description: Contains the requesting organisation identifier.
+          minLength: 1
           maxLength: 256
-        middleName:
-          type: string
-          description: Middle Name of the KYC subject.
-          minLength: 0
-          maxLength: 256
-        lastName:
-          type: string
-          description: Surname (also referred to as last or family name) of the KYC subject.
-          minLength: 0
-          maxLength: 256
-        fullName:
-          type: string
-          description: The full name of the KYC subject.
-          minLength: 0
-          maxLength: 256
-        nativeName:
-          type: string
-          description: The full name expressed as in the native language.
-          minLength: 0
-          maxLength: 256
-    feesArray:
-      type: array
-      description: Returns all fees that are applicable to the object.
-      items:
-        $ref: '#/components/schemas/fees'
-      maxItems: 20
-      minItems: 1
+    requestDate:
+      type: string
+      format: date-time
+      description: The date and time of the request as supplied by the client.
+    rejectionDate:
+      type: string
+      format: date-time
+      description: Date and time of the rejection.
     receivingLei:
       type: string
       description: Legal Entity Identifier of the organisation that is receiving the transaction.
@@ -1323,11 +1383,6 @@ components:
       maxLength: 20
       pattern: ^[A-Z0-9]{4}00[A-Z0-9]{12}\d{2}$
       deprecated: true
-    batchId:
-      type: string
-      description: Identifier for the Batch that is assigned by the API provider. This ID is used by the client on subsequent GET or PATCH methods.
-      minLength: 1
-      maxLength: 256
     requestTransaction:
       type: object
       required:
@@ -1387,16 +1442,477 @@ components:
           $ref: '#/components/schemas/receivingLei'
         requestingLei:
           $ref: '#/components/schemas/requestingLei'
+    internationalTransferInformationResponse:
+      type: object
+      required:
+      - originCountry
+      properties:
+        originCountry:
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+          description: The originating country of the transaction, i.e. the country where the transaction commenced.
+        quotationReference:
+          $ref: '#/components/schemas/quotationReference'
+        quoteId:
+          $ref: '#/components/schemas/quoteId'
+        deliveryMethod:
+          allOf:
+          - $ref: '#/components/schemas/deliveryMethod'
+          description: The recipient delivery method as chosen by the sender.
+        receivingCountry:
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+          description: Destination country of the international transfer.
+        relationshipSender:
+          $ref: '#/components/schemas/relationshipSender'
+        remittancePurpose:
+          $ref: '#/components/schemas/remittancePurpose'
+        recipientBlockingReason:
+          $ref: '#/components/schemas/recipientBlockingReason'
+        senderBlockingReason:
+          $ref: '#/components/schemas/senderBlockingReason'
+        sendingServiceProviderCountry:
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+          description: The country of the sending service provider that holds the account of the sender.
+    processingFlag:
+      type: boolean
+      description: Indicates whether the batch is currently undergoing processing by the API Provider.
+    recipientBlockingReason:
+      type: string
+      description: The reason for blocking the quotation, based on AML checks on the recipient.
+      minLength: 0
+      maxLength: 256
+    rejectionCount:
+      type: number
+      format: int32
+      description: Indicates the number of records that have been rejected, either during parsing or during final processing.
+      minimum: 0
+    link:
+      type: string
+      description: Provides a URL to the resource.
+      minLength: 1
+      maxLength: 256
+    dateModified:
+      type: string
+      format: date-time
+      deprecated: true
+      description: Date and time when the object was modified by the API Provider.
+    responseTransactionType:
+      allOf:
+      - type: object
+        required:
+        - amount
+        - currency
+        - type
+        - transactionReference
+        - transactionStatus
+        properties:
+          transactionReference:
+            $ref: '#/components/schemas/transactionReference'
+          requestingOrganisationTransactionReference:
+            $ref: '#/components/schemas/requestingOrganisationTransactionReference'
+          originalTransactionReference:
+            $ref: '#/components/schemas/originalTransactionReference'
+          type:
+            $ref: '#/components/schemas/type'
+          subType:
+            $ref: '#/components/schemas/subType'
+          transactionStatus:
+            $ref: '#/components/schemas/transactionStatus'
+          amount:
+            description: The transaction amount.
+            allOf:
+            - $ref: '#/components/schemas/amount'
+            example: '15.23'
+          currency:
+            description: Currency of the transaction amount.
+            allOf:
+            - $ref: '#/components/schemas/currency'
+            example: RWF
+          descriptionText:
+            $ref: '#/components/schemas/descriptionText'
+          fees:
+            $ref: '#/components/schemas/feesArray'
+          geoCode:
+            $ref: '#/components/schemas/geoCode'
+          internationalTransferInformation:
+            $ref: '#/components/schemas/internationalTransferInformationResponse'
+          oneTimeCode:
+            $ref: '#/components/schemas/oneTimeCode'
+          recipientKyc:
+            $ref: '#/components/schemas/kyc'
+          senderKyc:
+            $ref: '#/components/schemas/kyc'
+          requestingOrganisation:
+            $ref: '#/components/schemas/requestingOrganisation'
+          servicingIdentity:
+            $ref: '#/components/schemas/servicingIdentity'
+          transactionReceipt:
+            $ref: '#/components/schemas/transactionReceipt'
+          creationDate:
+            $ref: '#/components/schemas/creationDate'
+          modificationDate:
+            $ref: '#/components/schemas/modificationDate'
+          requestDate:
+            $ref: '#/components/schemas/requestDate'
+          customData:
+            $ref: '#/components/schemas/customDataArray'
+          metadata:
+            $ref: '#/components/schemas/metadataArray'
+          dateCreated:
+            $ref: '#/components/schemas/dateCreated'
+          dateModified:
+            $ref: '#/components/schemas/dateModified'
+          receivingLei:
+            $ref: '#/components/schemas/receivingLei'
+          requestingLei:
+            $ref: '#/components/schemas/requestingLei'
+      - anyOf:
+        - type: object
+          required:
+          - creditParty
+          properties:
+            creditParty:
+              $ref: '#/components/schemas/creditPartyArray'
+        - type: object
+          required:
+          - debitParty
+          properties:
+            debitParty:
+              $ref: '#/components/schemas/debitPartyArray'
+        - type: object
+          required:
+          - debitParty
+          - creditParty
+          properties:
+            creditParty:
+              $ref: '#/components/schemas/creditPartyArray'
+            debitParty:
+              $ref: '#/components/schemas/debitPartyArray'
+    requestGenericPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          description: Indicates the Patch operation to be performed. 'replace' is used to update a field and 'add' is used to add a new field.
+          type: string
+          enum:
+          - replace
+          - add
+        path:
+          description: Specify the field to be updated or added preceded by '/'.
+          type: string
+          maxLength: 256
+        value:
+          description: Specify the value of the field to be updated or added.
+          type: string
+          maxLength: 256
+    batchStatus:
+      type: string
+      enum:
+      - created
+      - approved
+      - completed
+    scheduledStartDate:
+      type: string
+      format: date-time
+      description: If the batch has been scheduled, the expected start time is provided here.
+    requestGenericPatchArray:
+      type: array
+      description: Collection of updates that are to be processed.
+      items:
+        $ref: '#/components/schemas/requestGenericPatch'
+      minItems: 1
+      maxItems: 10
+    transactionCompletedDate:
+      type: string
+      format: date-time
+      deprecated: true
+      description: Date and time indicating when the transaction was completed.
+    transactionCompletionDate:
+      type: string
+      format: date-time
+      description: Date and time indicating when the transaction was completed.
+    transactionReceipt:
+      type: string
+      description: Transaction receipt number as notified to the parties. This may differ from the Transaction Reference.
+      minLength: 0
+      maxLength: 256
+    gender:
+      type: string
+      enum:
+      - m
+      - f
+      - u
+      description: Gender of the KYC subject.
+    quoteId:
+      type: string
+      description: The specific quote associated with the quotation.
+      minLength: 1
+      maxLength: 256
+    transactionReference:
+      type: string
+      description: Unique reference for the transaction. This is returned in the response by API provider.
+      minLength: 1
+      maxLength: 256
+    dateOfBirth:
+      type: string
+      format: date
+      description: Birth date of the KYC subject.
+      example: '2000-11-20'
+    type:
+      type: string
+      description: The harmonised Transaction Type.
+      enum:
+      - billpay
+      - deposit
+      - disbursement
+      - transfer
+      - merchantpay
+      - inttransfer
+      - adjustment
+      - reversal
+      - withdrawal
+    requestingOrganisationTransactionReference:
+      type: string
+      description: A reference provided by the requesting organisation that is to be associated with the transaction.
+      minLength: 0
+      maxLength: 256
+    amount:
+      type: string
+      minLength: 1
+      maxLength: 23
+      pattern: ^([0]|([1-9][0-9]{0,17}))([.][0-9]{0,3}[0-9])?$
+      example: '15.21'
+    contactPhone:
+      type: string
+      description: Contact phone number (mobile or landline) of the KYC subject.
+      minLength: 0
+      maxLength: 256
+    party:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Provides the account identifier type.
+          minLength: 1
+          maxLength: 256
+          example: msisdn
+        value:
+          type: string
+          description: Provides the account identifier type value.
+          minLength: 1
+          maxLength: 256
+          example: '+33555123456'
+    internationalTransferInformation:
+      type: object
+      description: A collection of properties detailing information specifically used for international transfers.
+      required:
+      - originCountry
+      properties:
+        quotationReference:
+          $ref: '#/components/schemas/quotationReference'
+        quoteId:
+          $ref: '#/components/schemas/quoteId'
+        originCountry:
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+          description: The originating country of the transaction, i.e. the country where the transaction was initiated.
+        deliveryMethod:
+          allOf:
+          - $ref: '#/components/schemas/deliveryMethod'
+          description: The recipient delivery method as chosen by the sender.
+        receivingCountry:
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+          description: Destination Country of the international transfer.
+        relationshipSender:
+          $ref: '#/components/schemas/relationshipSender'
+        remittancePurpose:
+          $ref: '#/components/schemas/remittancePurpose'
+        sendingServiceProviderCountry:
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+          description: The country of the sending service provider that holds the account of the sender.
+    responseBatchTransactionRejection:
+      type: object
+      required:
+      - creditParty
+      - debitParty
+      - rejectionDate
+      - rejectionReason
+      properties:
+        transactionReference:
+          $ref: '#/components/schemas/transactionReference'
+        requestingOrganisationTransactionReference:
+          $ref: '#/components/schemas/requestingOrganisationTransactionReference'
+        creditParty:
+          $ref: '#/components/schemas/creditPartyArray'
+        debitParty:
+          $ref: '#/components/schemas/debitPartyArray'
+        rejectionReason:
+          $ref: '#/components/schemas/rejectionReason'
+        rejectionDate:
+          $ref: '#/components/schemas/rejectionDate'
+        customData:
+          $ref: '#/components/schemas/customDataArray'
+        dateRejected:
+          $ref: '#/components/schemas/dateRejected'
+    requestingLei:
+      type: string
+      description: Legal Entity Identifier of the organisation that is requesting the transaction.
+      minLength: 0
+      maxLength: 20
+      pattern: ^[A-Z0-9]{4}00[A-Z0-9]{12}\d{2}$
+      deprecated: true
+    originalTransactionReference:
+      type: string
+      description: For reversals and refunds, this field indicates the transaction which is the subject of the reversal.
+      minLength: 0
+      maxLength: 256
+    relationshipSender:
+      type: string
+      description: Indicates the relationship (if any) between the sender and the receiver.
+      minLength: 0
+      maxLength: 256
+    metadataArray:
+      type: array
+      description: A collection of key/value pairs. These can be used to populate additional properties that describe administrative information regarding the resource.
+      items:
+        $ref: '#/components/schemas/metadata'
+      maxItems: 20
+    remittancePurpose:
+      type: string
+      description: Field providing a description of the reason for the international remittance.
+      minLength: 0
+      maxLength: 256
     subType:
       type: string
       description: A non-harmonised sub-classification of the type of transaction. Values are not fixed, and usage will vary according to Provider.
       minLength: 0
       maxLength: 256
-    requestReversal:
+    idDocumentArray:
+      type: array
+      description: An array of properties containing the forms of identification that are associated with the subject.
+      items:
+        $ref: '#/components/schemas/idDocument'
+      maxItems: 10
+      minItems: 0
+    completionDate:
+      type: string
+      format: date-time
+      description: Indicates when the batch was completed as recorded by the API.
+    requestStateObject:
       type: object
       required:
-      - type
+      - notificationMethod
+      - serverCorrelationId
+      - status
       properties:
+        serverCorrelationId:
+          type: string
+          description: A unique identifier issued by the provider to enable the client to identify the RequestState resource on subsequent polling requests. Must be supplied as a UUID.
+          minLength: 1
+          maxLength: 256
+          pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+        objectReference:
+          type: string
+          description: Provides a reference to the subject resource, e.g. transaction reference.
+          minLength: 0
+          maxLength: 256
+        status:
+          type: string
+          enum:
+          - pending
+          - completed
+          - failed
+          description: Indicates the status of the request.
+        notificationMethod:
+          type: string
+          enum:
+          - callback
+          - polling
+          description: Indicates whether a callback will be issued or whether the client will need to poll.
+        pendingReason:
+          type: string
+          description: A textual description that can be provided to describe the reason for a pending status.
+          minLength: 0
+          maxLength: 256
+        expiryTime:
+          type: string
+          format: date-time
+          description: Indicate the time by which the provider will fail the request if completion criteria have not been met. For an example, a debit party failing to authorise within the allowed period.
+        pollLimit:
+          type: number
+          format: int32
+          description: Indicates the number of poll attempts for the given requeststate resource that will be allowed by the provider.
+          exclusiveMinimum: 0
+        error:
+          description: If the asynchronous processing failed, details of the error will be returned here.
+          allOf:
+          - $ref: '#/components/schemas/errorObject'
+    geoCode:
+      type: string
+      description: Indicates the geographic location from where the transaction was initiated.
+      minLength: 0
+      maxLength: 256
+      pattern: ^(-?(90|(\d|[1-8]\d)(\.\d{1,6}){0,1}))\,{1}(-?(180|(\d|\d\d|1[0-7]\d)(\.\d{1,6}){0,1}))$
+      example: 37.423825,-122.082900
+    subjectName:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The given title of the KYC subject, e.g. Mr, Mrs, Dr.
+          minLength: 0
+          maxLength: 256
+        firstName:
+          type: string
+          description: First name (also referred to as given name) of the KYC subject.
+          minLength: 0
+          maxLength: 256
+        middleName:
+          type: string
+          description: Middle Name of the KYC subject.
+          minLength: 0
+          maxLength: 256
+        lastName:
+          type: string
+          description: Surname (also referred to as last or family name) of the KYC subject.
+          minLength: 0
+          maxLength: 256
+        fullName:
+          type: string
+          description: The full name of the KYC subject.
+          minLength: 0
+          maxLength: 256
+        nativeName:
+          type: string
+          description: The full name expressed as in the native language.
+          minLength: 0
+          maxLength: 256
+    responseTransaction:
+      type: object
+      required:
+      - amount
+      - currency
+      - type
+      - transactionReference
+      - transactionStatus
+      - creditParty
+      - debitParty
+      properties:
+        transactionReference:
+          $ref: '#/components/schemas/transactionReference'
+        originalTransactionReference:
+          $ref: '#/components/schemas/originalTransactionReference'
         requestingOrganisationTransactionReference:
           $ref: '#/components/schemas/requestingOrganisationTransactionReference'
         creditParty:
@@ -1404,9 +1920,11 @@ components:
         debitParty:
           $ref: '#/components/schemas/debitPartyArray'
         type:
-          $ref: '#/components/schemas/typeReversal'
+          $ref: '#/components/schemas/type'
         subType:
           $ref: '#/components/schemas/subType'
+        transactionStatus:
+          $ref: '#/components/schemas/transactionStatus'
         amount:
           description: The transaction amount.
           allOf:
@@ -1423,23 +1941,171 @@ components:
           $ref: '#/components/schemas/feesArray'
         geoCode:
           $ref: '#/components/schemas/geoCode'
+        internationalTransferInformation:
+          $ref: '#/components/schemas/internationalTransferInformationResponse'
+        oneTimeCode:
+          $ref: '#/components/schemas/oneTimeCode'
+        recipientKyc:
+          $ref: '#/components/schemas/kyc'
+        senderKyc:
+          $ref: '#/components/schemas/kyc'
         requestingOrganisation:
           $ref: '#/components/schemas/requestingOrganisation'
         servicingIdentity:
           $ref: '#/components/schemas/servicingIdentity'
+        transactionReceipt:
+          $ref: '#/components/schemas/transactionReceipt'
+        creationDate:
+          $ref: '#/components/schemas/creationDate'
+        modificationDate:
+          $ref: '#/components/schemas/modificationDate'
         requestDate:
           $ref: '#/components/schemas/requestDate'
         customData:
           $ref: '#/components/schemas/customDataArray'
         metadata:
           $ref: '#/components/schemas/metadataArray'
+        dateCreated:
+          $ref: '#/components/schemas/dateCreated'
+        dateModified:
+          $ref: '#/components/schemas/dateModified'
         receivingLei:
           $ref: '#/components/schemas/receivingLei'
         requestingLei:
           $ref: '#/components/schemas/requestingLei'
-    employerName:
+    senderBlockingReason:
       type: string
-      description: Employer name of the KYC subject.
+      description: The reason for blocking the quotation, based on AML checks on the sender.
+      minLength: 0
+      maxLength: 256
+    parsingSuccessCount:
+      type: number
+      format: int32
+      description: Indicates the number of records that have been parsed successfully.
+      minimum: 0
+    emailAddress:
+      type: string
+      description: Email address of the KYC subject.
+      minLength: 0
+      maxLength: 256
+    dateRejected:
+      type: string
+      format: date-time
+      deprecated: true
+      description: Date and time of the rejection.
+    batchId:
+      type: string
+      description: Identifier for the Batch that is assigned by the API provider. This ID is used by the client on subsequent GET or PATCH methods.
+      minLength: 1
+      maxLength: 256
+    responseBatchTransactionCompletion:
+      type: object
+      required:
+      - transactionReference
+      - creditParty
+      - debitParty
+      - completionDate
+      - link
+      properties:
+        transactionReference:
+          $ref: '#/components/schemas/transactionReference'
+        requestingOrganisationTransactionReference:
+          $ref: '#/components/schemas/requestingOrganisationTransactionReference'
+        creditParty:
+          $ref: '#/components/schemas/creditPartyArray'
+        debitParty:
+          $ref: '#/components/schemas/debitPartyArray'
+        completionDate:
+          $ref: '#/components/schemas/transactionCompletionDate'
+        link:
+          $ref: '#/components/schemas/link'
+        customData:
+          $ref: '#/components/schemas/customDataArray'
+        completedDate:
+          $ref: '#/components/schemas/transactionCompletedDate'
+    fees:
+      type: object
+      required:
+      - feeType
+      - feeCurrency
+      - feeAmount
+      properties:
+        feeType:
+          type: string
+          description: Defines the type of fee.
+          minLength: 1
+          maxLength: 256
+        feeAmount:
+          description: Defines the amount of the fee.
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          example: '5.46'
+        feeCurrency:
+          description: Defines the currency for the given fee.
+          allOf:
+          - $ref: '#/components/schemas/currency'
+    deliveryMethod:
+      type: string
+      enum:
+      - directtoaccount
+      - agent
+      - personaldelivery
+    kyc:
+      type: object
+      properties:
+        birthCountry:
+          description: The country of birth of the KYC subject.
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+        contactPhone:
+          $ref: '#/components/schemas/contactPhone'
+        dateOfBirth:
+          $ref: '#/components/schemas/dateOfBirth'
+        emailAddress:
+          $ref: '#/components/schemas/emailAddress'
+        employerName:
+          $ref: '#/components/schemas/employerName'
+        gender:
+          $ref: '#/components/schemas/gender'
+        idDocument:
+          $ref: '#/components/schemas/idDocumentArray'
+        nationality:
+          description: Nationality of the KYC subject.
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+        occupation:
+          $ref: '#/components/schemas/occupation'
+        postalAddress:
+          $ref: '#/components/schemas/postalAddress'
+        subjectName:
+          $ref: '#/components/schemas/subjectName'
+    creationDate:
+      type: string
+      format: date-time
+      description: Date and time when the object was created by the API Provider.
+    rejectionReason:
+      type: string
+      description: The reason for the transaction request as indicated by the API provider.
+      minLength: 1
+      maxLength: 256
+    occupation:
+      type: string
+      description: Occupation of the KYC subject.
+      minLength: 0
+      maxLength: 256
+    genericUpdateSuccess:
+      type: object
+      required:
+      - result
+      properties:
+        result:
+          type: string
+          description: The success message provided in a callback to communicate the success of an update operation.
+          enum:
+          - success
+    batchDescription:
+      type: string
+      description: Client-provided description of the batch.
       minLength: 0
       maxLength: 256
     requestTransactionType:
@@ -1515,20 +2181,10 @@ components:
               $ref: '#/components/schemas/creditPartyArray'
             debitParty:
               $ref: '#/components/schemas/debitPartyArray'
-    dateModified:
+    quotationReference:
       type: string
-      format: date-time
-      deprecated: true
-      description: Date and time when the object was modified by the API Provider.
-    link:
-      type: string
-      description: Provides a URL to the resource.
+      description: Reference for the quotation that was provided to the sender.
       minLength: 1
-      maxLength: 256
-    occupation:
-      type: string
-      description: Occupation of the KYC subject.
-      minLength: 0
       maxLength: 256
     customData:
       type: object
@@ -1546,377 +2202,58 @@ components:
           description: Identifies the value of the additional field.
           minLength: 1
           maxLength: 256
-    scheduledStartDate:
-      type: string
-      format: date-time
-      description: If the batch has been scheduled, the expected start time is provided here.
-    transactionCompletionDate:
-      type: string
-      format: date-time
-      description: Date and time indicating when the transaction was completed.
-    amount:
-      type: string
-      minLength: 1
-      maxLength: 23
-      pattern: ^([0]|([1-9][0-9]{0,17}))([.][0-9]{0,3}[0-9])?$
-      example: '15.21'
-    kyc:
-      type: object
-      properties:
-        birthCountry:
-          description: The country of birth of the KYC subject.
-          allOf:
-          - $ref: '#/components/schemas/nationality'
-        contactPhone:
-          $ref: '#/components/schemas/contactPhone'
-        dateOfBirth:
-          $ref: '#/components/schemas/dateOfBirth'
-        emailAddress:
-          $ref: '#/components/schemas/emailAddress'
-        employerName:
-          $ref: '#/components/schemas/employerName'
-        gender:
-          $ref: '#/components/schemas/gender'
-        idDocument:
-          $ref: '#/components/schemas/idDocumentArray'
-        nationality:
-          description: Nationality of the KYC subject.
-          allOf:
-          - $ref: '#/components/schemas/nationality'
-        occupation:
-          $ref: '#/components/schemas/occupation'
-        postalAddress:
-          $ref: '#/components/schemas/postalAddress'
-        subjectName:
-          $ref: '#/components/schemas/subjectName'
-    errorObject:
-      type: object
-      required:
-      - errorCategory
-      - errorCode
-      properties:
-        errorCategory:
-          type: string
-          description: The category grouping for the error.
-          enum:
-          - businessRule
-          - validation
-          - authorisation
-          - identification
-          - internal
-          - serviceUnavailable
-        errorCode:
-          type: string
-          description: The harmonised error code identifying the reason for error.
-          enum:
-          - genericError
-          - dailyVolumeLimitExceeded
-          - dailyValueLimitExceeded
-          - weeklyVolumeLimitExceeded
-          - weeklyValueLimitExceeded
-          - monthlyVolumeLimitExceeded
-          - monthlyValueLimitExceeded
-          - accountMaxTotalVolumeExceeded
-          - accountMaxTotalValueExceeded
-          - lessThanTransactionMinValue
-          - greaterThanTransactionMaxValue
-          - maxBalanceExceeded
-          - samePartiesError
-          - duplicateRequest
-          - insufficientFunds
-          - incorrectState
-          - underPaymentNotAllowed
-          - overPaymentNotAllowed
-          - rateLimitError
-          - transactionTypeError
-          - noMandateAuthority
-          - linkViolation
-          - countryofOriginNotPermitted
-          - nationalityNotPermitted
-          - idDocumentNotSupported
-          - issuingCountryNotSupported
-          - quoteHasExpired
-          - identifierError
-          - lengthError
-          - formatError
-          - negativeValue
-          - currencyNotSupported
-          - mandatoryValueNotSupplied
-          - invalidOffset
-          - clientAuthorisationError
-          - requestDeclined
-          - servicingPartyAuthorisationError
-          - requestingPartyAuthorisationError
-        errordescription:
-          type: string
-          description: A textual description of the error.
-          minLength: 0
-          maxLength: 256
-        errorDateTime:
-          type: string
-          format: date-time
-          description: The timestamp indicating when the error occurred.
-        errorParameters:
-          description: Diagnostic information in the form of key/value pairs relating to the error.
-          allOf:
-          - $ref: '#/components/schemas/metadataArray'
-    internationalTransferInformationResponse:
-      type: object
-      required:
-      - originCountry
-      properties:
-        originCountry:
-          allOf:
-          - $ref: '#/components/schemas/nationality'
-          description: The originating country of the transaction, i.e. the country where the transaction commenced.
-        quotationReference:
-          $ref: '#/components/schemas/quotationReference'
-        quoteId:
-          $ref: '#/components/schemas/quoteId'
-        deliveryMethod:
-          allOf:
-          - $ref: '#/components/schemas/deliveryMethod'
-          description: The recipient delivery method as chosen by the sender.
-        receivingCountry:
-          allOf:
-          - $ref: '#/components/schemas/nationality'
-          description: Destination country of the international transfer.
-        relationshipSender:
-          $ref: '#/components/schemas/relationshipSender'
-        remittancePurpose:
-          $ref: '#/components/schemas/remittancePurpose'
-        recipientBlockingReason:
-          $ref: '#/components/schemas/recipientBlockingReason'
-        senderBlockingReason:
-          $ref: '#/components/schemas/senderBlockingReason'
-        sendingServiceProviderCountry:
-          allOf:
-          - $ref: '#/components/schemas/nationality'
-          description: The country of the sending service provider that holds the account of the sender.
-    approvalDate:
-      type: string
-      format: date-time
-      description: Indicates when the batch was approved as recorded by the API.
-    debitPartyArray:
+    creditPartyArray:
       type: array
       description: A collection of key/value pairs that enable the party to be identified. Keys include MSISDN and Wallet Identifier.
       items:
         $ref: '#/components/schemas/party'
       maxItems: 10
       minItems: 1
-    completedDate:
-      type: string
-      format: date-time
-      deprecated: true
-      description: Indicates when the batch was completed as recorded by the API.
-    contactPhone:
-      type: string
-      description: Contact phone number (mobile or landline) of the KYC subject.
-      minLength: 0
-      maxLength: 256
-    dateRejected:
-      type: string
-      format: date-time
-      deprecated: true
-      description: Date and time of the rejection.
-    remittancePurpose:
-      type: string
-      description: Field providing a description of the reason for the international remittance.
-      minLength: 0
-      maxLength: 256
-    oneTimeCode:
-      type: string
-      description: A one-time code that can be supplied in the request or can be generated in the response depending upon the use case. An authorisation code can be supplied in this field for requests that have been pre-authorised.
-      minLength: 0
-      maxLength: 256
-    descriptionText:
-      type: string
-      description: Free format text description of the transaction provided by the client. This can be provided as a reference for the receiver on a notification SMS and on an account statement.
-      minLength: 0
-      maxLength: 160
-    typeReversal:
-      type: string
-      description: The harmonised Transaction Type.
-      enum:
-      - adjustment
-      - reversal
-      example: reversal
-    senderBlockingReason:
-      type: string
-      description: The reason for blocking the quotation, based on AML checks on the sender.
-      minLength: 0
-      maxLength: 256
-    idDocument:
+    requestReversal:
       type: object
       required:
-      - idType
+      - type
       properties:
-        idType:
-          type: string
-          enum:
-          - passport
-          - nationalregistration
-          - otherId
-          - drivinglicence
-          - socialsecurity
-          - alienregistration
-          - nationalidcard
-          - employer
-          - taxid
-          - seniorcitizenscard
-          - marriagecertificate
-          - birthcertificate
-          - healthcard
-          - votersid
-          - villageelderLetter
-          - pancard
-          - officialletter
-          description: Indicates the type of identification for the KYC subject, e.g. passport, driving licence etc.
-        idNumber:
-          type: string
-          description: Reference pertaining to the type of identification for the KYC subject.
-          minLength: 0
-          maxLength: 256
-        issueDate:
-          type: string
-          format: date
-          description: Date of issue for the identification document.
-          example: '2018-11-20'
-        expiryDate:
-          type: string
-          format: date
-          description: Date of expiry for the identification document.
-          example: '2018-11-20'
-        issuer:
-          type: string
-          description: Indicates the organisation/government entity that issued the ID document.
-          minLength: 0
-          maxLength: 256
-        issuerPlace:
-          type: string
-          description: Place of issue for the identification type.
-          minLength: 0
-          maxLength: 256
-        issuerCountry:
-          description: Country where the identification type was issued.
-          allOf:
-          - $ref: '#/components/schemas/nationality'
-        otherIddescription:
-          type: string
-          description: Where an ID Type of otherid is specified, a description of the type of identification can be provided in this field.
-          minLength: 0
-          maxLength: 256
-    completedCount:
-      type: number
-      format: int32
-      description: Indicates the number of records that have been successful completed.
-      minimum: 0
-    responseBatchTransactionRejection:
-      type: object
-      required:
-      - creditParty
-      - debitParty
-      - rejectionDate
-      - rejectionReason
-      properties:
-        transactionReference:
-          $ref: '#/components/schemas/transactionReference'
         requestingOrganisationTransactionReference:
           $ref: '#/components/schemas/requestingOrganisationTransactionReference'
         creditParty:
           $ref: '#/components/schemas/creditPartyArray'
         debitParty:
           $ref: '#/components/schemas/debitPartyArray'
-        rejectionReason:
-          $ref: '#/components/schemas/rejectionReason'
-        rejectionDate:
-          $ref: '#/components/schemas/rejectionDate'
+        type:
+          $ref: '#/components/schemas/typeReversal'
+        subType:
+          $ref: '#/components/schemas/subType'
+        amount:
+          description: The transaction amount.
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          example: '15.23'
+        currency:
+          description: Currency of the transaction amount.
+          allOf:
+          - $ref: '#/components/schemas/currency'
+          example: RWF
+        descriptionText:
+          $ref: '#/components/schemas/descriptionText'
+        fees:
+          $ref: '#/components/schemas/feesArray'
+        geoCode:
+          $ref: '#/components/schemas/geoCode'
+        requestingOrganisation:
+          $ref: '#/components/schemas/requestingOrganisation'
+        servicingIdentity:
+          $ref: '#/components/schemas/servicingIdentity'
+        requestDate:
+          $ref: '#/components/schemas/requestDate'
         customData:
           $ref: '#/components/schemas/customDataArray'
-        dateRejected:
-          $ref: '#/components/schemas/dateRejected'
-    rejectionDate:
-      type: string
-      format: date-time
-      description: Date and time of the rejection.
-    dateCreated:
-      type: string
-      format: date-time
-      deprecated: true
-      description: Date and time when the object was created by the API Provider.
-    responseBatchTransactionCompletion:
-      type: object
-      required:
-      - transactionReference
-      - creditParty
-      - debitParty
-      - completionDate
-      - link
-      properties:
-        transactionReference:
-          $ref: '#/components/schemas/transactionReference'
-        requestingOrganisationTransactionReference:
-          $ref: '#/components/schemas/requestingOrganisationTransactionReference'
-        creditParty:
-          $ref: '#/components/schemas/creditPartyArray'
-        debitParty:
-          $ref: '#/components/schemas/debitPartyArray'
-        completionDate:
-          $ref: '#/components/schemas/transactionCompletionDate'
-        link:
-          $ref: '#/components/schemas/link'
-        customData:
-          $ref: '#/components/schemas/customDataArray'
-        completedDate:
-          $ref: '#/components/schemas/transactionCompletedDate'
-    relationshipSender:
-      type: string
-      description: Indicates the relationship (if any) between the sender and the receiver.
-      minLength: 0
-      maxLength: 256
-    internationalTransferInformation:
-      type: object
-      description: A collection of properties detailing information specifically used for international transfers.
-      required:
-      - originCountry
-      properties:
-        quotationReference:
-          $ref: '#/components/schemas/quotationReference'
-        quoteId:
-          $ref: '#/components/schemas/quoteId'
-        originCountry:
-          allOf:
-          - $ref: '#/components/schemas/nationality'
-          description: The originating country of the transaction, i.e. the country where the transaction was initiated.
-        deliveryMethod:
-          allOf:
-          - $ref: '#/components/schemas/deliveryMethod'
-          description: The recipient delivery method as chosen by the sender.
-        receivingCountry:
-          allOf:
-          - $ref: '#/components/schemas/nationality'
-          description: Destination Country of the international transfer.
-        relationshipSender:
-          $ref: '#/components/schemas/relationshipSender'
-        remittancePurpose:
-          $ref: '#/components/schemas/remittancePurpose'
-        sendingServiceProviderCountry:
-          allOf:
-          - $ref: '#/components/schemas/nationality'
-          description: The country of the sending service provider that holds the account of the sender.
-    processingFlag:
-      type: boolean
-      description: Indicates whether the batch is currently undergoing processing by the API Provider.
-    transactionReference:
-      type: string
-      description: Unique reference for the transaction. This is returned in the response by API provider.
-      minLength: 1
-      maxLength: 256
-    quoteId:
-      type: string
-      description: The specific quote associated with the quotation.
-      minLength: 1
-      maxLength: 256
+        metadata:
+          $ref: '#/components/schemas/metadataArray'
+        receivingLei:
+          $ref: '#/components/schemas/receivingLei'
+        requestingLei:
+          $ref: '#/components/schemas/requestingLei'
     currency:
       type: string
       enum:
@@ -2098,106 +2435,62 @@ components:
       - ZAR
       - ZMW
       - ZWL
-    requestStateObject:
-      type: object
-      required:
-      - notificationMethod
-      - serverCorrelationId
-      - status
-      properties:
-        serverCorrelationId:
-          type: string
-          description: A unique identifier issued by the provider to enable the client to identify the RequestState resource on subsequent polling requests. Must be supplied as a UUID.
-          minLength: 1
-          maxLength: 256
-          pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-        objectReference:
-          type: string
-          description: Provides a reference to the subject resource, e.g. transaction reference.
-          minLength: 0
-          maxLength: 256
-        status:
-          type: string
-          enum:
-          - pending
-          - completed
-          - failed
-          description: Indicates the status of the request.
-        notificationMethod:
-          type: string
-          enum:
-          - callback
-          - polling
-          description: Indicates whether a callback will be issued or whether the client will need to poll.
-        pendingReason:
-          type: string
-          description: A textual description that can be provided to describe the reason for a pending status.
-          minLength: 0
-          maxLength: 256
-        expiryTime:
-          type: string
-          format: date-time
-          description: Indicate the time by which the provider will fail the request if completion criteria have not been met. For an example, a debit party failing to authorise within the allowed period.
-        pollLimit:
-          type: number
-          format: int32
-          description: Indicates the number of poll attempts for the given requeststate resource that will be allowed by the provider.
-          exclusiveMinimum: 0
-        error:
-          description: If the asynchronous processing failed, details of the error will be returned here.
-          allOf:
-          - $ref: '#/components/schemas/errorObject'
-    rejectionReason:
+    oneTimeCode:
       type: string
-      description: The reason for the transaction request as indicated by the API provider.
+      description: A one-time code that can be supplied in the request or can be generated in the response depending upon the use case. An authorisation code can be supplied in this field for requests that have been pre-authorised.
+      minLength: 0
+      maxLength: 256
+    completedDate:
+      type: string
+      format: date-time
+      deprecated: true
+      description: Indicates when the batch was completed as recorded by the API.
+    completedCount:
+      type: number
+      format: int32
+      description: Indicates the number of records that have been successful completed.
+      minimum: 0
+    transactionStatus:
+      type: string
+      description: Indicates the status of the transaction as stored by the API provider.
       minLength: 1
       maxLength: 256
-    responseReversal:
+    approvalDate:
+      type: string
+      format: date-time
+      description: Indicates when the batch was approved as recorded by the API.
+    responseBatchTransaction:
       type: object
       required:
-      - type
-      - originalTransactionReference
-      - transactionReference
-      - transactionStatus
+      - approvalDate
+      - batchId
+      - batchStatus
+      - completionDate
       properties:
-        transactionReference:
-          $ref: '#/components/schemas/transactionReference'
-        requestingOrganisationTransactionReference:
-          $ref: '#/components/schemas/requestingOrganisationTransactionReference'
-        originalTransactionReference:
-          $ref: '#/components/schemas/originalTransactionReference'
-        creditParty:
-          $ref: '#/components/schemas/debitPartyArray'
-        debitParty:
-          $ref: '#/components/schemas/debitPartyArray'
-        type:
-          $ref: '#/components/schemas/typeReversal'
-        subType:
-          $ref: '#/components/schemas/subType'
-        transactionStatus:
-          $ref: '#/components/schemas/transactionStatus'
-        amount:
-          description: The transaction amount.
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          example: '15.23'
-        currency:
-          description: Currency of the transaction amount.
-          allOf:
-          - $ref: '#/components/schemas/currency'
-          example: RWF
-        descriptionText:
-          $ref: '#/components/schemas/descriptionText'
-        fees:
-          $ref: '#/components/schemas/feesArray'
-        geoCode:
-          $ref: '#/components/schemas/geoCode'
+        batchId:
+          $ref: '#/components/schemas/batchId'
+        batchStatus:
+          $ref: '#/components/schemas/batchStatus'
+        approvalDate:
+          $ref: '#/components/schemas/approvalDate'
+        completionDate:
+          $ref: '#/components/schemas/completionDate'
+        batchTitle:
+          $ref: '#/components/schemas/batchTitle'
+        batchdescription:
+          $ref: '#/components/schemas/batchDescription'
+        processingFlag:
+          $ref: '#/components/schemas/processingFlag'
+        completedCount:
+          $ref: '#/components/schemas/completedCount'
+        rejectionCount:
+          $ref: '#/components/schemas/rejectionCount'
+        parsingSuccessCount:
+          $ref: '#/components/schemas/parsingSuccessCount'
         requestingOrganisation:
           $ref: '#/components/schemas/requestingOrganisation'
-        servicingIdentity:
-          $ref: '#/components/schemas/servicingIdentity'
-        transactionReceipt:
-          $ref: '#/components/schemas/transactionReceipt'
+        scheduledStartDate:
+          $ref: '#/components/schemas/scheduledStartDate'
         creationDate:
           $ref: '#/components/schemas/creationDate'
         modificationDate:
@@ -2206,27 +2499,147 @@ components:
           $ref: '#/components/schemas/requestDate'
         customData:
           $ref: '#/components/schemas/customDataArray'
-        metadata:
-          $ref: '#/components/schemas/metadataArray'
-        dateCreated:
-          $ref: '#/components/schemas/dateCreated'
-        dateModified:
-          $ref: '#/components/schemas/dateModified'
-        receivingLei:
-          $ref: '#/components/schemas/receivingLei'
-        requestingLei:
-          $ref: '#/components/schemas/requestingLei'
-    idDocumentArray:
+        completedDate:
+          $ref: '#/components/schemas/completedDate'
+    customDataArray:
       type: array
-      description: An array of properties containing the forms of identification that are associated with the subject.
+      description: A collection of key/value pairs. These can be used to populate provider specific fields.
       items:
-        $ref: '#/components/schemas/idDocument'
-      maxItems: 10
-      minItems: 0
+        $ref: '#/components/schemas/customData'
+      maxItems: 20
+    feesArray:
+      type: array
+      description: Returns all fees that are applicable to the object.
+      items:
+        $ref: '#/components/schemas/fees'
+      maxItems: 20
+      minItems: 1
+    idDocument:
+      type: object
+      required:
+      - idType
+      properties:
+        idType:
+          type: string
+          enum:
+          - passport
+          - nationalregistration
+          - otherId
+          - drivinglicence
+          - socialsecurity
+          - alienregistration
+          - nationalidcard
+          - employer
+          - taxid
+          - seniorcitizenscard
+          - marriagecertificate
+          - birthcertificate
+          - healthcard
+          - votersid
+          - villageelderLetter
+          - pancard
+          - officialletter
+          description: Indicates the type of identification for the KYC subject, e.g. passport, driving licence etc.
+        idNumber:
+          type: string
+          description: Reference pertaining to the type of identification for the KYC subject.
+          minLength: 0
+          maxLength: 256
+        issueDate:
+          type: string
+          format: date
+          description: Date of issue for the identification document.
+          example: '2018-11-20'
+        expiryDate:
+          type: string
+          format: date
+          description: Date of expiry for the identification document.
+          example: '2018-11-20'
+        issuer:
+          type: string
+          description: Indicates the organisation/government entity that issued the ID document.
+          minLength: 0
+          maxLength: 256
+        issuerPlace:
+          type: string
+          description: Place of issue for the identification type.
+          minLength: 0
+          maxLength: 256
+        issuerCountry:
+          description: Country where the identification type was issued.
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+        otherIddescription:
+          type: string
+          description: Where an ID Type of otherid is specified, a description of the type of identification can be provided in this field.
+          minLength: 0
+          maxLength: 256
+    descriptionText:
+      type: string
+      description: Free format text description of the transaction provided by the client. This can be provided as a reference for the receiver on a notification SMS and on an account statement.
+      minLength: 0
+      maxLength: 160
     modificationDate:
       type: string
       format: date-time
       description: Date and time when the object was modified by the API Provider.
+    dateCreated:
+      type: string
+      format: date-time
+      deprecated: true
+      description: Date and time when the object was created by the API Provider.
+    typeReversal:
+      type: string
+      description: The harmonised Transaction Type.
+      enum:
+      - adjustment
+      - reversal
+      example: reversal
+    debitPartyArray:
+      type: array
+      description: A collection of key/value pairs that enable the party to be identified. Keys include MSISDN and Wallet Identifier.
+      items:
+        $ref: '#/components/schemas/party'
+      maxItems: 10
+      minItems: 1
+    employerName:
+      type: string
+      description: Employer name of the KYC subject.
+      minLength: 0
+      maxLength: 256
+    servicingIdentity:
+      type: string
+      description: The field is used to identify the servicing identity for transactions, e.g. till, POS ID, assistant ID.
+      minLength: 0
+      maxLength: 256
+    requestBatchTransaction:
+      type: object
+      required:
+      - transactions
+      properties:
+        batchStatus:
+          $ref: '#/components/schemas/batchStatus'
+        transactions:
+          type: array
+          description: Collection of Transactions that are to be processed.
+          items:
+            $ref: '#/components/schemas/requestTransaction'
+          minItems: 1
+          maxItems: 999999
+        batchTitle:
+          $ref: '#/components/schemas/batchTitle'
+        batchdescription:
+          $ref: '#/components/schemas/batchDescription'
+        requestingOrganisation:
+          $ref: '#/components/schemas/requestingOrganisation'
+        scheduledStartDate:
+          $ref: '#/components/schemas/scheduledStartDate'
+        modificationDate:
+          $ref: '#/components/schemas/modificationDate'
+        requestDate:
+          $ref: '#/components/schemas/requestDate'
+        customData:
+          $ref: '#/components/schemas/customDataArray'
     nationality:
       type: string
       enum:
@@ -2479,59 +2892,102 @@ components:
       - ZA
       - ZM
       - ZW
-    fees:
+    batchTitle:
+      type: string
+      description: Client-provided title for the batch.
+      minLength: 0
+      maxLength: 256
+    errorObject:
       type: object
       required:
-      - feeType
-      - feeCurrency
-      - feeAmount
+      - errorCategory
+      - errorCode
       properties:
-        feeType:
+        errorCategory:
           type: string
-          description: Defines the type of fee.
-          minLength: 1
+          description: The category grouping for the error.
+          enum:
+          - businessRule
+          - validation
+          - authorisation
+          - identification
+          - internal
+          - serviceUnavailable
+        errorCode:
+          type: string
+          description: The harmonised error code identifying the reason for error.
+          enum:
+          - genericError
+          - dailyVolumeLimitExceeded
+          - dailyValueLimitExceeded
+          - weeklyVolumeLimitExceeded
+          - weeklyValueLimitExceeded
+          - monthlyVolumeLimitExceeded
+          - monthlyValueLimitExceeded
+          - accountMaxTotalVolumeExceeded
+          - accountMaxTotalValueExceeded
+          - lessThanTransactionMinValue
+          - greaterThanTransactionMaxValue
+          - maxBalanceExceeded
+          - samePartiesError
+          - duplicateRequest
+          - insufficientFunds
+          - incorrectState
+          - underPaymentNotAllowed
+          - overPaymentNotAllowed
+          - rateLimitError
+          - transactionTypeError
+          - noMandateAuthority
+          - linkViolation
+          - countryofOriginNotPermitted
+          - nationalityNotPermitted
+          - idDocumentNotSupported
+          - issuingCountryNotSupported
+          - quoteHasExpired
+          - identifierError
+          - lengthError
+          - formatError
+          - negativeValue
+          - currencyNotSupported
+          - mandatoryValueNotSupplied
+          - invalidOffset
+          - clientAuthorisationError
+          - requestDeclined
+          - servicingPartyAuthorisationError
+          - requestingPartyAuthorisationError
+        errordescription:
+          type: string
+          description: A textual description of the error.
+          minLength: 0
           maxLength: 256
-        feeAmount:
-          description: Defines the amount of the fee.
+        errorDateTime:
+          type: string
+          format: date-time
+          description: The timestamp indicating when the error occurred.
+        errorParameters:
+          description: Diagnostic information in the form of key/value pairs relating to the error.
           allOf:
-          - $ref: '#/components/schemas/amount'
-          example: '5.46'
-        feeCurrency:
-          description: Defines the currency for the given fee.
-          allOf:
-          - $ref: '#/components/schemas/currency'
-    transactionCompletedDate:
-      type: string
-      format: date-time
-      deprecated: true
-      description: Date and time indicating when the transaction was completed.
-    completionDate:
-      type: string
-      format: date-time
-      description: Indicates when the batch was completed as recorded by the API.
-    responseTransaction:
+          - $ref: '#/components/schemas/metadataArray'
+    responseReversal:
       type: object
       required:
-      - amount
-      - currency
       - type
+      - originalTransactionReference
       - transactionReference
       - transactionStatus
-      - creditParty
-      - debitParty
       properties:
         transactionReference:
           $ref: '#/components/schemas/transactionReference'
-        originalTransactionReference:
-          $ref: '#/components/schemas/originalTransactionReference'
         requestingOrganisationTransactionReference:
           $ref: '#/components/schemas/requestingOrganisationTransactionReference'
+        originalTransactionReference:
+          $ref: '#/components/schemas/originalTransactionReference'
         creditParty:
-          $ref: '#/components/schemas/creditPartyArray'
+          $ref: '#/components/schemas/debitPartyArray'
         debitParty:
           $ref: '#/components/schemas/debitPartyArray'
         type:
-          $ref: '#/components/schemas/type'
+          $ref: '#/components/schemas/typeReversal'
         subType:
           $ref: '#/components/schemas/subType'
         transactionStatus:
@@ -2552,14 +3008,6 @@ components:
           $ref: '#/components/schemas/feesArray'
         geoCode:
           $ref: '#/components/schemas/geoCode'
-        internationalTransferInformation:
-          $ref: '#/components/schemas/internationalTransferInformationResponse'
-        oneTimeCode:
-          $ref: '#/components/schemas/oneTimeCode'
-        recipientKyc:
-          $ref: '#/components/schemas/kyc'
-        senderKyc:
-          $ref: '#/components/schemas/kyc'
         requestingOrganisation:
           $ref: '#/components/schemas/requestingOrganisation'
         servicingIdentity:
@@ -2584,26 +3032,6 @@ components:
           $ref: '#/components/schemas/receivingLei'
         requestingLei:
           $ref: '#/components/schemas/requestingLei'
-    requestingLei:
-      type: string
-      description: Legal Entity Identifier of the organisation that is requesting the transaction.
-      minLength: 0
-      maxLength: 20
-      pattern: ^[A-Z0-9]{4}00[A-Z0-9]{12}\d{2}$
-      deprecated: true
-    batchTitle:
-      type: string
-      description: Client-provided title for the batch.
-      minLength: 0
-      maxLength: 256
-    creationDate:
-      type: string
-      format: date-time
-      description: Date and time when the object was created by the API Provider.
-    requestDate:
-      type: string
-      format: date-time
-      description: The date and time of the request as supplied by the client.
     metadata:
       type: object
       required:
@@ -2620,273 +3048,77 @@ components:
           description: Identifies the value of the additional field.
           minLength: 1
           maxLength: 256
-    requestGenericPatch:
-      type: object
-      required:
-      - op
-      - path
-      - value
-      properties:
-        op:
-          description: Indicates the Patch operation to be performed. 'replace' is used to update a field and 'add' is used to add a new field.
-          type: string
-          enum:
-          - replace
-          - add
-        path:
-          description: Specify the field to be updated or added preceded by '/'.
-          type: string
-          maxLength: 256
-        value:
-          description: Specify the value of the field to be updated or added.
-          type: string
-          maxLength: 256
-    batchStatus:
-      type: string
-      enum:
-      - created
-      - approved
-      - completed
-    parsingSuccessCount:
-      type: number
-      format: int32
-      description: Indicates the number of records that have been parsed successfully.
-      minimum: 0
-    requestingOrganisation:
-      type: object
-      description: An object that details the originating organisation of the request.
-      required:
-      - requestingOrganisationIdentifierType
-      - requestingOrganisationIdentifier
-      properties:
-        requestingOrganisationIdentifierType:
-          type: string
-          description: Identifies the identifier type of the requesting organisation.
-          enum:
-          - lei
-          - swiftbic
-          - organisationid
-        requestingOrganisationIdentifier:
-          type: string
-          description: Contains the requesting organisation identifier.
-          minLength: 1
-          maxLength: 256
-    requestingOrganisationTransactionReference:
-      type: string
-      description: A reference provided by the requesting organisation that is to be associated with the transaction.
-      minLength: 0
-      maxLength: 256
-    dateOfBirth:
-      type: string
-      format: date
-      description: Birth date of the KYC subject.
-      example: '2000-11-20'
-    responseBatchTransaction:
-      type: object
-      required:
-      - approvalDate
-      - batchId
-      - batchStatus
-      - completionDate
-      properties:
-        batchId:
-          $ref: '#/components/schemas/batchId'
-        batchStatus:
-          $ref: '#/components/schemas/batchStatus'
-        approvalDate:
-          $ref: '#/components/schemas/approvalDate'
-        completionDate:
-          $ref: '#/components/schemas/completionDate'
-        batchTitle:
-          $ref: '#/components/schemas/batchTitle'
-        batchdescription:
-          $ref: '#/components/schemas/batchDescription'
-        processingFlag:
-          $ref: '#/components/schemas/processingFlag'
-        completedCount:
-          $ref: '#/components/schemas/completedCount'
-        rejectionCount:
-          $ref: '#/components/schemas/rejectionCount'
-        parsingSuccessCount:
-          $ref: '#/components/schemas/parsingSuccessCount'
-        requestingOrganisation:
-          $ref: '#/components/schemas/requestingOrganisation'
-        scheduledStartDate:
-          $ref: '#/components/schemas/scheduledStartDate'
-        creationDate:
-          $ref: '#/components/schemas/creationDate'
-        modificationDate:
-          $ref: '#/components/schemas/modificationDate'
-        requestDate:
-          $ref: '#/components/schemas/requestDate'
-        customData:
-          $ref: '#/components/schemas/customDataArray'
-        completedDate:
-          $ref: '#/components/schemas/completedDate'
-    responseTransactionType:
-      allOf:
-      - type: object
-        required:
-        - amount
-        - currency
-        - type
-        - transactionReference
-        - transactionStatus
-        properties:
-          transactionReference:
-            $ref: '#/components/schemas/transactionReference'
-          requestingOrganisationTransactionReference:
-            $ref: '#/components/schemas/requestingOrganisationTransactionReference'
-          originalTransactionReference:
-            $ref: '#/components/schemas/originalTransactionReference'
-          type:
-            $ref: '#/components/schemas/type'
-          subType:
-            $ref: '#/components/schemas/subType'
-          transactionStatus:
-            $ref: '#/components/schemas/transactionStatus'
-          amount:
-            description: The transaction amount.
-            allOf:
-            - $ref: '#/components/schemas/amount'
-            example: '15.23'
-          currency:
-            description: Currency of the transaction amount.
-            allOf:
-            - $ref: '#/components/schemas/currency'
-            example: RWF
-          descriptionText:
-            $ref: '#/components/schemas/descriptionText'
-          fees:
-            $ref: '#/components/schemas/feesArray'
-          geoCode:
-            $ref: '#/components/schemas/geoCode'
-          internationalTransferInformation:
-            $ref: '#/components/schemas/internationalTransferInformationResponse'
-          oneTimeCode:
-            $ref: '#/components/schemas/oneTimeCode'
-          recipientKyc:
-            $ref: '#/components/schemas/kyc'
-          senderKyc:
-            $ref: '#/components/schemas/kyc'
-          requestingOrganisation:
-            $ref: '#/components/schemas/requestingOrganisation'
-          servicingIdentity:
-            $ref: '#/components/schemas/servicingIdentity'
-          transactionReceipt:
-            $ref: '#/components/schemas/transactionReceipt'
-          creationDate:
-            $ref: '#/components/schemas/creationDate'
-          modificationDate:
-            $ref: '#/components/schemas/modificationDate'
-          requestDate:
-            $ref: '#/components/schemas/requestDate'
-          customData:
-            $ref: '#/components/schemas/customDataArray'
-          metadata:
-            $ref: '#/components/schemas/metadataArray'
-          dateCreated:
-            $ref: '#/components/schemas/dateCreated'
-          dateModified:
-            $ref: '#/components/schemas/dateModified'
-          receivingLei:
-            $ref: '#/components/schemas/receivingLei'
-          requestingLei:
-            $ref: '#/components/schemas/requestingLei'
-      - anyOf:
-        - type: object
-          required:
-          - creditParty
-          properties:
-            creditParty:
-              $ref: '#/components/schemas/creditPartyArray'
-        - type: object
-          required:
-          - debitParty
-          properties:
-            debitParty:
-              $ref: '#/components/schemas/debitPartyArray'
-        - type: object
-          required:
-          - debitParty
-          - creditParty
-          properties:
-            creditParty:
-              $ref: '#/components/schemas/creditPartyArray'
-            debitParty:
-              $ref: '#/components/schemas/debitPartyArray'
-    batchDescription:
-      type: string
-      description: Client-provided description of the batch.
-      minLength: 0
-      maxLength: 256
-    party:
-      type: object
-      required:
-      - key
-      - value
-      properties:
-        key:
-          type: string
-          description: Provides the account identifier type.
-          minLength: 1
-          maxLength: 256
-          example: msisdn
-        value:
-          type: string
-          description: Provides the account identifier type value.
-          minLength: 1
-          maxLength: 256
-          example: '+33555123456'
-    transactionReceipt:
-      type: string
-      description: Transaction receipt number as notified to the parties. This may differ from the Transaction Reference.
-      minLength: 0
-      maxLength: 256
+  requestBodies:
+    requestReversal:
+      required: true
+      description: Represents the request body of a transaction reversal.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestReversal'
+    updateError:
+      required: true
+      description: Represents the request body of error callback.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorObject'
     genericUpdateSuccess:
-      type: object
-      required:
-      - result
-      properties:
-        result:
-          type: string
-          description: The success message provided in a callback to communicate the success of an update operation.
-          enum:
-          - success
-    servicingIdentity:
-      type: string
-      description: The field is used to identify the servicing identity for transactions, e.g. till, POS ID, assistant ID.
-      minLength: 0
-      maxLength: 256
-    recipientBlockingReason:
-      type: string
-      description: The reason for blocking the quotation, based on AML checks on the recipient.
-      minLength: 0
-      maxLength: 256
-    transactionStatus:
-      type: string
-      description: Indicates the status of the transaction as stored by the API provider.
-      minLength: 1
-      maxLength: 256
-    customDataArray:
-      type: array
-      description: A collection of key/value pairs. These can be used to populate provider specific fields.
-      items:
-        $ref: '#/components/schemas/customData'
-      maxItems: 20
-    type:
-      type: string
-      description: The harmonised Transaction Type.
-      enum:
-      - billpay
-      - deposit
-      - disbursement
-      - transfer
-      - merchantpay
-      - inttransfer
-      - adjustment
-      - reversal
-      - withdrawal
+      required: true
+      description: Represents the request body of a success message callback to an update event.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericUpdateSuccess'
+    requestBatchTransaction:
+      required: true
+      description: Represents the request body of a batch of transactions.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestBatchTransaction'
+    updateTransaction:
+      required: true
+      description: Represents the request body of transaction callback.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseTransaction'
+    requestTransaction:
+      required: true
+      description: Represents the request body of a transaction.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestTransaction'
+    updateReversal:
+      required: true
+      description: Represents the request body of a reversal callback.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseReversal'
+    updateBatchTransaction:
+      required: true
+      description: Represents the request body of a batch of transactions callback.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseBatchTransaction'
+    genericPatch:
+      required: true
+      description: Represents the request body of a batch of generic Patch operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestGenericPatchArray'
+    requestTransactionType:
+      required: true
+      description: Represents the request body of a transaction without Type.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestTransactionType'
   headers:
     X-Records-Returned-Count:
       required: false
@@ -2906,235 +3138,3 @@ components:
       schema:
         type: integer
         format: int32
-  requestBodies:
-    requestTransactionType:
-      required: true
-      description: Represents the request body of a transaction without Type.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/requestTransactionType'
-    updateReversal:
-      required: true
-      description: Represents the request body of a reversal callback.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/responseReversal'
-    updateTransaction:
-      required: true
-      description: Represents the request body of transaction callback.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/responseTransaction'
-    updateBatchTransaction:
-      required: true
-      description: Represents the request body of a batch of transactions callback.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/responseBatchTransaction'
-    requestTransaction:
-      required: true
-      description: Represents the request body of a transaction.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/requestTransaction'
-    genericUpdateSuccess:
-      required: true
-      description: Represents the request body of a success message callback to an update event.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/genericUpdateSuccess'
-    genericPatch:
-      required: true
-      description: Represents the request body of a batch of generic Patch operation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/requestGenericPatchArray'
-    requestReversal:
-      required: true
-      description: Represents the request body of a transaction reversal.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/requestReversal'
-    updateError:
-      required: true
-      description: Represents the request body of error callback.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/errorObject'
-    requestBatchTransaction:
-      required: true
-      description: Represents the request body of a batch of transactions.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/requestBatchTransaction'
-  parameters:
-    X-Account-Holding-Institution-Identifier:
-      name: X-Account-Holding-Institution-Identifier
-      in: header
-      description: A header variable that identifies the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier-Type header.
-      required: false
-      schema:
-        type: string
-    transactionTypePath:
-      name: transactionType
-      in: path
-      required: true
-      description: Identifies the type of transaction that is to be created.
-      schema:
-        type: string
-        enum:
-        - billpay
-        - deposit
-        - disbursement
-        - transfer
-        - merchantpay
-        - inttransfer
-        - adjustment
-        - reversal
-        - withdrawal
-    X-Client-Id:
-      name: X-Client-Id
-      in: header
-      description: Used to pass pre-shared client's identifier to the server.
-      required: false
-      schema:
-        type: string
-        maxLength: 256
-    X-User-Credential-2:
-      name: X-User-Credential-2
-      in: header
-      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
-      required: false
-      schema:
-        type: string
-    X-Account-Holding-Institution-Identifier-Type:
-      name: X-Account-Holding-Institution-Identifier-Type
-      in: header
-      description: A header variable that identifies the type of the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier header.
-      required: false
-      schema:
-        type: string
-        enum:
-        - lei
-        - swiftbic
-        - organisationid
-    X-User-Credential-1:
-      name: X-User-Credential-1
-      in: header
-      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
-      required: false
-      schema:
-        type: string
-    X-User-Bearer:
-      name: X-User-Bearer
-      in: header
-      description: Used to pass user’s access token when OAuth 2.0/OIDC authorisation framework is used for end-user authentication.
-      required: false
-      schema:
-        type: string
-    fromDateTime:
-      name: fromDateTime
-      in: query
-      description: Indicates the minimum creation date for which records should be returned.
-      required: false
-      schema:
-        type: string
-        format: date-time
-    X-Content-Hash:
-      name: X-Content-Hash
-      in: header
-      description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
-      required: false
-      schema:
-        type: string
-    X-CorrelationID:
-      name: X-CorrelationID
-      in: header
-      description: Header parameter to uniquely identify the request. Must be supplied as a UUID.
-      required: false
-      schema:
-        type: string
-        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-    X-Callback-URL:
-      name: X-Callback-URL
-      in: header
-      description: The URL supplied by the client that will be used to return the callback in the form of a HTTP PUT.
-      required: false
-      schema:
-        type: string
-        format: uri
-    limit:
-      name: limit
-      in: query
-      description: Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request.
-      required: false
-      schema:
-        type: integer
-        format: int32
-    batchId:
-      name: batchId
-      in: path
-      description: Path variable to uniquely identify the transaction batch.
-      required: true
-      schema:
-        type: string
-        maxLength: 256
-        minLength: 1
-    X-Date:
-      name: X-Date
-      in: header
-      description: Header parameter to indicate the date and time that the message was originated. It is used for basic message integrity checks, to ensure the request is not stale. Note that the header was previously referenced as 'Date' in version 1.0 of the Mobile Money API.
-      required: false
-      schema:
-        type: string
-        format: date-time
-    X-API-Key:
-      name: X-API-Key
-      in: header
-      description: Used to pass pre-shared client's API key to the server.
-      required: false
-      schema:
-        type: string
-    offset:
-      name: offset
-      in: query
-      description: Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60.
-      required: false
-      schema:
-        type: integer
-        format: int32
-    transactionReference:
-      name: transactionReference
-      in: path
-      description: Path variable to uniquely identify the transaction.
-      required: true
-      schema:
-        type: string
-        maxLength: 256
-        minLength: 1
-    X-Channel:
-      name: X-Channel
-      in: header
-      description: String containing the channel that was used to originate the request. For example USSD, Web, App.
-      required: false
-      schema:
-        type: string
-        maxLength: 256
-    toDateTime:
-      name: toDateTime
-      in: query
-      description: Indicates the maximum creation date for which records should be returned.
-      required: false
-      schema:
-        type: string
-        format: date-time

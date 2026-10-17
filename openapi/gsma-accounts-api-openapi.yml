@@ -1778,18 +1778,6 @@ paths:
               $ref: '#/components/headers/X-Date'
 components:
   schemas:
-    creditPartyArray:
-      type: array
-      description: A collection of key/value pairs that enable the party to be identified. Keys include MSISDN and Wallet Identifier.
-      items:
-        $ref: '#/components/schemas/party'
-      maxItems: 10
-      minItems: 1
-    quotationReference:
-      type: string
-      description: Reference for the quotation that was provided to the sender.
-      minLength: 1
-      maxLength: 256
     postalAddress:
       type: object
       required:
@@ -1829,136 +1817,36 @@ components:
           description: Country"
           allOf:
           - $ref: '#/components/schemas/nationality'
-    lei:
-      type: string
-      description: Legal Entity Identifier.
-      minLength: 0
-      maxLength: 20
-      pattern: ^[A-Z0-9]{4}00[A-Z0-9]{12}\d{2}$
-      example: 5493000IBP32UQZ0KL24
-    gender:
-      type: string
-      enum:
-      - m
-      - f
-      - u
-      description: Gender of the KYC subject.
-    metadataArray:
-      type: array
-      description: A collection of key/value pairs. These can be used to populate additional properties that describe administrative information regarding the resource.
-      items:
-        $ref: '#/components/schemas/metadata'
-      maxItems: 20
-    identityRequest:
+    requestingOrganisation:
       type: object
+      description: An object that details the originating organisation of the request.
       required:
-      - identityKyc
-      - accountRelationship
+      - requestingOrganisationIdentifierType
+      - requestingOrganisationIdentifier
       properties:
-        identityKyc:
-          $ref: '#/components/schemas/kyc'
-        accountRelationship:
-          $ref: '#/components/schemas/accountRelationship'
-        kycVerificationStatus:
-          $ref: '#/components/schemas/kycVerificationStatus'
-        kycVerificationEntity:
-          $ref: '#/components/schemas/kycVerificationEntity'
-        kycLevel:
-          $ref: '#/components/schemas/kycLevel'
-        customData:
-          $ref: '#/components/schemas/customDataArray'
-    originalTransactionReference:
-      type: string
-      description: For reversals and refunds, this field indicates the transaction which is the subject of the reversal.
-      minLength: 0
-      maxLength: 256
-    geoCode:
-      type: string
-      description: Indicates the geographic location from where the transaction was initiated.
-      minLength: 0
-      maxLength: 256
-      pattern: ^(-?(90|(\d|[1-8]\d)(\.\d{1,6}){0,1}))\,{1}(-?(180|(\d|\d\d|1[0-7]\d)(\.\d{1,6}){0,1}))$
-      example: 37.423825,-122.082900
-    deliveryMethod:
+        requestingOrganisationIdentifierType:
+          type: string
+          description: Identifies the identifier type of the requesting organisation.
+          enum:
+          - lei
+          - swiftbic
+          - organisationid
+        requestingOrganisationIdentifier:
+          type: string
+          description: Contains the requesting organisation identifier.
+          minLength: 1
+          maxLength: 256
+    kycVerificationStatus:
       type: string
       enum:
-      - directtoaccount
-      - agent
-      - personaldelivery
-    emailAddress:
+      - verified
+      - unverified
+      - rejected
+      description: Indicates the status of the identity’s KYC verification.
+    requestDate:
       type: string
-      description: Email address of the KYC subject.
-      minLength: 0
-      maxLength: 256
-    requestGenericPatchArray:
-      type: array
-      description: Collection of updates that are to be processed.
-      items:
-        $ref: '#/components/schemas/requestGenericPatch'
-      minItems: 1
-      maxItems: 10
-    subjectName:
-      type: object
-      properties:
-        title:
-          type: string
-          description: The given title of the KYC subject, e.g. Mr, Mrs, Dr.
-          minLength: 0
-          maxLength: 256
-        firstName:
-          type: string
-          description: First name (also referred to as given name) of the KYC subject.
-          minLength: 0
-          maxLength: 256
-        middleName:
-          type: string
-          description: Middle Name of the KYC subject.
-          minLength: 0
-          maxLength: 256
-        lastName:
-          type: string
-          description: Surname (also referred to as last or family name) of the KYC subject.
-          minLength: 0
-          maxLength: 256
-        fullName:
-          type: string
-          description: The full name of the KYC subject.
-          minLength: 0
-          maxLength: 256
-        nativeName:
-          type: string
-          description: The full name expressed as in the native language.
-          minLength: 0
-          maxLength: 256
-    feesArray:
-      type: array
-      description: Returns all fees that are applicable to the object.
-      items:
-        $ref: '#/components/schemas/fees'
-      maxItems: 20
-      minItems: 1
-    receivingLei:
-      type: string
-      description: Legal Entity Identifier of the organisation that is receiving the transaction.
-      minLength: 0
-      maxLength: 20
-      pattern: ^[A-Z0-9]{4}00[A-Z0-9]{12}\d{2}$
-      deprecated: true
-    subType:
-      type: string
-      description: A non-harmonised sub-classification of the type of transaction. Values are not fixed, and usage will vary according to Provider.
-      minLength: 0
-      maxLength: 256
-    identityType:
-      type: string
-      enum:
-      - individual
-      description: Indicates the type of the identity. Currently, only ‘individual’ is supported.
-    employerName:
-      type: string
-      description: Employer name of the KYC subject.
-      minLength: 0
-      maxLength: 256
+      format: date-time
+      description: The date and time of the request as supplied by the client.
     responseStatementEntries:
       type: object
       required:
@@ -2003,211 +1891,6 @@ components:
           $ref: '#/components/schemas/dateCreated'
         dateModified:
           $ref: '#/components/schemas/dateModified'
-    accountIdentifiersArray:
-      type: array
-      description: A collection of key/value pairs that enable the account to be identified. Keys include MSISDN and Wallet Identifier.
-      items:
-        $ref: '#/components/schemas/party'
-      maxItems: 10
-      minItems: 1
-    dateModified:
-      type: string
-      format: date-time
-      deprecated: true
-      description: Date and time when the object was modified by the API Provider.
-    occupation:
-      type: string
-      description: Occupation of the KYC subject.
-      minLength: 0
-      maxLength: 256
-    customData:
-      type: object
-      required:
-      - key
-      - value
-      properties:
-        key:
-          type: string
-          description: Identifies the type of additional field.
-          minLength: 1
-          maxLength: 256
-        value:
-          type: string
-          description: Identifies the value of the additional field.
-          minLength: 1
-          maxLength: 256
-    commissionEarned:
-      type: object
-      required:
-      - commissionType
-      - commissionCurrency
-      - commissionAmount
-      properties:
-        commissionType:
-          type: string
-          description: Defines the type of commission.
-          minLength: 1
-          maxLength: 256
-        commissionAmount:
-          description: Defines the amount of the commission.
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          example: '5.46'
-        commissionCurrency:
-          description: Defines the currency for the given commission.
-          allOf:
-          - $ref: '#/components/schemas/currency'
-    responseAccountName:
-      type: object
-      properties:
-        name:
-          $ref: '#/components/schemas/subjectName'
-        lei:
-          description: Indicates the Legal Entity Identifier of the organisation holding the account.
-          allOf:
-          - $ref: '#/components/schemas/lei'
-    accountRelationship:
-      type: string
-      enum:
-      - accountholder
-      description: Describes the relationship that the identity holds with the account.
-    currentBalance:
-      description: Current outstanding balance on the account.
-      allOf:
-      - $ref: '#/components/schemas/amount'
-      example: '15.00'
-    amount:
-      type: string
-      minLength: 1
-      maxLength: 23
-      pattern: ^([0]|([1-9][0-9]{0,17}))([.][0-9]{0,3}[0-9])?$
-      example: '15.21'
-    kyc:
-      type: object
-      properties:
-        birthCountry:
-          description: The country of birth of the KYC subject.
-          allOf:
-          - $ref: '#/components/schemas/nationality'
-        contactPhone:
-          $ref: '#/components/schemas/contactPhone'
-        dateOfBirth:
-          $ref: '#/components/schemas/dateOfBirth'
-        emailAddress:
-          $ref: '#/components/schemas/emailAddress'
-        employerName:
-          $ref: '#/components/schemas/employerName'
-        gender:
-          $ref: '#/components/schemas/gender'
-        idDocument:
-          $ref: '#/components/schemas/idDocumentArray'
-        nationality:
-          description: Nationality of the KYC subject.
-          allOf:
-          - $ref: '#/components/schemas/nationality'
-        occupation:
-          $ref: '#/components/schemas/occupation'
-        postalAddress:
-          $ref: '#/components/schemas/postalAddress'
-        subjectName:
-          $ref: '#/components/schemas/subjectName'
-    errorObject:
-      type: object
-      required:
-      - errorCategory
-      - errorCode
-      properties:
-        errorCategory:
-          type: string
-          description: The category grouping for the error.
-          enum:
-          - businessRule
-          - validation
-          - authorisation
-          - identification
-          - internal
-          - serviceUnavailable
-        errorCode:
-          type: string
-          description: The harmonised error code identifying the reason for error.
-          enum:
-          - genericError
-          - dailyVolumeLimitExceeded
-          - dailyValueLimitExceeded
-          - weeklyVolumeLimitExceeded
-          - weeklyValueLimitExceeded
-          - monthlyVolumeLimitExceeded
-          - monthlyValueLimitExceeded
-          - accountMaxTotalVolumeExceeded
-          - accountMaxTotalValueExceeded
-          - lessThanTransactionMinValue
-          - greaterThanTransactionMaxValue
-          - maxBalanceExceeded
-          - samePartiesError
-          - duplicateRequest
-          - insufficientFunds
-          - incorrectState
-          - underPaymentNotAllowed
-          - overPaymentNotAllowed
-          - rateLimitError
-          - transactionTypeError
-          - noMandateAuthority
-          - linkViolation
-          - countryofOriginNotPermitted
-          - nationalityNotPermitted
-          - idDocumentNotSupported
-          - issuingCountryNotSupported
-          - quoteHasExpired
-          - identifierError
-          - lengthError
-          - formatError
-          - negativeValue
-          - currencyNotSupported
-          - mandatoryValueNotSupplied
-          - invalidOffset
-          - clientAuthorisationError
-          - requestDeclined
-          - servicingPartyAuthorisationError
-          - requestingPartyAuthorisationError
-        errordescription:
-          type: string
-          description: A textual description of the error.
-          minLength: 0
-          maxLength: 256
-        errorDateTime:
-          type: string
-          format: date-time
-          description: The timestamp indicating when the error occurred.
-        errorParameters:
-          description: Diagnostic information in the form of key/value pairs relating to the error.
-          allOf:
-          - $ref: '#/components/schemas/metadataArray'
-    identityResponse:
-      type: object
-      required:
-      - identityId
-      - identityType
-      - identityKyc
-      - accountRelationship
-      properties:
-        identityId:
-          $ref: '#/components/schemas/identityId'
-        identityType:
-          $ref: '#/components/schemas/identityType'
-        identityStatus:
-          $ref: '#/components/schemas/identityStatus'
-        identityKyc:
-          $ref: '#/components/schemas/kyc'
-        accountRelationship:
-          $ref: '#/components/schemas/accountRelationship'
-        kycVerificationStatus:
-          $ref: '#/components/schemas/kycVerificationStatus'
-        kycVerificationEntity:
-          $ref: '#/components/schemas/kycVerificationEntity'
-        kycLevel:
-          $ref: '#/components/schemas/kycLevel'
-        customData:
-          $ref: '#/components/schemas/customDataArray'
     identityResponseArray:
       type: array
       description: An array containing the details of each identity associated with an account.
@@ -2215,6 +1898,25 @@ components:
         $ref: '#/components/schemas/identityResponse'
       maxItems: 20
       minItems: 1
+    accountIdentifiersArray:
+      type: array
+      description: A collection of key/value pairs that enable the account to be identified. Keys include MSISDN and Wallet Identifier.
+      items:
+        $ref: '#/components/schemas/party'
+      maxItems: 10
+      minItems: 1
+    receivingLei:
+      type: string
+      description: Legal Entity Identifier of the organisation that is receiving the transaction.
+      minLength: 0
+      maxLength: 20
+      pattern: ^[A-Z0-9]{4}00[A-Z0-9]{12}\d{2}$
+      deprecated: true
+    subStatus:
+      type: string
+      description: Can be used to return a provider-specific status for the account.
+      minLength: 0
+      maxLength: 256
     internationalTransferInformationResponse:
       type: object
       required:
@@ -2248,33 +1950,369 @@ components:
           allOf:
           - $ref: '#/components/schemas/nationality'
           description: The country of the sending service provider that holds the account of the sender.
-    debitPartyArray:
-      type: array
-      description: A collection of key/value pairs that enable the party to be identified. Keys include MSISDN and Wallet Identifier.
-      items:
-        $ref: '#/components/schemas/party'
-      maxItems: 10
-      minItems: 1
-    responseAccountBalance:
+    recipientBlockingReason:
+      type: string
+      description: The reason for blocking the quotation, based on AML checks on the recipient.
+      minLength: 0
+      maxLength: 256
+    identityRequest:
       type: object
+      required:
+      - identityKyc
+      - accountRelationship
       properties:
-        accountStatus:
-          $ref: '#/components/schemas/accountStatus'
-        currentBalance:
-          $ref: '#/components/schemas/currentBalance'
-        availableBalance:
-          $ref: '#/components/schemas/availableBalance'
-        reservedBalance:
-          $ref: '#/components/schemas/reservedBalance'
-        unclearedBalance:
-          $ref: '#/components/schemas/unclearedBalance'
-        currency:
-          description: Currency for all returned balances.
-          allOf:
-          - $ref: '#/components/schemas/currency'
+        identityKyc:
+          $ref: '#/components/schemas/kyc'
+        accountRelationship:
+          $ref: '#/components/schemas/accountRelationship'
+        kycVerificationStatus:
+          $ref: '#/components/schemas/kycVerificationStatus'
+        kycVerificationEntity:
+          $ref: '#/components/schemas/kycVerificationEntity'
+        kycLevel:
+          $ref: '#/components/schemas/kycLevel'
+        customData:
+          $ref: '#/components/schemas/customDataArray'
+    dateModified:
+      type: string
+      format: date-time
+      deprecated: true
+      description: Date and time when the object was modified by the API Provider.
+    requestGenericPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          description: Indicates the Patch operation to be performed. 'replace' is used to update a field and 'add' is used to add a new field.
+          type: string
+          enum:
+          - replace
+          - add
+        path:
+          description: Specify the field to be updated or added preceded by '/'.
+          type: string
+          maxLength: 256
+        value:
+          description: Specify the value of the field to be updated or added.
+          type: string
+          maxLength: 256
+    requestGenericPatchArray:
+      type: array
+      description: Collection of updates that are to be processed.
+      items:
+        $ref: '#/components/schemas/requestGenericPatch'
+      minItems: 1
+      maxItems: 10
+    transactionReceipt:
+      type: string
+      description: Transaction receipt number as notified to the parties. This may differ from the Transaction Reference.
+      minLength: 0
+      maxLength: 256
+    quoteId:
+      type: string
+      description: The specific quote associated with the quotation.
+      minLength: 1
+      maxLength: 256
+    gender:
+      type: string
+      enum:
+      - m
+      - f
+      - u
+      description: Gender of the KYC subject.
+    transactionReference:
+      type: string
+      description: Unique reference for the transaction. This is returned in the response by API provider.
+      minLength: 1
+      maxLength: 256
+    dateOfBirth:
+      type: string
+      format: date
+      description: Birth date of the KYC subject.
+      example: '2000-11-20'
+    lei:
+      type: string
+      description: Legal Entity Identifier.
+      minLength: 0
+      maxLength: 20
+      pattern: ^[A-Z0-9]{4}00[A-Z0-9]{12}\d{2}$
+      example: 5493000IBP32UQZ0KL24
+    accountStatus:
+      type: string
+      enum:
+      - available
+      - unavailable
+      - unregistered
+      description: Indicates a harmonised representation of the account status. This will be shown as available, unavailable or unregistered.
+      minLength: 1
+      maxLength: 256
+    type:
+      type: string
+      description: The harmonised Transaction Type.
+      enum:
+      - billpay
+      - deposit
+      - disbursement
+      - transfer
+      - merchantpay
+      - inttransfer
+      - adjustment
+      - reversal
+      - withdrawal
+    requestingOrganisationTransactionReference:
+      type: string
+      description: A reference provided by the requesting organisation that is to be associated with the transaction.
+      minLength: 0
+      maxLength: 256
+    amount:
+      type: string
+      minLength: 1
+      maxLength: 23
+      pattern: ^([0]|([1-9][0-9]{0,17}))([.][0-9]{0,3}[0-9])?$
+      example: '15.21'
     contactPhone:
       type: string
       description: Contact phone number (mobile or landline) of the KYC subject.
+      minLength: 0
+      maxLength: 256
+    party:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Provides the account identifier type.
+          minLength: 1
+          maxLength: 256
+          example: msisdn
+        value:
+          type: string
+          description: Provides the account identifier type value.
+          minLength: 1
+          maxLength: 256
+          example: '+33555123456'
+    registeringEntity:
+      type: string
+      description: The entity that registered the account, for example, a mobile money agent.
+      minLength: 0
+      maxLength: 256
+    requestingLei:
+      type: string
+      description: Legal Entity Identifier of the organisation that is requesting the transaction.
+      minLength: 0
+      maxLength: 20
+      pattern: ^[A-Z0-9]{4}00[A-Z0-9]{12}\d{2}$
+      deprecated: true
+    originalTransactionReference:
+      type: string
+      description: For reversals and refunds, this field indicates the transaction which is the subject of the reversal.
+      minLength: 0
+      maxLength: 256
+    relationshipSender:
+      type: string
+      description: Indicates the relationship (if any) between the sender and the receiver.
+      minLength: 0
+      maxLength: 256
+    metadataArray:
+      type: array
+      description: A collection of key/value pairs. These can be used to populate additional properties that describe administrative information regarding the resource.
+      items:
+        $ref: '#/components/schemas/metadata'
+      maxItems: 20
+    remittancePurpose:
+      type: string
+      description: Field providing a description of the reason for the international remittance.
+      minLength: 0
+      maxLength: 256
+    subType:
+      type: string
+      description: A non-harmonised sub-classification of the type of transaction. Values are not fixed, and usage will vary according to Provider.
+      minLength: 0
+      maxLength: 256
+    idDocumentArray:
+      type: array
+      description: An array of properties containing the forms of identification that are associated with the subject.
+      items:
+        $ref: '#/components/schemas/idDocument'
+      maxItems: 10
+      minItems: 0
+    requestStateObject:
+      type: object
+      required:
+      - notificationMethod
+      - serverCorrelationId
+      - status
+      properties:
+        serverCorrelationId:
+          type: string
+          description: A unique identifier issued by the provider to enable the client to identify the RequestState resource on subsequent polling requests. Must be supplied as a UUID.
+          minLength: 1
+          maxLength: 256
+          pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+        objectReference:
+          type: string
+          description: Provides a reference to the subject resource, e.g. transaction reference.
+          minLength: 0
+          maxLength: 256
+        status:
+          type: string
+          enum:
+          - pending
+          - completed
+          - failed
+          description: Indicates the status of the request.
+        notificationMethod:
+          type: string
+          enum:
+          - callback
+          - polling
+          description: Indicates whether a callback will be issued or whether the client will need to poll.
+        pendingReason:
+          type: string
+          description: A textual description that can be provided to describe the reason for a pending status.
+          minLength: 0
+          maxLength: 256
+        expiryTime:
+          type: string
+          format: date-time
+          description: Indicate the time by which the provider will fail the request if completion criteria have not been met. For an example, a debit party failing to authorise within the allowed period.
+        pollLimit:
+          type: number
+          format: int32
+          description: Indicates the number of poll attempts for the given requeststate resource that will be allowed by the provider.
+          exclusiveMinimum: 0
+        error:
+          description: If the asynchronous processing failed, details of the error will be returned here.
+          allOf:
+          - $ref: '#/components/schemas/errorObject'
+    identityStatus:
+      type: string
+      description: A unique id for the identity as assigned by the API Provider.
+      minLength: 0
+      maxLength: 256
+    geoCode:
+      type: string
+      description: Indicates the geographic location from where the transaction was initiated.
+      minLength: 0
+      maxLength: 256
+      pattern: ^(-?(90|(\d|[1-8]\d)(\.\d{1,6}){0,1}))\,{1}(-?(180|(\d|\d\d|1[0-7]\d)(\.\d{1,6}){0,1}))$
+      example: 37.423825,-122.082900
+    subjectName:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The given title of the KYC subject, e.g. Mr, Mrs, Dr.
+          minLength: 0
+          maxLength: 256
+        firstName:
+          type: string
+          description: First name (also referred to as given name) of the KYC subject.
+          minLength: 0
+          maxLength: 256
+        middleName:
+          type: string
+          description: Middle Name of the KYC subject.
+          minLength: 0
+          maxLength: 256
+        lastName:
+          type: string
+          description: Surname (also referred to as last or family name) of the KYC subject.
+          minLength: 0
+          maxLength: 256
+        fullName:
+          type: string
+          description: The full name of the KYC subject.
+          minLength: 0
+          maxLength: 256
+        nativeName:
+          type: string
+          description: The full name expressed as in the native language.
+          minLength: 0
+          maxLength: 256
+    responseTransaction:
+      type: object
+      required:
+      - amount
+      - currency
+      - type
+      - transactionReference
+      - transactionStatus
+      - creditParty
+      - debitParty
+      properties:
+        transactionReference:
+          $ref: '#/components/schemas/transactionReference'
+        originalTransactionReference:
+          $ref: '#/components/schemas/originalTransactionReference'
+        requestingOrganisationTransactionReference:
+          $ref: '#/components/schemas/requestingOrganisationTransactionReference'
+        creditParty:
+          $ref: '#/components/schemas/creditPartyArray'
+        debitParty:
+          $ref: '#/components/schemas/debitPartyArray'
+        type:
+          $ref: '#/components/schemas/type'
+        subType:
+          $ref: '#/components/schemas/subType'
+        transactionStatus:
+          $ref: '#/components/schemas/transactionStatus'
+        amount:
+          description: The transaction amount.
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          example: '15.23'
+        currency:
+          description: Currency of the transaction amount.
+          allOf:
+          - $ref: '#/components/schemas/currency'
+          example: RWF
+        descriptionText:
+          $ref: '#/components/schemas/descriptionText'
+        fees:
+          $ref: '#/components/schemas/feesArray'
+        geoCode:
+          $ref: '#/components/schemas/geoCode'
+        internationalTransferInformation:
+          $ref: '#/components/schemas/internationalTransferInformationResponse'
+        oneTimeCode:
+          $ref: '#/components/schemas/oneTimeCode'
+        recipientKyc:
+          $ref: '#/components/schemas/kyc'
+        senderKyc:
+          $ref: '#/components/schemas/kyc'
+        requestingOrganisation:
+          $ref: '#/components/schemas/requestingOrganisation'
+        servicingIdentity:
+          $ref: '#/components/schemas/servicingIdentity'
+        transactionReceipt:
+          $ref: '#/components/schemas/transactionReceipt'
+        creationDate:
+          $ref: '#/components/schemas/creationDate'
+        modificationDate:
+          $ref: '#/components/schemas/modificationDate'
+        requestDate:
+          $ref: '#/components/schemas/requestDate'
+        customData:
+          $ref: '#/components/schemas/customDataArray'
+        metadata:
+          $ref: '#/components/schemas/metadataArray'
+        dateCreated:
+          $ref: '#/components/schemas/dateCreated'
+        dateModified:
+          $ref: '#/components/schemas/dateModified'
+        receivingLei:
+          $ref: '#/components/schemas/receivingLei'
+        requestingLei:
+          $ref: '#/components/schemas/requestingLei'
+    senderBlockingReason:
+      type: string
+      description: The reason for blocking the quotation, based on AML checks on the sender.
       minLength: 0
       maxLength: 256
     responseAccountStatus:
@@ -2290,6 +2328,57 @@ components:
           description: Indicates the Legal Entity Identifier of the organisation holding the account.
           allOf:
           - $ref: '#/components/schemas/lei'
+    emailAddress:
+      type: string
+      description: Email address of the KYC subject.
+      minLength: 0
+      maxLength: 256
+    responseAccountName:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/subjectName'
+        lei:
+          description: Indicates the Legal Entity Identifier of the organisation holding the account.
+          allOf:
+          - $ref: '#/components/schemas/lei'
+    kycLevel:
+      type: integer
+      format: int32
+      example: '1'
+      description: Indicates the KYC level that the identity is associated with.
+    fees:
+      type: object
+      required:
+      - feeType
+      - feeCurrency
+      - feeAmount
+      properties:
+        feeType:
+          type: string
+          description: Defines the type of fee.
+          minLength: 1
+          maxLength: 256
+        feeAmount:
+          description: Defines the amount of the fee.
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          example: '5.46'
+        feeCurrency:
+          description: Defines the currency for the given fee.
+          allOf:
+          - $ref: '#/components/schemas/currency'
+    identityType:
+      type: string
+      enum:
+      - individual
+      description: Indicates the type of the identity. Currently, only ‘individual’ is supported.
+    deliveryMethod:
+      type: string
+      enum:
+      - directtoaccount
+      - agent
+      - personaldelivery
     responseAccount:
       type: object
       required:
@@ -2334,21 +2423,6 @@ components:
           $ref: '#/components/schemas/requestDate'
         customData:
           $ref: '#/components/schemas/customDataArray'
-    remittancePurpose:
-      type: string
-      description: Field providing a description of the reason for the international remittance.
-      minLength: 0
-      maxLength: 256
-    oneTimeCode:
-      type: string
-      description: A one-time code that can be supplied in the request or can be generated in the response depending upon the use case. An authorisation code can be supplied in this field for requests that have been pre-authorised.
-      minLength: 0
-      maxLength: 256
-    descriptionText:
-      type: string
-      description: Free format text description of the transaction provided by the client. This can be provided as a reference for the receiver on a notification SMS and on an account statement.
-      minLength: 0
-      maxLength: 160
     identityRequestArray:
       type: array
       description: An array containing the details of each identity associated with an account.
@@ -2356,132 +2430,134 @@ components:
         $ref: '#/components/schemas/identityRequest'
       maxItems: 20
       minItems: 1
-    senderBlockingReason:
-      type: string
-      description: The reason for blocking the quotation, based on AML checks on the sender.
-      minLength: 0
-      maxLength: 256
-    idDocument:
+    kyc:
       type: object
-      required:
-      - idType
       properties:
-        idType:
-          type: string
-          enum:
-          - passport
-          - nationalregistration
-          - otherId
-          - drivinglicence
-          - socialsecurity
-          - alienregistration
-          - nationalidcard
-          - employer
-          - taxid
-          - seniorcitizenscard
-          - marriagecertificate
-          - birthcertificate
-          - healthcard
-          - votersid
-          - villageelderLetter
-          - pancard
-          - officialletter
-          description: Indicates the type of identification for the KYC subject, e.g. passport, driving licence etc.
-        idNumber:
-          type: string
-          description: Reference pertaining to the type of identification for the KYC subject.
-          minLength: 0
-          maxLength: 256
-        issueDate:
-          type: string
-          format: date
-          description: Date of issue for the identification document.
-          example: '2018-11-20'
-        expiryDate:
-          type: string
-          format: date
-          description: Date of expiry for the identification document.
-          example: '2018-11-20'
-        issuer:
-          type: string
-          description: Indicates the organisation/government entity that issued the ID document.
-          minLength: 0
-          maxLength: 256
-        issuerPlace:
-          type: string
-          description: Place of issue for the identification type.
-          minLength: 0
-          maxLength: 256
-        issuerCountry:
-          description: Country where the identification type was issued.
+        birthCountry:
+          description: The country of birth of the KYC subject.
           allOf:
           - $ref: '#/components/schemas/nationality'
-        otherIddescription:
-          type: string
-          description: Where an ID Type of otherid is specified, a description of the type of identification can be provided in this field.
-          minLength: 0
-          maxLength: 256
-    dateCreated:
+        contactPhone:
+          $ref: '#/components/schemas/contactPhone'
+        dateOfBirth:
+          $ref: '#/components/schemas/dateOfBirth'
+        emailAddress:
+          $ref: '#/components/schemas/emailAddress'
+        employerName:
+          $ref: '#/components/schemas/employerName'
+        gender:
+          $ref: '#/components/schemas/gender'
+        idDocument:
+          $ref: '#/components/schemas/idDocumentArray'
+        nationality:
+          description: Nationality of the KYC subject.
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+        occupation:
+          $ref: '#/components/schemas/occupation'
+        postalAddress:
+          $ref: '#/components/schemas/postalAddress'
+        subjectName:
+          $ref: '#/components/schemas/subjectName'
+    creationDate:
       type: string
       format: date-time
-      deprecated: true
       description: Date and time when the object was created by the API Provider.
-    requestAccount:
+    identityResponse:
       type: object
       required:
-      - identity
+      - identityId
+      - identityType
+      - identityKyc
+      - accountRelationship
       properties:
-        accountIdentifiers:
-          $ref: '#/components/schemas/accountIdentifiersArray'
-        identity:
-          $ref: '#/components/schemas/identityRequestArray'
-        accountType:
-          $ref: '#/components/schemas/accountType'
+        identityId:
+          $ref: '#/components/schemas/identityId'
+        identityType:
+          $ref: '#/components/schemas/identityType'
+        identityStatus:
+          $ref: '#/components/schemas/identityStatus'
+        identityKyc:
+          $ref: '#/components/schemas/kyc'
+        accountRelationship:
+          $ref: '#/components/schemas/accountRelationship'
+        kycVerificationStatus:
+          $ref: '#/components/schemas/kycVerificationStatus'
+        kycVerificationEntity:
+          $ref: '#/components/schemas/kycVerificationEntity'
+        kycLevel:
+          $ref: '#/components/schemas/kycLevel'
         customData:
           $ref: '#/components/schemas/customDataArray'
-        fees:
-          $ref: '#/components/schemas/feesArray'
-        registeringEntity:
-          $ref: '#/components/schemas/registeringEntity'
-        requestDate:
-          $ref: '#/components/schemas/requestDate'
-    displayType:
+    occupation:
       type: string
-      description: The transaction type that is to be used for presentation to the account holder as determined by the API provider. This is not necessarily the actual transaction type.
+      description: Occupation of the KYC subject.
       minLength: 0
       maxLength: 256
-    relationshipSender:
+    genericUpdateSuccess:
+      type: object
+      required:
+      - result
+      properties:
+        result:
+          type: string
+          description: The success message provided in a callback to communicate the success of an update operation.
+          enum:
+          - success
+    accountSubStatus:
       type: string
-      description: Indicates the relationship (if any) between the sender and the receiver.
+      description: Field can be used to return a provider-specific status for the account.
       minLength: 0
       maxLength: 256
-    kycLevel:
-      type: integer
-      format: int32
-      example: '1'
-      description: Indicates the KYC level that the identity is associated with.
-    reservedBalance:
-      description: Indicates the portion of the balance that is reserved, i.e. intended to be debited. This balance is only provided on some API provider systems.
-      allOf:
-      - $ref: '#/components/schemas/amount'
-      example: '15.00'
-    kycVerificationStatus:
+    quotationReference:
       type: string
-      enum:
-      - verified
-      - unverified
-      - rejected
-      description: Indicates the status of the identity’s KYC verification.
-    transactionReference:
-      type: string
-      description: Unique reference for the transaction. This is returned in the response by API provider.
+      description: Reference for the quotation that was provided to the sender.
       minLength: 1
       maxLength: 256
-    quoteId:
-      type: string
-      description: The specific quote associated with the quotation.
-      minLength: 1
-      maxLength: 256
+    customData:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Identifies the type of additional field.
+          minLength: 1
+          maxLength: 256
+        value:
+          type: string
+          description: Identifies the value of the additional field.
+          minLength: 1
+          maxLength: 256
+    commissionEarned:
+      type: object
+      required:
+      - commissionType
+      - commissionCurrency
+      - commissionAmount
+      properties:
+        commissionType:
+          type: string
+          description: Defines the type of commission.
+          minLength: 1
+          maxLength: 256
+        commissionAmount:
+          description: Defines the amount of the commission.
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          example: '5.46'
+        commissionCurrency:
+          description: Defines the currency for the given commission.
+          allOf:
+          - $ref: '#/components/schemas/currency'
+    creditPartyArray:
+      type: array
+      description: A collection of key/value pairs that enable the party to be identified. Keys include MSISDN and Wallet Identifier.
+      items:
+        $ref: '#/components/schemas/party'
+      maxItems: 10
+      minItems: 1
     currency:
       type: string
       enum:
@@ -2663,76 +2739,203 @@ components:
       - ZAR
       - ZMW
       - ZWL
-    requestStateObject:
-      type: object
-      required:
-      - notificationMethod
-      - serverCorrelationId
-      - status
-      properties:
-        serverCorrelationId:
-          type: string
-          description: A unique identifier issued by the provider to enable the client to identify the RequestState resource on subsequent polling requests. Must be supplied as a UUID.
-          minLength: 1
-          maxLength: 256
-          pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-        objectReference:
-          type: string
-          description: Provides a reference to the subject resource, e.g. transaction reference.
-          minLength: 0
-          maxLength: 256
-        status:
-          type: string
-          enum:
-          - pending
-          - completed
-          - failed
-          description: Indicates the status of the request.
-        notificationMethod:
-          type: string
-          enum:
-          - callback
-          - polling
-          description: Indicates whether a callback will be issued or whether the client will need to poll.
-        pendingReason:
-          type: string
-          description: A textual description that can be provided to describe the reason for a pending status.
-          minLength: 0
-          maxLength: 256
-        expiryTime:
-          type: string
-          format: date-time
-          description: Indicate the time by which the provider will fail the request if completion criteria have not been met. For an example, a debit party failing to authorise within the allowed period.
-        pollLimit:
-          type: number
-          format: int32
-          description: Indicates the number of poll attempts for the given requeststate resource that will be allowed by the provider.
-          exclusiveMinimum: 0
-        error:
-          description: If the asynchronous processing failed, details of the error will be returned here.
-          allOf:
-          - $ref: '#/components/schemas/errorObject'
+    oneTimeCode:
+      type: string
+      description: A one-time code that can be supplied in the request or can be generated in the response depending upon the use case. An authorisation code can be supplied in this field for requests that have been pre-authorised.
+      minLength: 0
+      maxLength: 256
+    transactionStatus:
+      type: string
+      description: Indicates the status of the transaction as stored by the API provider.
+      minLength: 1
+      maxLength: 256
+    commissionEarnedArray:
+      type: array
+      description: Returns all commission earned by the registering entity for the creation of the account.
+      items:
+        $ref: '#/components/schemas/commissionEarned'
+      maxItems: 20
+      minItems: 1
+    currentBalance:
+      description: Current outstanding balance on the account.
+      allOf:
+      - $ref: '#/components/schemas/amount'
+      example: '15.00'
     unclearedBalance:
       description: Indicates the sum of uncleared funds in an account, i.e. the funds that are awaiting a credit confirmation.
       allOf:
       - $ref: '#/components/schemas/amount'
       example: '15.00'
-    idDocumentArray:
+    accountType:
+      type: string
+      description: A non-harmonised field that indicates the type of the account.
+      minLength: 0
+      maxLength: 256
+    accountRelationship:
+      type: string
+      enum:
+      - accountholder
+      description: Describes the relationship that the identity holds with the account.
+    customDataArray:
       type: array
-      description: An array of properties containing the forms of identification that are associated with the subject.
+      description: A collection of key/value pairs. These can be used to populate provider specific fields.
       items:
-        $ref: '#/components/schemas/idDocument'
-      maxItems: 10
-      minItems: 0
+        $ref: '#/components/schemas/customData'
+      maxItems: 20
+    feesArray:
+      type: array
+      description: Returns all fees that are applicable to the object.
+      items:
+        $ref: '#/components/schemas/fees'
+      maxItems: 20
+      minItems: 1
+    idDocument:
+      type: object
+      required:
+      - idType
+      properties:
+        idType:
+          type: string
+          enum:
+          - passport
+          - nationalregistration
+          - otherId
+          - drivinglicence
+          - socialsecurity
+          - alienregistration
+          - nationalidcard
+          - employer
+          - taxid
+          - seniorcitizenscard
+          - marriagecertificate
+          - birthcertificate
+          - healthcard
+          - votersid
+          - villageelderLetter
+          - pancard
+          - officialletter
+          description: Indicates the type of identification for the KYC subject, e.g. passport, driving licence etc.
+        idNumber:
+          type: string
+          description: Reference pertaining to the type of identification for the KYC subject.
+          minLength: 0
+          maxLength: 256
+        issueDate:
+          type: string
+          format: date
+          description: Date of issue for the identification document.
+          example: '2018-11-20'
+        expiryDate:
+          type: string
+          format: date
+          description: Date of expiry for the identification document.
+          example: '2018-11-20'
+        issuer:
+          type: string
+          description: Indicates the organisation/government entity that issued the ID document.
+          minLength: 0
+          maxLength: 256
+        issuerPlace:
+          type: string
+          description: Place of issue for the identification type.
+          minLength: 0
+          maxLength: 256
+        issuerCountry:
+          description: Country where the identification type was issued.
+          allOf:
+          - $ref: '#/components/schemas/nationality'
+        otherIddescription:
+          type: string
+          description: Where an ID Type of otherid is specified, a description of the type of identification can be provided in this field.
+          minLength: 0
+          maxLength: 256
+    kycVerificationEntity:
+      type: string
+      description: Indicates the entity (e.g. mobile money agent) that has verified the KYC of the identity.
+      minLength: 0
+      maxLength: 256
+    descriptionText:
+      type: string
+      description: Free format text description of the transaction provided by the client. This can be provided as a reference for the receiver on a notification SMS and on an account statement.
+      minLength: 0
+      maxLength: 160
+    availableBalance:
+      description: Indicates the balance that is able to be debited for an account. This balance is only provided on some API provider systems.
+      allOf:
+      - $ref: '#/components/schemas/amount'
+      example: '15.00'
     modificationDate:
       type: string
       format: date-time
       description: Date and time when the object was modified by the API Provider.
-    identityStatus:
+    responseAccountBalance:
+      type: object
+      properties:
+        accountStatus:
+          $ref: '#/components/schemas/accountStatus'
+        currentBalance:
+          $ref: '#/components/schemas/currentBalance'
+        availableBalance:
+          $ref: '#/components/schemas/availableBalance'
+        reservedBalance:
+          $ref: '#/components/schemas/reservedBalance'
+        unclearedBalance:
+          $ref: '#/components/schemas/unclearedBalance'
+        currency:
+          description: Currency for all returned balances.
+          allOf:
+          - $ref: '#/components/schemas/currency'
+    dateCreated:
       type: string
-      description: A unique id for the identity as assigned by the API Provider.
+      format: date-time
+      deprecated: true
+      description: Date and time when the object was created by the API Provider.
+    debitPartyArray:
+      type: array
+      description: A collection of key/value pairs that enable the party to be identified. Keys include MSISDN and Wallet Identifier.
+      items:
+        $ref: '#/components/schemas/party'
+      maxItems: 10
+      minItems: 1
+    reservedBalance:
+      description: Indicates the portion of the balance that is reserved, i.e. intended to be debited. This balance is only provided on some API provider systems.
+      allOf:
+      - $ref: '#/components/schemas/amount'
+      example: '15.00'
+    employerName:
+      type: string
+      description: Employer name of the KYC subject.
       minLength: 0
       maxLength: 256
+    identityId:
+      type: string
+      description: A unique id for the identity as assigned by the API Provider.
+      minLength: 1
+      maxLength: 256
+    servicingIdentity:
+      type: string
+      description: The field is used to identify the servicing identity for transactions, e.g. till, POS ID, assistant ID.
+      minLength: 0
+      maxLength: 256
+    requestAccount:
+      type: object
+      required:
+      - identity
+      properties:
+        accountIdentifiers:
+          $ref: '#/components/schemas/accountIdentifiersArray'
+        identity:
+          $ref: '#/components/schemas/identityRequestArray'
+        accountType:
+          $ref: '#/components/schemas/accountType'
+        customData:
+          $ref: '#/components/schemas/customDataArray'
+        fees:
+          $ref: '#/components/schemas/feesArray'
+        registeringEntity:
+          $ref: '#/components/schemas/registeringEntity'
+        requestDate:
+          $ref: '#/components/schemas/requestDate'
     nationality:
       type: string
       enum:
@@ -2985,136 +3188,82 @@ components:
       - ZA
       - ZM
       - ZW
-    fees:
+    displayType:
+      type: string
+      description: The transaction type that is to be used for presentation to the account holder as determined by the API provider. This is not necessarily the actual transaction type.
+      minLength: 0
+      maxLength: 256
+    errorObject:
       type: object
       required:
-      - feeType
-      - feeCurrency
-      - feeAmount
+      - errorCategory
+      - errorCode
       properties:
-        feeType:
+        errorCategory:
           type: string
-          description: Defines the type of fee.
-          minLength: 1
+          description: The category grouping for the error.
+          enum:
+          - businessRule
+          - validation
+          - authorisation
+          - identification
+          - internal
+          - serviceUnavailable
+        errorCode:
+          type: string
+          description: The harmonised error code identifying the reason for error.
+          enum:
+          - genericError
+          - dailyVolumeLimitExceeded
+          - dailyValueLimitExceeded
+          - weeklyVolumeLimitExceeded
+          - weeklyValueLimitExceeded
+          - monthlyVolumeLimitExceeded
+          - monthlyValueLimitExceeded
+          - accountMaxTotalVolumeExceeded
+          - accountMaxTotalValueExceeded
+          - lessThanTransactionMinValue
+          - greaterThanTransactionMaxValue
+          - maxBalanceExceeded
+          - samePartiesError
+          - duplicateRequest
+          - insufficientFunds
+          - incorrectState
+          - underPaymentNotAllowed
+          - overPaymentNotAllowed
+          - rateLimitError
+          - transactionTypeError
+          - noMandateAuthority
+          - linkViolation
+          - countryofOriginNotPermitted
+          - nationalityNotPermitted
+          - idDocumentNotSupported
+          - issuingCountryNotSupported
+          - quoteHasExpired
+          - identifierError
+          - lengthError
+          - formatError
+          - negativeValue
+          - currencyNotSupported
+          - mandatoryValueNotSupplied
+          - invalidOffset
+          - clientAuthorisationError
+          - requestDeclined
+          - servicingPartyAuthorisationError
+          - requestingPartyAuthorisationError
+        errordescription:
+          type: string
+          description: A textual description of the error.
+          minLength: 0
           maxLength: 256
-        feeAmount:
-          description: Defines the amount of the fee.
+        errorDateTime:
+          type: string
+          format: date-time
+          description: The timestamp indicating when the error occurred.
+        errorParameters:
+          description: Diagnostic information in the form of key/value pairs relating to the error.
           allOf:
-          - $ref: '#/components/schemas/amount'
-          example: '5.46'
-        feeCurrency:
-          description: Defines the currency for the given fee.
-          allOf:
-          - $ref: '#/components/schemas/currency'
-    accountStatus:
-      type: string
-      enum:
-      - available
-      - unavailable
-      - unregistered
-      description: Indicates a harmonised representation of the account status. This will be shown as available, unavailable or unregistered.
-      minLength: 1
-      maxLength: 256
-    responseTransaction:
-      type: object
-      required:
-      - amount
-      - currency
-      - type
-      - transactionReference
-      - transactionStatus
-      - creditParty
-      - debitParty
-      properties:
-        transactionReference:
-          $ref: '#/components/schemas/transactionReference'
-        originalTransactionReference:
-          $ref: '#/components/schemas/originalTransactionReference'
-        requestingOrganisationTransactionReference:
-          $ref: '#/components/schemas/requestingOrganisationTransactionReference'
-        creditParty:
-          $ref: '#/components/schemas/creditPartyArray'
-        debitParty:
-          $ref: '#/components/schemas/debitPartyArray'
-        type:
-          $ref: '#/components/schemas/type'
-        subType:
-          $ref: '#/components/schemas/subType'
-        transactionStatus:
-          $ref: '#/components/schemas/transactionStatus'
-        amount:
-          description: The transaction amount.
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          example: '15.23'
-        currency:
-          description: Currency of the transaction amount.
-          allOf:
-          - $ref: '#/components/schemas/currency'
-          example: RWF
-        descriptionText:
-          $ref: '#/components/schemas/descriptionText'
-        fees:
-          $ref: '#/components/schemas/feesArray'
-        geoCode:
-          $ref: '#/components/schemas/geoCode'
-        internationalTransferInformation:
-          $ref: '#/components/schemas/internationalTransferInformationResponse'
-        oneTimeCode:
-          $ref: '#/components/schemas/oneTimeCode'
-        recipientKyc:
-          $ref: '#/components/schemas/kyc'
-        senderKyc:
-          $ref: '#/components/schemas/kyc'
-        requestingOrganisation:
-          $ref: '#/components/schemas/requestingOrganisation'
-        servicingIdentity:
-          $ref: '#/components/schemas/servicingIdentity'
-        transactionReceipt:
-          $ref: '#/components/schemas/transactionReceipt'
-        creationDate:
-          $ref: '#/components/schemas/creationDate'
-        modificationDate:
-          $ref: '#/components/schemas/modificationDate'
-        requestDate:
-          $ref: '#/components/schemas/requestDate'
-        customData:
-          $ref: '#/components/schemas/customDataArray'
-        metadata:
-          $ref: '#/components/schemas/metadataArray'
-        dateCreated:
-          $ref: '#/components/schemas/dateCreated'
-        dateModified:
-          $ref: '#/components/schemas/dateModified'
-        receivingLei:
-          $ref: '#/components/schemas/receivingLei'
-        requestingLei:
-          $ref: '#/components/schemas/requestingLei'
-    requestingLei:
-      type: string
-      description: Legal Entity Identifier of the organisation that is requesting the transaction.
-      minLength: 0
-      maxLength: 20
-      pattern: ^[A-Z0-9]{4}00[A-Z0-9]{12}\d{2}$
-      deprecated: true
-    creationDate:
-      type: string
-      format: date-time
-      description: Date and time when the object was created by the API Provider.
-    requestDate:
-      type: string
-      format: date-time
-      description: The date and time of the request as supplied by the client.
-    availableBalance:
-      description: Indicates the balance that is able to be debited for an account. This balance is only provided on some API provider systems.
-      allOf:
-      - $ref: '#/components/schemas/amount'
-      example: '15.00'
-    accountSubStatus:
-      type: string
-      description: Field can be used to return a provider-specific status for the account.
-      minLength: 0
-      maxLength: 256
+          - $ref: '#/components/schemas/metadataArray'
     metadata:
       type: object
       required:
@@ -3131,156 +3280,191 @@ components:
           description: Identifies the value of the additional field.
           minLength: 1
           maxLength: 256
-    requestGenericPatch:
-      type: object
-      required:
-      - op
-      - path
-      - value
-      properties:
-        op:
-          description: Indicates the Patch operation to be performed. 'replace' is used to update a field and 'add' is used to add a new field.
-          type: string
-          enum:
-          - replace
-          - add
-        path:
-          description: Specify the field to be updated or added preceded by '/'.
-          type: string
-          maxLength: 256
-        value:
-          description: Specify the value of the field to be updated or added.
-          type: string
-          maxLength: 256
-    kycVerificationEntity:
-      type: string
-      description: Indicates the entity (e.g. mobile money agent) that has verified the KYC of the identity.
-      minLength: 0
-      maxLength: 256
-    commissionEarnedArray:
-      type: array
-      description: Returns all commission earned by the registering entity for the creation of the account.
-      items:
-        $ref: '#/components/schemas/commissionEarned'
-      maxItems: 20
-      minItems: 1
-    requestingOrganisation:
-      type: object
-      description: An object that details the originating organisation of the request.
-      required:
-      - requestingOrganisationIdentifierType
-      - requestingOrganisationIdentifier
-      properties:
-        requestingOrganisationIdentifierType:
-          type: string
-          description: Identifies the identifier type of the requesting organisation.
-          enum:
-          - lei
-          - swiftbic
-          - organisationid
-        requestingOrganisationIdentifier:
-          type: string
-          description: Contains the requesting organisation identifier.
-          minLength: 1
-          maxLength: 256
-    requestingOrganisationTransactionReference:
-      type: string
-      description: A reference provided by the requesting organisation that is to be associated with the transaction.
-      minLength: 0
-      maxLength: 256
-    dateOfBirth:
-      type: string
-      format: date
-      description: Birth date of the KYC subject.
-      example: '2000-11-20'
-    party:
-      type: object
-      required:
-      - key
-      - value
-      properties:
-        key:
-          type: string
-          description: Provides the account identifier type.
-          minLength: 1
-          maxLength: 256
-          example: msisdn
-        value:
-          type: string
-          description: Provides the account identifier type value.
-          minLength: 1
-          maxLength: 256
-          example: '+33555123456'
-    transactionReceipt:
-      type: string
-      description: Transaction receipt number as notified to the parties. This may differ from the Transaction Reference.
-      minLength: 0
-      maxLength: 256
-    genericUpdateSuccess:
-      type: object
-      required:
-      - result
-      properties:
-        result:
-          type: string
-          description: The success message provided in a callback to communicate the success of an update operation.
-          enum:
-          - success
-    servicingIdentity:
-      type: string
-      description: The field is used to identify the servicing identity for transactions, e.g. till, POS ID, assistant ID.
-      minLength: 0
-      maxLength: 256
-    recipientBlockingReason:
-      type: string
-      description: The reason for blocking the quotation, based on AML checks on the recipient.
-      minLength: 0
-      maxLength: 256
-    subStatus:
-      type: string
-      description: Can be used to return a provider-specific status for the account.
-      minLength: 0
-      maxLength: 256
-    transactionStatus:
-      type: string
-      description: Indicates the status of the transaction as stored by the API provider.
-      minLength: 1
-      maxLength: 256
-    customDataArray:
-      type: array
-      description: A collection of key/value pairs. These can be used to populate provider specific fields.
-      items:
-        $ref: '#/components/schemas/customData'
-      maxItems: 20
-    accountType:
-      type: string
-      description: A non-harmonised field that indicates the type of the account.
-      minLength: 0
-      maxLength: 256
-    registeringEntity:
-      type: string
-      description: The entity that registered the account, for example, a mobile money agent.
-      minLength: 0
-      maxLength: 256
-    type:
-      type: string
-      description: The harmonised Transaction Type.
-      enum:
-      - billpay
-      - deposit
-      - disbursement
-      - transfer
-      - merchantpay
-      - inttransfer
-      - adjustment
-      - reversal
-      - withdrawal
-    identityId:
-      type: string
-      description: A unique id for the identity as assigned by the API Provider.
-      minLength: 1
-      maxLength: 256
   parameters:
+    offset:
+      name: offset
+      in: query
+      description: Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60.
+      required: false
+      schema:
+        type: integer
+        format: int32
+    accountId:
+      name: accountId
+      in: path
+      description: 'Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference.'
+      required: true
+      schema:
+        type: string
+        pattern: ^((accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+))(\$(accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+)){0,2}$
+    X-Account-Holding-Institution-Identifier:
+      name: X-Account-Holding-Institution-Identifier
+      in: header
+      description: A header variable that identifies the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier-Type header.
+      required: false
+      schema:
+        type: string
+    X-Account-Holding-Institution-Identifier-Type:
+      name: X-Account-Holding-Institution-Identifier-Type
+      in: header
+      description: A header variable that identifies the type of the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier header.
+      required: false
+      schema:
+        type: string
+        enum:
+        - lei
+        - swiftbic
+        - organisationid
+    fromDateTime:
+      name: fromDateTime
+      in: query
+      description: Indicates the minimum creation date for which records should be returned.
+      required: false
+      schema:
+        type: string
+        format: date-time
+    limit:
+      name: limit
+      in: query
+      description: Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request.
+      required: false
+      schema:
+        type: integer
+        format: int32
+    X-User-Bearer:
+      name: X-User-Bearer
+      in: header
+      description: Used to pass user’s access token when OAuth 2.0/OIDC authorisation framework is used for end-user authentication.
+      required: false
+      schema:
+        type: string
+    X-Channel:
+      name: X-Channel
+      in: header
+      description: String containing the channel that was used to originate the request. For example USSD, Web, App.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    displayType:
+      name: displayType
+      in: query
+      description: Query parameter to to identify the display type of the statement entries to be returned.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    transactionTypeQuery:
+      name: transactionType
+      in: query
+      required: false
+      description: Identifies the type of transaction.
+      schema:
+        type: string
+        enum:
+        - billpay
+        - deposit
+        - disbursement
+        - transfer
+        - merchantpay
+        - inttransfer
+        - adjustment
+        - reversal
+        - withdrawal
+    X-CorrelationID:
+      name: X-CorrelationID
+      in: header
+      description: Header parameter to uniquely identify the request. Must be supplied as a UUID.
+      required: false
+      schema:
+        type: string
+        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+    transactionReference:
+      name: transactionReference
+      in: path
+      description: Path variable to uniquely identify the transaction.
+      required: true
+      schema:
+        type: string
+        maxLength: 256
+        minLength: 1
+    X-User-Credential-2:
+      name: X-User-Credential-2
+      in: header
+      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    X-User-Credential-1:
+      name: X-User-Credential-1
+      in: header
+      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
+      required: false
+      schema:
+        type: string
+    identityIdPath:
+      name: identityId
+      in: path
+      required: true
+      description: A unique id for the identity as assigned by the API Provider.
+      schema:
+        type: string
+    X-Content-Hash:
+      name: X-Content-Hash
+      in: header
+      description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
+      required: false
+      schema:
+        type: string
+    X-Callback-URL:
+      name: X-Callback-URL
+      in: header
+      description: The URL supplied by the client that will be used to return the callback in the form of a HTTP PUT.
+      required: false
+      schema:
+        type: string
+        format: uri
+    identityTypePath:
+      name: identityType
+      in: path
+      required: true
+      description: Identifies the type of identity that is associated with the Account.
+      schema:
+        type: string
+        enum:
+        - individual
+    X-API-Key:
+      name: X-API-Key
+      in: header
+      description: Used to pass pre-shared client's API key to the server.
+      required: false
+      schema:
+        type: string
+    X-Client-Id:
+      name: X-Client-Id
+      in: header
+      description: Used to pass pre-shared client's identifier to the server.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
+    X-Date:
+      name: X-Date
+      in: header
+      description: Header parameter to indicate the date and time that the message was originated. It is used for basic message integrity checks, to ensure the request is not stale. Note that the header was previously referenced as 'Date' in version 1.0 of the Mobile Money API.
+      required: false
+      schema:
+        type: string
+        format: date-time
+    identifier:
+      name: identifier
+      in: path
+      description: Path variable that contains the account identifier.
+      required: true
+      schema:
+        type: string
+        maxLength: 256
+        minLength: 1
     identifierType:
       name: identifierType
       in: path
@@ -3309,198 +3493,6 @@ components:
         - username
         - emailaddress
         - mandatereference
-    displayType:
-      name: displayType
-      in: query
-      description: Query parameter to to identify the display type of the statement entries to be returned.
-      required: false
-      schema:
-        type: string
-        maxLength: 256
-    identityIdPath:
-      name: identityId
-      in: path
-      required: true
-      description: A unique id for the identity as assigned by the API Provider.
-      schema:
-        type: string
-    X-Account-Holding-Institution-Identifier:
-      name: X-Account-Holding-Institution-Identifier
-      in: header
-      description: A header variable that identifies the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier-Type header.
-      required: false
-      schema:
-        type: string
-    X-Client-Id:
-      name: X-Client-Id
-      in: header
-      description: Used to pass pre-shared client's identifier to the server.
-      required: false
-      schema:
-        type: string
-        maxLength: 256
-    X-User-Credential-2:
-      name: X-User-Credential-2
-      in: header
-      description: The end-users encrypted security credential Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
-      required: false
-      schema:
-        type: string
-    accountId:
-      name: accountId
-      in: path
-      description: 'Path variable to uniquely identify an account. Up to three account identifiers can be supplied. Identifiers are delimited by $ and values are delimited by @. Example: organisationid@1234$accountid@3333. Valid account identifiers are accountcategory, bankaccountno, accountrank, identityalias, iban, accountid, msisdn, swiftbic, sortcode, organisationid, username, walletid, linkref, consumerno, serviceprovider, storeid, bankname, bankaccounttitle, emailaddress, mandatereference.'
-      required: true
-      schema:
-        type: string
-        pattern: ^((accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+))(\$(accountcategory|bankaccountno|accountrank|identityalias|iban|accountid|msisdn|swiftbic|sortcode|organisationid|username|walletid|linkref|consumerno|serviceprovider|storeid|bankname|bankaccounttitle|emailaddress|mandatereference)@([^$\n]+)){0,2}$
-    X-Account-Holding-Institution-Identifier-Type:
-      name: X-Account-Holding-Institution-Identifier-Type
-      in: header
-      description: A header variable that identifies the type of the account holding institution. This header is used to support request routing and should be used in conjunction with the X-Account-Holding-Institution-Identifier header.
-      required: false
-      schema:
-        type: string
-        enum:
-        - lei
-        - swiftbic
-        - organisationid
-    identityTypePath:
-      name: identityType
-      in: path
-      required: true
-      description: Identifies the type of identity that is associated with the Account.
-      schema:
-        type: string
-        enum:
-        - individual
-    transactionStatus:
-      name: transactionStatus
-      in: query
-      description: Query variable to uniquely identify the transaction status.
-      required: false
-      schema:
-        type: string
-        maxLength: 256
-    X-User-Credential-1:
-      name: X-User-Credential-1
-      in: header
-      description: The end-users encrypted security credential. Should only be used when OAuth 2.0/OIDC authorisation framework has not been implemented by the API Provider.
-      required: false
-      schema:
-        type: string
-    X-User-Bearer:
-      name: X-User-Bearer
-      in: header
-      description: Used to pass user’s access token when OAuth 2.0/OIDC authorisation framework is used for end-user authentication.
-      required: false
-      schema:
-        type: string
-    fromDateTime:
-      name: fromDateTime
-      in: query
-      description: Indicates the minimum creation date for which records should be returned.
-      required: false
-      schema:
-        type: string
-        format: date-time
-    X-Content-Hash:
-      name: X-Content-Hash
-      in: header
-      description: SHA-256 hex digest of the request content (encrypted or plain). Applicable only if basic data integrity checking is to be performed.
-      required: false
-      schema:
-        type: string
-    X-CorrelationID:
-      name: X-CorrelationID
-      in: header
-      description: Header parameter to uniquely identify the request. Must be supplied as a UUID.
-      required: false
-      schema:
-        type: string
-        pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
-    X-Callback-URL:
-      name: X-Callback-URL
-      in: header
-      description: The URL supplied by the client that will be used to return the callback in the form of a HTTP PUT.
-      required: false
-      schema:
-        type: string
-        format: uri
-    limit:
-      name: limit
-      in: query
-      description: Supports pagination. If this is not supplied, then the server will apply a limit of 50 records returned for each request.
-      required: false
-      schema:
-        type: integer
-        format: int32
-    X-Date:
-      name: X-Date
-      in: header
-      description: Header parameter to indicate the date and time that the message was originated. It is used for basic message integrity checks, to ensure the request is not stale. Note that the header was previously referenced as 'Date' in version 1.0 of the Mobile Money API.
-      required: false
-      schema:
-        type: string
-        format: date-time
-    identifier:
-      name: identifier
-      in: path
-      description: Path variable that contains the account identifier.
-      required: true
-      schema:
-        type: string
-        maxLength: 256
-        minLength: 1
-    transactionTypeQuery:
-      name: transactionType
-      in: query
-      required: false
-      description: Identifies the type of transaction.
-      schema:
-        type: string
-        enum:
-        - billpay
-        - deposit
-        - disbursement
-        - transfer
-        - merchantpay
-        - inttransfer
-        - adjustment
-        - reversal
-        - withdrawal
-    X-API-Key:
-      name: X-API-Key
-      in: header
-      description: Used to pass pre-shared client's API key to the server.
-      required: false
-      schema:
-        type: string
-    offset:
-      name: offset
-      in: query
-      description: Supports pagination. This value will indicate the cursor position from where to retrieve the set of records. For example, a limit of 50 and offset of 10 will return records 11 to 60.
-      required: false
-      schema:
-        type: integer
-        format: int32
-    transactionReference:
-      name: transactionReference
-      in: path
-      description: Path variable to uniquely identify the transaction.
-      required: true
-      schema:
-        type: string
-        maxLength: 256
-        minLength: 1
-    X-Channel:
-      name: X-Channel
-      in: header
-      description: String containing the channel that was used to originate the request. For example USSD, Web, App.
-      required: false
-      schema:
-        type: string
-        maxLength: 256
     toDateTime:
       name: toDateTime
       in: query
@@ -3509,6 +3501,14 @@ components:
       schema:
         type: string
         format: date-time
+    transactionStatus:
+      name: transactionStatus
+      in: query
+      description: Query variable to uniquely identify the transaction status.
+      required: false
+      schema:
+        type: string
+        maxLength: 256
   headers:
     X-Records-Returned-Count:
       required: false
@@ -3529,20 +3529,6 @@ components:
         type: integer
         format: int32
   requestBodies:
-    requestAccount:
-      required: true
-      description: Represents the request body of an Account.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/requestAccount'
-    updateAccount:
-      required: true
-      description: Represents the request body of an account callback.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/responseAccount'
     genericUpdateSuccess:
       required: true
       description: Represents the request body of a success message callback to an update event.
@@ -3550,13 +3536,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/genericUpdateSuccess'
-    genericPatch:
-      required: true
-      description: Represents the request body of a batch of generic Patch operation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/requestGenericPatchArray'
     updateError:
       required: true
       description: Represents the request body of error callback.
@@ -3564,3 +3543,24 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/errorObject'
+    requestAccount:
+      required: true
+      description: Represents the request body of an Account.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestAccount'
+    genericPatch:
+      required: true
+      description: Represents the request body of a batch of generic Patch operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestGenericPatchArray'
+    updateAccount:
+      required: true
+      description: Represents the request body of an account callback.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseAccount'
